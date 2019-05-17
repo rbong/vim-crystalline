@@ -38,7 +38,8 @@ function! crystalline#buftablabel(buf, padding, tab, curtab, ntabs) abort
 endfunction
 
 function! crystalline#tablabel(i) abort
-  return crystalline#buftablabel(tabpagebuflist(a:i)[tabpagewinnr(a:i) - 1], 6, a:i, tabpagenr(), tabpagenr('$'))
+  let l:buf = tabpagebuflist(a:i)[tabpagewinnr(a:i) - 1]
+  return crystalline#buftablabel(l:buf, 6, a:i, tabpagenr(), tabpagenr('$'))
 endfunction
 
 function! crystalline#buflabel(i) abort
@@ -48,48 +49,57 @@ function! crystalline#buflabel(i) abort
   return crystalline#buftablabel(a:i, 9, l:tab, l:curtab, l:ntabs)
 endfunction
 
+function! crystalline#tabline_buffers(maxtabs) abort
+  let g:crystalline_bufferline_tabnum = {}
+  let g:crystalline_bufferline_ntabs = 0
+
+  let l:curbuf = bufnr('%')
+  let l:range = range(bufnr('$'))
+  let l:tabs = []
+  for l:i in l:range
+    if bufexists(l:i + 1) && buflisted(l:i + 1)
+      let l:label = '%{crystalline#buflabel(' . (l:i + 1) . ')}'
+      let l:tabs += [(l:i + 1 == l:curbuf ? '%#TabLineSel#' . l:label . '%#TabLine#' : l:label)]
+      let g:crystalline_bufferline_tabnum[l:i + 1] = g:crystalline_bufferline_ntabs
+      let g:crystalline_bufferline_ntabs += 1
+    endif
+  endfor
+  if g:crystalline_bufferline_ntabs > a:maxtabs
+    let l:curtab = g:crystalline_bufferline_tabnum[bufnr('%')]
+    let l:tabs = l:tabs[max([0, l:curtab - 2]) : l:curtab + 2]
+  endif
+  return join(l:tabs, '')
+endfunction
+
+function! crystalline#tabline_tabs(maxtabs) abort
+  let l:tabs = ''
+  let l:ntabs = tabpagenr('$')
+  let l:curtab = tabpagenr()
+  let l:range = l:ntabs < a:maxtabs ? range(l:ntabs) :  range(max([l:curtab - 3, 0]), min([l:curtab + 1, ntabs]))
+  for l:i in l:range
+    let l:label = '%{crystalline#tablabel(' . (l:i + 1) . ')}'
+    let l:tabs .= (l:i + 1 == l:curtab ? '%#TabLineSel#' . l:label . '%#TabLine#' : l:label)
+  endfor
+  return l:tabs
+endfunction
+
 " }}}
 
 " Full Tab Lines {{{
 
 function! crystalline#bufferline() abort
   call crystalline#color()
-
-  let g:crystalline_bufferline_tabnum = {}
-  let g:crystalline_bufferline_ntabs = 0
-
+  " at maximum 80 items are allowed
+  " 2 items set the buffer line type colors
+  " 1 item sets the tab line fill colors
+  " 2 items set the tab line selected colors
+  let l:maxtabs = 75
   if tabpagenr('$') == 1
-    let l:tabline = '%#BufferLineType# BUFFERS %#TabLine#'
-    " let l:ntabs = bufnr('$')
-    let l:curtab = bufnr('%')
-    let l:range = range(bufnr('$'))
-    let l:tabs = []
-    for l:i in l:range
-      if bufexists(l:i + 1) && buflisted(l:i + 1)
-        let l:label = '%{crystalline#buflabel(' . (l:i + 1) . ')}'
-        let l:tabs += [(l:i + 1 == l:curtab ? '%#TabLineSel#' . l:label . '%#TabLine#' : l:label)]
-        let g:crystalline_bufferline_tabnum[l:i + 1] = g:crystalline_bufferline_ntabs
-        let g:crystalline_bufferline_ntabs += 1
-      endif
-    endfor
-    if g:crystalline_bufferline_ntabs > 75
-      let l:curtab = g:crystalline_bufferline_tabnum[bufnr('%')]
-      " at max 80 items can be contained in the tabline
-      " if the limit is exceeded, only 2 are shown on either side
-      let l:tabs = l:tabs[max([0, l:curtab - 2]) : l:curtab + 2]
-    endif
-    let l:tabline .= join(l:tabs, '')
+    let l:tabline = '%#BufferLineType# BUFFERS %#TabLine#' . crystalline#tabline_buffers(l:maxtabs)
   else
-    let l:tabline = '%#BufferLineType# TABS %#TabLine#'
-    let l:ntabs = tabpagenr('$')
-    let l:curtab = tabpagenr()
-    let l:range = l:ntabs < 75 ? range(l:ntabs) :  range(max([l:curtab - 3, 0]), min([l:curtab + 1, ntabs]))
-    for l:i in l:range
-      let l:label = '%{crystalline#tablabel(' . (l:i + 1) . ')}'
-      let l:tabline .= (l:i + 1 == l:curtab ? '%#TabLineSel#' . l:label . '%#TabLine#' : l:label)
-    endfor
+    unlet! g:crystalline_bufferline_tabnum g:crystalline_bufferline_ntabs
+    let l:tabline = '%#BufferLineType# TABS %#TabLine#' . crystalline#tabline_tabs(l:maxtabs)
   endif
-  let g:tabline = l:tabline
   return l:tabline . '%#TabLineFill#'
 endfunction
 
