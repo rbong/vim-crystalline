@@ -19,9 +19,9 @@ endfunction
 " Tab Line Utils {{{
 
 function! crystalline#buftablabel(buf, padding, tab, curtab, ntabs) abort
-  " padding is the length of the tab type label
-  " 2 is the length of the spaces on either side of the label
-  let l:maxlen = (&columns - a:padding) / a:ntabs - 2
+  let l:mod = getbufvar(a:buf, '&mod')
+  let l:tabpadding = l:mod ? 4 : 2
+  let l:maxlen = (&columns - a:padding) / a:ntabs - l:tabpadding
   " 10 is the minimum length of the label
   if l:maxlen <= 9
     let l:maxlen = 10
@@ -34,7 +34,7 @@ function! crystalline#buftablabel(buf, padding, tab, curtab, ntabs) abort
   if l:name ==# ''
     let l:name = '[No Name]'
   endif
-  return ' ' . l:name . ' '
+  return (l:mod ? ' + ' : ' ') . l:name . ' '
 endfunction
 
 function! crystalline#tablabel(i) abort
