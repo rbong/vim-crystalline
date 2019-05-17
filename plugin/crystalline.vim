@@ -1,4 +1,4 @@
-if g:crystalline_enable_bufferline == 1
+if get(g:, 'crystalline_enable_bufferline', 0) == 1
   set tabline=%!crystalline#bufferline()
 endif
 
