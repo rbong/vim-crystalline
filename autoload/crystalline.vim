@@ -189,7 +189,7 @@ function! crystalline#clear_tabline() abort
 endfunction
 
 function! crystalline#color() abort
-  let l:theme = get(g:, 'crystalline_theme_fn', 'crystalline#theme#powerline#set_theme')
+  let l:theme = get(g:, 'crystalline_theme_fn', 'crystalline#theme#default#set_theme')
   call function(l:theme)()
 endfunction
 
