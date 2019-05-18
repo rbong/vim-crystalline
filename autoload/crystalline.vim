@@ -1,3 +1,34 @@
+" General Utils {{{
+
+function! crystalline#clamped_range_bounds(curitem, items, maxitems) abort
+  if a:curitem <= a:items / 2
+    let l:start = 0
+  elseif a:maxitems - a:items / 2 - 1 <= a:curitem
+    let l:start = a:maxitems - a:items - 1
+  else
+    let l:start = a:curitem - a:items / 2
+  endif
+  return [l:start, l:start + a:items]
+endfunction
+
+function! crystalline#clamped_range(curitem, items, maxitems) abort
+  let l:bounds = crystalline#clamped_range_bounds(a:curitem, a:items, a:maxitems)
+  return range(l:bounds[0], l:bounds[1])
+endfunction
+
+function! crystalline#in_clamped_range(item, curitem, items, maxitems) abort
+  let l:range = crystalline#clamped_range_bounds(a:curitem, a:items, a:maxitems)
+  return l:range[0] <= a:item && a:item <= l:range[1]
+endfunction
+
+function! crystalline#clamp_list(list, curitem, items, maxitems) abort
+  let l:bounds = crystalline#clamped_range_bounds(a:curitem, a:items, a:maxitems)
+  let g:bounds = l:bounds
+  return a:list[l:bounds[0] : l:bounds[1]]
+endfunction
+
+" }}}
+
 " Status Line Utils {{{
 
 function! crystalline#mode() abort
@@ -31,7 +62,7 @@ function! crystalline#buftablabel(buf, padding, tab, curtab, ntabs) abort
   if l:maxlen <= 9
     let l:maxlen = 10
     " at minimum 2 tabs will be shown on either side of the current tab
-    if abs(a:curtab - a:tab) > 2
+    if !crystalline#in_clamped_range(a:tab - 1, a:curtab - 1, 4, a:ntabs)
       return ''
     endif
   endif
@@ -65,14 +96,16 @@ function! crystalline#tabline_buffers(maxtabs) abort
     if bufexists(l:i + 1) && buflisted(l:i + 1)
       let l:label = '%{crystalline#buflabel(' . (l:i + 1) . ')}'
       let l:tabs += [(l:i + 1 == l:curbuf ? '%#TabLineSel#' . l:label . '%#TabLine#' : l:label)]
-      let g:crystalline_bufferline_tabnum[l:i + 1] = g:crystalline_bufferline_ntabs
       let g:crystalline_bufferline_ntabs += 1
+      let g:crystalline_bufferline_tabnum[l:i + 1] = g:crystalline_bufferline_ntabs
     endif
   endfor
+
   if g:crystalline_bufferline_ntabs > a:maxtabs
-    let l:curtab = g:crystalline_bufferline_tabnum[bufnr('%')]
-    let l:tabs = l:tabs[max([0, l:curtab - 2]) : l:curtab + 2]
+    let l:curtab = g:crystalline_bufferline_tabnum[l:curbuf]
+    let l:tabs = crystalline#clamp_list(l:tabs, l:curtab - 1, 4, g:crystalline_bufferline_ntabs)
   endif
+
   return join(l:tabs, '')
 endfunction
 
@@ -80,7 +113,7 @@ function! crystalline#tabline_tabs(maxtabs) abort
   let l:tabs = ''
   let l:ntabs = tabpagenr('$')
   let l:curtab = tabpagenr()
-  let l:range = l:ntabs < a:maxtabs ? range(l:ntabs) :  range(max([l:curtab - 3, 0]), min([l:curtab + 1, ntabs]))
+  let l:range = l:ntabs < a:maxtabs ? range(l:ntabs) :  crystalline#clamped_range(l:curtab - 1, 4, l:ntabs)
   for l:i in l:range
     let l:label = '%{crystalline#tablabel(' . (l:i + 1) . ')}'
     let l:tabs .= (l:i + 1 == l:curtab ? '%#TabLineSel#' . l:label . '%#TabLine#' : l:label)
