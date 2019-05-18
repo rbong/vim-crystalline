@@ -8,6 +8,10 @@ if exists('g:crystalline_statusline_fn')
   call crystalline#set_statusline(g:crystalline_statusline_fn)
 endif
 
+if exists('g:crystalline_theme')
+  call crystalline#set_theme(g:crystalline_theme)
+endif
+
 " }}}
 
 " Helper Variables {{{

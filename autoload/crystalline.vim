@@ -229,7 +229,18 @@ endfunction
 
 function! crystalline#set_theme(theme) abort
   let g:crystalline_mode = ''
+  let g:crystalline_theme = a:theme
   call function('crystalline#theme#' . a:theme . '#set_theme')()
+  augroup CrystallineTheme
+    au!
+    au ColorScheme * call function('crystalline#theme#' . a:crystalline_theme . '#set_theme')()
+  augroup END
+endfunction
+
+function! crystalline#clear_theme() abort
+  augroup CrystallineTheme
+    au!
+  augroup END
 endfunction
 
 " }}}
