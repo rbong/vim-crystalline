@@ -172,8 +172,8 @@ function! crystalline#tabs(maxtabs, show_mode) abort
   return l:tabs
 endfunction
 
-function! crystalline#bufferline(maxtabs, show_mode) abort
-  let l:maxtabs = a:maxtabs <= 0 ? crystalline#calculate_max_tabs(0, 1, 2, 1) : a:maxtabs
+function! crystalline#bufferline(extra_items, show_mode) abort
+  let l:maxtabs = crystalline#calculate_max_tabs(0, 1, 2, 1) + a:extra_items
   if tabpagenr('$') == 1
     let l:tabline = '%#CrystallineTabType# BUFFERS %#CrystallineTab#' . crystalline#buffers(l:maxtabs, a:show_mode)
   else
