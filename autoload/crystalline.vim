@@ -175,6 +175,14 @@ function! crystalline#clear_statusline() abort
   augroup END
 endfunction
 
+function! crystalline#enable_bufferline() abort
+  set tabline=%!crystalline#bufferline()
+endfunction
+
+function! crystalline#clear_tabline() abort
+  set tabline=
+endfunction
+
 function! crystalline#color() abort
   let l:theme = get(g:, 'crystalline_theme_fn', 'crystalline#theme#powerline#set_theme')
   call function(l:theme)()

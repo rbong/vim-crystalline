@@ -1,5 +1,5 @@
 if get(g:, 'crystalline_enable_bufferline', 0) == 1
-  set tabline=%!crystalline#bufferline()
+  call crystalline#enable_bufferline()
 endif
 
 if exists('g:crystalline_set_statusline_fn')
