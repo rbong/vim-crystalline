@@ -132,7 +132,7 @@ function! crystalline#tabline_buffers(maxtabs) abort
   for l:i in l:range
     if bufexists(l:i + 1) && buflisted(l:i + 1)
       let l:label = '%{crystalline#buflabel(' . (l:i + 1) . ')}'
-      let l:tabs += [(l:i + 1 == l:curbuf ? '%#TabLineSel#' . l:label . '%#TabLine#' : l:label)]
+      let l:tabs += [(l:i + 1 == l:curbuf ? '%#CrystallineTabSel#' . l:label . '%#CrystallineTab#' : l:label)]
       let g:crystalline_bufferline_ntabs += 1
       let g:crystalline_bufferline_tabnum[l:i + 1] = g:crystalline_bufferline_ntabs
     endif
@@ -155,7 +155,7 @@ function! crystalline#tabline_tabs(maxtabs) abort
   let g:crystalline_visible_tabs = min([l:ntabs, a:maxtabs])
   for l:i in l:range
     let l:label = '%{crystalline#tablabel(' . (l:i + 1) . ')}'
-    let l:tabs .= (l:i + 1 == l:curtab ? '%#TabLineSel#' . l:label . '%#TabLine#' : l:label)
+    let l:tabs .= (l:i + 1 == l:curtab ? '%#CrystallineTabSel#' . l:label . '%#CrystallineTab#' : l:label)
   endfor
   return l:tabs
 endfunction
@@ -167,12 +167,12 @@ endfunction
 function! crystalline#bufferline() abort
   let l:maxtabs = crystalline#calculate_max_tabs(2, 1, 2, 1)
   if tabpagenr('$') == 1
-    let l:tabline = '%#CrystallineTabType# BUFFERS %#TabLine#' . crystalline#tabline_buffers(l:maxtabs)
+    let l:tabline = '%#CrystallineTabType# BUFFERS %#CrystallineTab#' . crystalline#tabline_buffers(l:maxtabs)
   else
     unlet! g:crystalline_bufferline_tabnum g:crystalline_bufferline_ntabs
-    let l:tabline = '%#CrystallineTabType# TABS %#TabLine#' . crystalline#tabline_tabs(l:maxtabs)
+    let l:tabline = '%#CrystallineTabType# TABS %#CrystallineTab#' . crystalline#tabline_tabs(l:maxtabs)
   endif
-  return l:tabline . '%#TabLineFill#'
+  return l:tabline . '%#CrystallineTabFill#'
 endfunction
 
 " }}}
