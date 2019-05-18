@@ -45,6 +45,10 @@ function! crystalline#mode() abort
   endif
 endfunction
 
+function! crystalline#auto_statusline(current) abort
+  return function(g:crystalline_auto_statusline_fn)(a:current)
+endfunction
+
 " }}}
 
 " Tab Line Utils {{{
@@ -158,13 +162,14 @@ endfunction
 " Setting Management {{{
 
 function! crystalline#set_statusline(fn) abort
-  exec 'set statusline=%!' . a:fn . '(1)'
+  let g:crystalline_auto_statusline_fn = a:fn
+  set statusline=%!crystalline#auto_statusline(1)
   augroup CrystallineAutoStatusline
     au!
-    exec 'au BufWinEnter,WinEnter * setlocal statusline=%!' . a:fn . '(1)'
-    exec 'au WinLeave * setlocal statusline=%!' . a:fn . '(0)'
-    exec 'au CmdlineLeave : setlocal statusline=%!' . a:fn . '(1)'
-    exec 'au CmdlineEnter : setlocal statusline=%!' . a:fn . '(0)'
+    au BufWinEnter,WinEnter * setlocal statusline=%!crystalline#auto_statusline(1)
+    au WinLeave * setlocal statusline=%!crystalline#auto_statusline(0)
+    au CmdlineLeave : setlocal statusline=%!crystalline#auto_statusline(1)
+    au CmdlineEnter : setlocal statusline=%!crystalline#auto_statusline(0)
   augroup END
 endfunction
 
