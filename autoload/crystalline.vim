@@ -54,22 +54,32 @@ function! crystalline#calculate_max_tabs(leftitems, tabitems, tabselitems, right
   return (80 - a:leftitems - a:rightitems - a:tabselitems) / a:tabitems
 endfunction
 
-function! crystalline#buftablabel(buf, padding, tab, curtab, ntabs) abort
+function! crystalline#tablabel_width(pad, tab, curtab, ntabs, minwidth, tabpad) abort
   let l:vtabs = get(g:, 'crystalline_visible_tabs', a:ntabs)
-  let l:mod = getbufvar(a:buf, '&mod')
-  let l:maxlen = (&columns - a:padding) / l:vtabs
+  let l:width = (&columns - a:pad) / l:vtabs
 
-  " 14 is the minimum length of the label (no name buffer with padding)
-  if l:maxlen < 14
-    let l:maxlen = 14
-    " at minimum 2 tabs will be shown on either side of the current tab
-    if !crystalline#in_clamped_range(a:tab - 1, a:curtab - 1, (&columns - a:padding - 14) / 14, l:vtabs)
-      return ''
+  if l:width < a:minwidth
+    let l:width = a:minwidth
+    " show only tabs on either side of the actie tab that will be visible at the minimum width
+    let l:extratabs = (&columns - a:pad - a:minwidth) / a:minwidth
+    if !crystalline#in_clamped_range(a:tab - 1, a:curtab - 1, l:extratabs, l:vtabs)
+      return 0
     endif
   endif
-  let l:maxlen -= l:mod ? 4 : 2
 
-  let l:name = pathshorten(bufname(a:buf))[-l:maxlen : ]
+  return l:width - a:tabpad
+endfunction
+
+function! crystalline#buftablabel(buf, pad, tab, curtab, ntabs) abort
+  let l:mod = getbufvar(a:buf, '&mod')
+
+  " 14 is the minimum length of the label (no name buffer with pad)
+  let l:width = crystalline#tablabel_width(a:pad, a:tab, a:curtab, a:ntabs, 14, l:mod ? 4 : 2)
+  if l:width == 0
+    return ''
+  endif
+
+  let l:name = pathshorten(bufname(a:buf))[-l:width : ]
   if l:name ==# ''
     let l:name = '[No Name]'
   endif
@@ -135,10 +145,10 @@ function! crystalline#bufferline() abort
   call crystalline#color()
   let l:maxtabs = crystalline#calculate_max_tabs(2, 1, 2, 1)
   if tabpagenr('$') == 1
-    let l:tabline = '%#BufferLineType# BUFFERS %#TabLine#' . crystalline#tabline_buffers(l:maxtabs)
+    let l:tabline = '%#CrystallineTabType# BUFFERS %#TabLine#' . crystalline#tabline_buffers(l:maxtabs)
   else
     unlet! g:crystalline_bufferline_tabnum g:crystalline_bufferline_ntabs
-    let l:tabline = '%#BufferLineType# TABS %#TabLine#' . crystalline#tabline_tabs(l:maxtabs)
+    let l:tabline = '%#CrystallineTabType# TABS %#TabLine#' . crystalline#tabline_tabs(l:maxtabs)
   endif
   return l:tabline . '%#TabLineFill#'
 endfunction
