@@ -160,6 +160,10 @@ function! crystalline#tabline_tabs(maxtabs) abort
   return l:tabs
 endfunction
 
+function! crystalline#get_tabline() abort
+  return function(g:crystalline_tabline_fn)()
+endfunction
+
 " }}}
 
 " Full Tab Lines {{{
@@ -198,8 +202,9 @@ function! crystalline#clear_statusline() abort
   augroup END
 endfunction
 
-function! crystalline#enable_bufferline() abort
-  set tabline=%!crystalline#bufferline()
+function! crystalline#set_tabline(fn) abort
+  let g:crystalline_tabline_fn = a:fn
+  set tabline=%!crystalline#get_tabline()
 endfunction
 
 function! crystalline#clear_tabline() abort

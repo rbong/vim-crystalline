@@ -1,7 +1,7 @@
 " Load User Settings {{{
 
-if get(g:, 'crystalline_enable_bufferline', 0) == 1
-  call crystalline#enable_bufferline()
+if exists('g:crystalline_tabline_fn')
+  call crystalline#set_tabline(g:crystalline_tabline_fn)
 endif
 
 if exists('g:crystalline_statusline_fn')
