@@ -18,6 +18,11 @@ endfunction
 
 " Tab Line Utils {{{
 
+function! crystalline#calculate_max_tabs(leftitems, tabitems, tabselitems, rightitems)
+  " at max 80 items are allowed
+  return (80 - a:leftitems - a:rightitems - a:tabselitems) / a:tabitems
+endfunction
+
 function! crystalline#buftablabel(buf, padding, tab, curtab, ntabs) abort
   let l:mod = getbufvar(a:buf, '&mod')
   let l:tabpadding = l:mod ? 4 : 2
@@ -89,11 +94,7 @@ endfunction
 
 function! crystalline#bufferline() abort
   call crystalline#color()
-  " at maximum 80 items are allowed
-  " 2 items set the buffer line type colors
-  " 1 item sets the tab line fill colors
-  " 2 items set the tab line selected colors
-  let l:maxtabs = 75
+  let l:maxtabs = crystalline#calculate_max_tabs(2, 1, 2, 1)
   if tabpagenr('$') == 1
     let l:tabline = '%#BufferLineType# BUFFERS %#TabLine#' . crystalline#tabline_buffers(l:maxtabs)
   else
