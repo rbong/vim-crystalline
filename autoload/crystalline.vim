@@ -73,8 +73,8 @@ endfunction
 function! crystalline#buftablabel(buf, pad, tab, curtab, ntabs) abort
   let l:mod = getbufvar(a:buf, '&mod')
 
-  " 14 is the minimum length of the label (no name buffer with pad)
-  let l:width = crystalline#tablabel_width(a:pad, a:tab, a:curtab, a:ntabs, 14, l:mod ? 4 : 2)
+  " 13 is the minimum length of the label (no name buffer with pad)
+  let l:width = crystalline#tablabel_width(a:pad, a:tab, a:curtab, a:ntabs, 13, l:mod ? 4 : 2)
   if l:width == 0
     return ''
   endif
