@@ -31,18 +31,28 @@ endfunction
 
 " Status Line Utils {{{
 
-function! crystalline#mode() abort
-  let l:mode = mode(1)
-  if l:mode =~# '[nc]'
-    hi! link CrystallineMode CrystallineNormalMode
-    return '%#CrystallineMode# NORMAL %#StatusLine#'
-  elseif l:mode =~# '[iRt]'
-    hi! link CrystallineMode CrystallineInsertMode
-    return '%#CrystallineMode# INSERT %#StatusLine#'
-  elseif l:mode =~# '[vVsS]'
-    hi! link CrystallineMode CrystallineVisualMode
-    return '%#CrystallineMode# VISUAL %#StatusLine#'
+function! crystalline#mode_type() abort
+  if mode(1) =~# '[nc]'
+    return 'n'
+  elseif mode(1) =~# '[iRt]'
+    return 'i'
+  elseif mode(1) =~# '[vVsS]'
+    return 'v'
   endif
+  return ''
+endfunction
+
+function! crystalline#mode_color() abort
+  return g:crystalline_mode_colors[crystalline#mode_type()]
+endfunction
+
+function! crystalline#mode_label() abort
+  return g:crystalline_mode_labels[crystalline#mode_type()]
+endfunction
+
+function! crystalline#mode() abort
+  let l:mode = crystalline#mode_type()
+  return g:crystalline_mode_colors[l:mode] . g:crystalline_mode_labels[l:mode]
 endfunction
 
 function! crystalline#auto_statusline(current) abort
@@ -146,7 +156,6 @@ endfunction
 " Full Tab Lines {{{
 
 function! crystalline#bufferline() abort
-  call crystalline#color()
   let l:maxtabs = crystalline#calculate_max_tabs(2, 1, 2, 1)
   if tabpagenr('$') == 1
     let l:tabline = '%#CrystallineTabType# BUFFERS %#TabLine#' . crystalline#tabline_buffers(l:maxtabs)
@@ -188,17 +197,8 @@ function! crystalline#clear_tabline() abort
   set tabline=
 endfunction
 
-function! crystalline#color() abort
-  let l:theme = get(g:, 'crystalline_theme_fn', 'crystalline#theme#default#set_theme')
-  call function(l:theme)()
-endfunction
-
 function! crystalline#set_theme(theme) abort
-  let g:crystalline_theme_fn = 'crystalline#theme#' . a:theme . '#set_theme'
-endfunction
-
-function! crystalline#clear_theme() abort
-  unlet! g:crystalline_theme_fn
+  call function('crystalline#theme#' . a:theme . '#set_theme')()
 endfunction
 
 " }}}
