@@ -4,8 +4,8 @@ if get(g:, 'crystalline_enable_bufferline', 0) == 1
   call crystalline#enable_bufferline()
 endif
 
-if exists('g:crystalline_set_statusline_fn')
-  call crystalline#set_statusline(g:crystalline_set_statusline_fn)
+if exists('g:crystalline_statusline_fn')
+  call crystalline#set_statusline(g:crystalline_statusline_fn)
 endif
 
 " }}}

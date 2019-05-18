@@ -59,8 +59,8 @@ function! crystalline#mode() abort
   return g:crystalline_mode_colors[l:mode] . g:crystalline_mode_labels[l:mode]
 endfunction
 
-function! crystalline#auto_statusline(current) abort
-  return function(g:crystalline_auto_statusline_fn)(a:current)
+function! crystalline#get_statusline(current) abort
+  return function(g:crystalline_statusline_fn)(a:current)
 endfunction
 
 " }}}
@@ -180,14 +180,14 @@ endfunction
 " Setting Management {{{
 
 function! crystalline#set_statusline(fn) abort
-  let g:crystalline_auto_statusline_fn = a:fn
-  set statusline=%!crystalline#auto_statusline(1)
+  let g:crystalline_statusline_fn = a:fn
+  set statusline=%!crystalline#get_statusline(1)
   augroup CrystallineAutoStatusline
     au!
-    au BufWinEnter,WinEnter * setlocal statusline=%!crystalline#auto_statusline(1)
-    au WinLeave * setlocal statusline=%!crystalline#auto_statusline(0)
-    au CmdlineLeave : setlocal statusline=%!crystalline#auto_statusline(1)
-    au CmdlineEnter : setlocal statusline=%!crystalline#auto_statusline(0)
+    au BufWinEnter,WinEnter * setlocal statusline=%!crystalline#get_statusline(1)
+    au WinLeave * setlocal statusline=%!crystalline#get_statusline(0)
+    au CmdlineLeave : setlocal statusline=%!crystalline#get_statusline(1)
+    au CmdlineEnter : setlocal statusline=%!crystalline#get_statusline(0)
   augroup END
 endfunction
 
