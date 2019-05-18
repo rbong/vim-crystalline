@@ -49,7 +49,7 @@ endfunction
 
 " Tab Line Utils {{{
 
-function! crystalline#calculate_max_tabs(leftitems, tabitems, tabselitems, rightitems)
+function! crystalline#calculate_max_tabs(leftitems, tabitems, tabselitems, rightitems) abort
   " at max 80 items are allowed
   return (80 - a:leftitems - a:rightitems - a:tabselitems) / a:tabitems
 endfunction
@@ -58,6 +58,7 @@ function! crystalline#buftablabel(buf, padding, tab, curtab, ntabs) abort
   let l:vtabs = get(g:, 'crystalline_visible_tabs', a:ntabs)
   let l:mod = getbufvar(a:buf, '&mod')
   let l:maxlen = (&columns - a:padding) / l:vtabs
+
   " 14 is the minimum length of the label (no name buffer with padding)
   if l:maxlen < 14
     let l:maxlen = 14
@@ -67,10 +68,12 @@ function! crystalline#buftablabel(buf, padding, tab, curtab, ntabs) abort
     endif
   endif
   let l:maxlen -= l:mod ? 4 : 2
+
   let l:name = pathshorten(bufname(a:buf))[-l:maxlen : ]
   if l:name ==# ''
     let l:name = '[No Name]'
   endif
+
   return (l:mod ? ' + ' : ' ') . l:name . ' '
 endfunction
 
