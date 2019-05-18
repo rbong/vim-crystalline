@@ -59,7 +59,16 @@ function! crystalline#mode() abort
   return g:crystalline_mode_colors[l:mode] . g:crystalline_mode_labels[l:mode]
 endfunction
 
+function! crystalline#trigger_mode_update() abort
+  let l:mode = crystalline#mode_type()
+  if get(g:, 'crystalline_mode', '') != l:mode
+    let g:crystalline_mode = l:mode
+    silent doautocmd User CrystallineModeUpdate
+  endif
+endfunction
+
 function! crystalline#get_statusline(current) abort
+  call crystalline#trigger_mode_update()
   return function(g:crystalline_statusline_fn)(a:current)
 endfunction
 
@@ -122,17 +131,18 @@ function! crystalline#buflabel(i) abort
   return crystalline#buftablabel(['[No Name]', '+', ' ', ' '], a:i, 9, l:tab, l:curtab, l:ntabs)
 endfunction
 
-function! crystalline#tabline_buffers(maxtabs) abort
+function! crystalline#buffers(maxtabs, show_mode) abort
   let g:crystalline_bufferline_tabnum = {}
   let g:crystalline_bufferline_ntabs = 0
 
+  let l:selhi = a:show_mode ? crystalline#mode_color() : '%#CrystallineTabSel'
   let l:curbuf = bufnr('%')
   let l:range = range(bufnr('$'))
   let l:tabs = []
   for l:i in l:range
     if bufexists(l:i + 1) && buflisted(l:i + 1)
       let l:label = '%{crystalline#buflabel(' . (l:i + 1) . ')}'
-      let l:tabs += [(l:i + 1 == l:curbuf ? '%#CrystallineTabSel#' . l:label . '%#CrystallineTab#' : l:label)]
+      let l:tabs += [(l:i + 1 == l:curbuf ? l:selhi . l:label . '%#CrystallineTab#' : l:label)]
       let g:crystalline_bufferline_ntabs += 1
       let g:crystalline_bufferline_tabnum[l:i + 1] = g:crystalline_bufferline_ntabs
     endif
@@ -147,36 +157,34 @@ function! crystalline#tabline_buffers(maxtabs) abort
   return join(l:tabs, '')
 endfunction
 
-function! crystalline#tabline_tabs(maxtabs) abort
+function! crystalline#tabs(maxtabs, show_mode) abort
+  let l:maxtabs = a:maxtabs <= 0 ? crystalline#calculate_max_tabs(0, 1, 2, 1) : a:maxtabs
+  let l:selhi = a:show_mode ? crystalline#mode_color() : '%#CrystallineTabSel'
   let l:tabs = ''
   let l:ntabs = tabpagenr('$')
   let l:curtab = tabpagenr()
-  let l:range = l:ntabs < a:maxtabs ? range(l:ntabs) :  crystalline#clamped_range(l:curtab - 1, a:maxtabs - 1, l:ntabs)
-  let g:crystalline_visible_tabs = min([l:ntabs, a:maxtabs])
+  let l:range = l:ntabs < l:maxtabs ? range(l:ntabs) :  crystalline#clamped_range(l:curtab - 1, l:maxtabs - 1, l:ntabs)
+  let g:crystalline_visible_tabs = min([l:ntabs, l:maxtabs])
   for l:i in l:range
     let l:label = '%{crystalline#tablabel(' . (l:i + 1) . ')}'
-    let l:tabs .= (l:i + 1 == l:curtab ? '%#CrystallineTabSel#' . l:label . '%#CrystallineTab#' : l:label)
+    let l:tabs .= (l:i + 1 == l:curtab ? l:selhi . l:label . '%#CrystallineTab#' : l:label)
   endfor
   return l:tabs
 endfunction
 
-function! crystalline#get_tabline() abort
-  return function(g:crystalline_tabline_fn)()
-endfunction
-
-" }}}
-
-" Full Tab Lines {{{
-
-function! crystalline#bufferline() abort
-  let l:maxtabs = crystalline#calculate_max_tabs(2, 1, 2, 1)
+function! crystalline#bufferline(maxtabs, show_mode) abort
+  let l:maxtabs = a:maxtabs <= 0 ? crystalline#calculate_max_tabs(0, 1, 2, 1) : a:maxtabs
   if tabpagenr('$') == 1
-    let l:tabline = '%#CrystallineTabType# BUFFERS %#CrystallineTab#' . crystalline#tabline_buffers(l:maxtabs)
+    let l:tabline = '%#CrystallineTabType# BUFFERS %#CrystallineTab#' . crystalline#buffers(l:maxtabs, a:show_mode)
   else
     unlet! g:crystalline_bufferline_tabnum g:crystalline_bufferline_ntabs
-    let l:tabline = '%#CrystallineTabType# TABS %#CrystallineTab#' . crystalline#tabline_tabs(l:maxtabs)
+    let l:tabline = '%#CrystallineTabType# TABS %#CrystallineTab#' . crystalline#tabs(l:maxtabs, a:show_mode)
   endif
   return l:tabline . '%#CrystallineTabFill#'
+endfunction
+
+function! crystalline#get_tabline() abort
+  return function(g:crystalline_tabline_fn)()
 endfunction
 
 " }}}
@@ -205,13 +213,22 @@ endfunction
 function! crystalline#set_tabline(fn) abort
   let g:crystalline_tabline_fn = a:fn
   set tabline=%!crystalline#get_tabline()
+  augroup CrystallineAutoTabline
+    au!
+    au User CrystallineModeUpdate set tabline=%!crystalline#get_tabline()
+    au InsertLeave * set tabline=%!crystalline#get_tabline()
+  augroup END
 endfunction
 
 function! crystalline#clear_tabline() abort
   set tabline=
+  augroup CrystallineAutoTabline
+    au!
+  augroup END
 endfunction
 
 function! crystalline#set_theme(theme) abort
+  let g:crystalline_mode = ''
   call function('crystalline#theme#' . a:theme . '#set_theme')()
 endfunction
 
