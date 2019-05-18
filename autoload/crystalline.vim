@@ -23,8 +23,12 @@ endfunction
 
 function! crystalline#clamp_list(list, curitem, items, maxitems) abort
   let l:bounds = crystalline#clamped_range_bounds(a:curitem, a:items, a:maxitems)
-  let g:bounds = l:bounds
   return a:list[l:bounds[0] : l:bounds[1]]
+endfunction
+
+function! crystalline#pad_label(label, minwidth) abort
+  let l:pad = a:minwidth - len(a:label)
+  return l:pad <= 0 ? a:label : repeat(' ', l:pad / 2) . a:label . repeat(' ', l:pad / 2 + l:pad % 2)
 endfunction
 
 " }}}
@@ -68,15 +72,16 @@ function! crystalline#calculate_max_tabs(leftitems, tabitems, tabselitems, right
   return (80 - a:leftitems - a:rightitems - a:tabselitems) / a:tabitems
 endfunction
 
-function! crystalline#tablabel_width(pad, tab, curtab, ntabs, minwidth, tabpad) abort
+function! crystalline#tablabel_width(pad, tabpad, tab, curtab, ntabs, minwidth) abort
   let l:vtabs = get(g:, 'crystalline_visible_tabs', a:ntabs)
   let l:width = (&columns - a:pad) / l:vtabs
 
   if l:width < a:minwidth
     let l:width = a:minwidth
-    " show only tabs on either side of the actie tab that will be visible at the minimum width
+    " show only tabs on either side of the active tab that will be visible at the minimum width
     let l:extratabs = (&columns - a:pad - a:minwidth) / a:minwidth
-    if !crystalline#in_clamped_range(a:tab - 1, a:curtab - 1, l:extratabs, l:vtabs)
+    if !crystalline#in_clamped_range(a:tab - 1, a:curtab - 1, l:extratabs, a:ntabs)
+      let g:in_range = 0
       return 0
     endif
   endif
@@ -84,33 +89,37 @@ function! crystalline#tablabel_width(pad, tab, curtab, ntabs, minwidth, tabpad) 
   return l:width - a:tabpad
 endfunction
 
-function! crystalline#buftablabel(buf, pad, tab, curtab, ntabs) abort
-  let l:mod = getbufvar(a:buf, '&mod')
+function! crystalline#buftablabel(special, buf, pad, tab, curtab, ntabs) abort
+  let [l:empty, l:mod, l:nomod, l:right] = a:special
 
-  " 13 is the minimum length of the label (no name buffer with pad)
-  let l:width = crystalline#tablabel_width(a:pad, a:tab, a:curtab, a:ntabs, 13, l:mod ? 4 : 2)
+  let l:left = getbufvar(a:buf, '&mod') ? l:mod : l:nomod
+  let l:minwidth = len(l:empty) + max([len(l:mod), len(l:nomod)]) + len(l:right)
+
+  let l:width = crystalline#tablabel_width(a:pad, len(l:left) + len(l:right), a:tab, a:curtab, a:ntabs, l:minwidth)
   if l:width == 0
     return ''
   endif
 
   let l:name = pathshorten(bufname(a:buf))[-l:width : ]
   if l:name ==# ''
-    let l:name = '[No Name]'
+    let l:name = l:empty
   endif
 
-  return (l:mod ? ' + ' : ' ') . l:name . ' '
+  " for some reason leftmost spacing is not shown except on the first tab
+  let l:extrapad = a:tab == 1 ? '' : ' '
+  return l:extrapad . crystalline#pad_label(l:left . l:name . l:right, l:minwidth)
 endfunction
 
 function! crystalline#tablabel(i) abort
   let l:buf = tabpagebuflist(a:i)[tabpagewinnr(a:i) - 1]
-  return crystalline#buftablabel(l:buf, 6, a:i, tabpagenr(), tabpagenr('$'))
+  return crystalline#buftablabel(['[No Name]', '+', ' ', ' '], l:buf, 6, a:i, tabpagenr(), tabpagenr('$'))
 endfunction
 
 function! crystalline#buflabel(i) abort
   let l:tab = get(g:crystalline_bufferline_tabnum, a:i, -1)
   let l:curtab = get(g:crystalline_bufferline_tabnum, bufnr('%'), -2)
   let l:ntabs = g:crystalline_bufferline_ntabs
-  return crystalline#buftablabel(a:i, 9, l:tab, l:curtab, l:ntabs)
+  return crystalline#buftablabel(['[No Name]', '+', ' ', ' '], a:i, 9, l:tab, l:curtab, l:ntabs)
 endfunction
 
 function! crystalline#tabline_buffers(maxtabs) abort
@@ -131,7 +140,7 @@ function! crystalline#tabline_buffers(maxtabs) abort
 
   if g:crystalline_bufferline_ntabs > a:maxtabs
     let l:curtab = g:crystalline_bufferline_tabnum[l:curbuf]
-    let l:tabs = crystalline#clamp_list(l:tabs, l:curtab - 1, 4, g:crystalline_bufferline_ntabs)
+    let l:tabs = crystalline#clamp_list(l:tabs, l:curtab - 1, a:maxtabs - 1, g:crystalline_bufferline_ntabs)
   endif
   let g:crystalline_visible_tabs = min([g:crystalline_bufferline_ntabs, a:maxtabs])
 
@@ -142,7 +151,7 @@ function! crystalline#tabline_tabs(maxtabs) abort
   let l:tabs = ''
   let l:ntabs = tabpagenr('$')
   let l:curtab = tabpagenr()
-  let l:range = l:ntabs < a:maxtabs ? range(l:ntabs) :  crystalline#clamped_range(l:curtab - 1, 4, l:ntabs)
+  let l:range = l:ntabs < a:maxtabs ? range(l:ntabs) :  crystalline#clamped_range(l:curtab - 1, a:maxtabs - 1, l:ntabs)
   let g:crystalline_visible_tabs = min([l:ntabs, a:maxtabs])
   for l:i in l:range
     let l:label = '%{crystalline#tablabel(' . (l:i + 1) . ')}'
