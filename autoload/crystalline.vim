@@ -139,7 +139,7 @@ function! crystalline#buffers(maxtabs, show_mode) abort
   let g:crystalline_bufferline_tabnum = {}
   let g:crystalline_bufferline_ntabs = 0
 
-  let l:selhi = a:show_mode ? crystalline#mode_color() : '%#CrystallineTabSel'
+  let l:selhi = a:show_mode ? crystalline#mode_color() : '%#CrystallineTabSel#'
   let l:curbuf = bufnr('%')
   let l:range = range(bufnr('$'))
   let l:tabs = []
@@ -163,7 +163,7 @@ endfunction
 
 function! crystalline#tabs(maxtabs, show_mode) abort
   let l:maxtabs = a:maxtabs <= 0 ? crystalline#calculate_max_tabs(0, 1, 2, 1) : a:maxtabs
-  let l:selhi = a:show_mode ? crystalline#mode_color() : '%#CrystallineTabSel'
+  let l:selhi = a:show_mode ? crystalline#mode_color() : '%#CrystallineTabSel#'
   let l:tabs = ''
   let l:ntabs = tabpagenr('$')
   let l:curtab = tabpagenr()
