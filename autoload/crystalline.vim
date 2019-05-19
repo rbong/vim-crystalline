@@ -38,7 +38,7 @@ endfunction
 function! crystalline#mode_type() abort
   if mode(1) =~# '[nc]'
     return 'n'
-  elseif mode(1) =~# '[iRt]'
+  elseif mode(1) =~# '[it]'
     return 'i'
   elseif mode(1) =~# '[vVsS]'
     return 'v'
@@ -121,14 +121,16 @@ endfunction
 
 function! crystalline#tablabel(i) abort
   let l:buf = tabpagebuflist(a:i)[tabpagewinnr(a:i) - 1]
-  return crystalline#buftablabel(['[No Name]', '+', ' ', ' '], l:buf, 6, a:i, tabpagenr(), tabpagenr('$'))
+  let l:pad = get(g:, 'crystalline_tab_used_space', 0)
+  return crystalline#buftablabel(['[No Name]', '+', ' ', ' '], l:buf, l:pad, a:i, tabpagenr(), tabpagenr('$'))
 endfunction
 
 function! crystalline#buflabel(i) abort
   let l:tab = get(g:crystalline_bufferline_tabnum, a:i, -1)
   let l:curtab = get(g:crystalline_bufferline_tabnum, bufnr('%'), -2)
   let l:ntabs = g:crystalline_bufferline_ntabs
-  return crystalline#buftablabel(['[No Name]', '+', ' ', ' '], a:i, 9, l:tab, l:curtab, l:ntabs)
+  let l:pad = get(g:, 'crystalline_buf_used_space', 0)
+  return crystalline#buftablabel(['[No Name]', '+', ' ', ' '], a:i, l:pad, l:tab, l:curtab, l:ntabs)
 endfunction
 
 function! crystalline#buffers(maxtabs, show_mode) abort
@@ -172,8 +174,10 @@ function! crystalline#tabs(maxtabs, show_mode) abort
   return l:tabs
 endfunction
 
-function! crystalline#bufferline(extra_items, show_mode) abort
+function! crystalline#bufferline(extra_items, extra_width, show_mode) abort
   let l:maxtabs = crystalline#calculate_max_tabs(0, 1, 2, 1) + a:extra_items
+  let g:crystalline_tab_used_space = a:extra_width + 6
+  let g:crystalline_buf_used_space = a:extra_width + 9
   if tabpagenr('$') == 1
     let l:tabline = '%#CrystallineTabType# BUFFERS %#CrystallineTab#' . crystalline#buffers(l:maxtabs, a:show_mode)
   else
