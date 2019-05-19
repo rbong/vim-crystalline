@@ -135,7 +135,8 @@ function! crystalline#buflabel(i) abort
   return crystalline#buftablabel(['[No Name]', '+', ' ', ' '], a:i, l:pad, l:tab, l:curtab, l:ntabs)
 endfunction
 
-function! crystalline#buffers(maxtabs, show_mode) abort
+function! crystalline#buffers(items, show_mode) abort
+  let l:maxtabs = crystalline#calculate_max_tabs(a:items, 1, 2, 1)
   let g:crystalline_bufferline_tabnum = {}
   let g:crystalline_bufferline_ntabs = 0
 
@@ -152,17 +153,17 @@ function! crystalline#buffers(maxtabs, show_mode) abort
     endif
   endfor
 
-  if g:crystalline_bufferline_ntabs > a:maxtabs
+  if g:crystalline_bufferline_ntabs > l:maxtabs
     let l:curtab = g:crystalline_bufferline_tabnum[l:curbuf]
-    let l:tabs = crystalline#clamp_list(l:tabs, l:curtab - 1, a:maxtabs - 1, g:crystalline_bufferline_ntabs)
+    let l:tabs = crystalline#clamp_list(l:tabs, l:curtab - 1, l:maxtabs - 1, g:crystalline_bufferline_ntabs)
   endif
-  let g:crystalline_visible_tabs = min([g:crystalline_bufferline_ntabs, a:maxtabs])
+  let g:crystalline_visible_tabs = min([g:crystalline_bufferline_ntabs, l:maxtabs])
 
   return join(l:tabs, '')
 endfunction
 
-function! crystalline#tabs(maxtabs, show_mode) abort
-  let l:maxtabs = a:maxtabs <= 0 ? crystalline#calculate_max_tabs(0, 1, 2, 1) : a:maxtabs
+function! crystalline#tabs(items, show_mode) abort
+  let l:maxtabs = crystalline#calculate_max_tabs(a:items, 1, 2, 1)
   let l:selhi = a:show_mode ? crystalline#mode_color() : '%#CrystallineTabSel#'
   let l:tabs = ''
   let l:ntabs = tabpagenr('$')
@@ -176,15 +177,15 @@ function! crystalline#tabs(maxtabs, show_mode) abort
   return l:tabs
 endfunction
 
-function! crystalline#bufferline(extra_items, extra_width, show_mode) abort
-  let l:maxtabs = crystalline#calculate_max_tabs(0, 1, 2, 1) + a:extra_items
-  let g:crystalline_tab_used_space = a:extra_width + 6
-  let g:crystalline_buf_used_space = a:extra_width + 9
+function! crystalline#bufferline(items, width, show_mode) abort
+  let l:items = a:items + 2
+  let g:crystalline_tab_used_space = a:width + 6
+  let g:crystalline_buf_used_space = a:width + 9
   if tabpagenr('$') == 1
-    let l:tabline = '%#CrystallineTabType# BUFFERS %#CrystallineTab#' . crystalline#buffers(l:maxtabs, a:show_mode)
+    let l:tabline = '%#CrystallineTabType# BUFFERS %#CrystallineTab#' . crystalline#buffers(l:items, a:show_mode)
   else
     unlet! g:crystalline_bufferline_tabnum g:crystalline_bufferline_ntabs
-    let l:tabline = '%#CrystallineTabType# TABS %#CrystallineTab#' . crystalline#tabs(l:maxtabs, a:show_mode)
+    let l:tabline = '%#CrystallineTabType# TABS %#CrystallineTab#' . crystalline#tabs(l:items, a:show_mode)
   endif
   return l:tabline . '%#CrystallineTabFill#'
 endfunction
