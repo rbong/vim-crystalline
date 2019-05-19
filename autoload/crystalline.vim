@@ -42,6 +42,8 @@ function! crystalline#mode_type() abort
     return 'i'
   elseif mode(1) =~# '[vVsS]'
     return 'v'
+  elseif mode(1) ==# 'R'
+    return 'R'
   endif
   return ''
 endfunction

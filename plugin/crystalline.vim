@@ -20,6 +20,7 @@ let g:crystalline_mode_colors = {
       \ 'n': '%#CrystallineNormalMode#',
       \ 'i': '%#CrystallineInsertMode#',
       \ 'v': '%#CrystallineVisualMode#',
+      \ 'R': '%#CrystallineReplaceMode#',
       \ '': '',
       \ }
 
@@ -27,6 +28,7 @@ let g:crystalline_mode_labels = {
       \ 'n': ' NORMAL ',
       \ 'i': ' INSERT ',
       \ 'v': ' VISUAL ',
+      \ 'R': ' REPLACE ',
       \ '': '',
       \ }
 
