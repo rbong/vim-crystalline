@@ -1,0 +1,188 @@
+*crystalline.txt* Functions to help you make your own statusline/tabline
+
+Author:  Roger Bongers <https://github.com/rbong>
+License: Same terms as Vim itself (see |license|)
+
+INTRODUCTION                                    *crystalline*
+
+vim-crystalline has functions to help you make your own statusline/tabline.
+It allows you to use the same syntax for creating your statusline/tabline as
+Vim itself. See |'statusline'| for basic information on setting your
+statusline/tabline.
+
+SETTINGS                                        *crystalline-settings*
+
+These global settings can be set before vim-crystalline is loaded in order to
+automatically set up the statusline and tabline.
+
+g:crystalline_statusline_fn                     *g:crystalline_statusline_fn*
+
+The output of the given function will be used as the statusline. See
+'statusline' for more information on statusline syntax.
+
+The function should accept one argument, which indicates if the statusline is
+being set for the currently active window using |:setlocal|. You can use this
+parameter to hide or change elements based on inactivity.
+
+For convience, the statusline will be automatically updated when the mode
+changes or the active window changes. If you do not need mode or active window
+information in your statusline, you can use "set statusline=%!MyStatusLine()".
+
+Since Vim does not provide an |autocommand| for mode changes but it does
+update the statusline, setting the statusline via this method also triggers
+the tabline to update on mode changes.
+
+g:crystalline_tabline_fn                        *g:crystalline_tabline_fn*
+
+The output of the given function will be used as the tabline. See 'statusline'
+for more information on statusline syntax.
+
+For convience, the tabline will be automatically updated when the mode
+changes. If you do not need mode information or colors in your tabline, you
+can use "set tabline=%!MyTabLine()".
+
+g:crystalline_theme                             *g:crystalline_theme*
+
+Automatically set the given theme.
+
+FUNCTIONS                                       *crystalline-functions*
+
+crystalline#mode()                              *crystalline#mode()*
+
+Return a statusline highlight group item and a label for the current mode. Can
+be used as a mode section on the statusline or tabline.
+
+See |crystalline-highlight-groups| for the list of mode highlight groups.
+
+crystalline#mode_color()                        *crystalline#mode_color()*
+
+Return a statusline highlight group item for the current mode. Can be used to
+change the color of different sections of the statusline or tabline based on
+the current mode.
+
+See |crystalline-highlight-groups| for the list of mode highlight groups.
+
+crystalline#mode_label()                        *crystalline#mode_label()*
+
+Return a label for the current mode. Can be used to display the current mode
+on the statusline or tabline.
+
+crystalline#bufferline(items, width, show_mode) *crystalline#bufferline()*
+
+Return a string of items which can be used on the statusline/tabline that
+display the current buffers if there is only one tab, or otherwise displays
+the tabs.
+
+"items" tells the function how many items are currently in use. The
+statusline/tabline can only hold 80 items.
+
+"width" tells the functions how much width is currently in use so that it can
+fit as many tabs as possible.
+
+"show_mode" indicates if the bufferline should use the currently active mode
+color for the active tab or if it should fall back to |hl-CrystallineTabSel|.
+See |crystalline-highlight-groups| for the list of mode highlight groups.
+
+HIGHLIGHT GROUPS                                *crystalline-highlight-groups*
+                                                *crystalline-themes*
+
+vim-crystalline themes define several highlight groups for use in the
+statusline/tabline.
+
+If a theme has both light and dark modes, it will look at the 'background'
+setting to determine which mode it should use.
+
+Themes are located in "autoload/crystalline/theme/theme_name.vim" files. In
+order to define a theme, create on seuch file and define a function named
+"crystalline#theme#theme_name#set_theme" which defines the given highlight
+groups.
+
+CrystallineNormalMode                           *hl-CrystallineNormalMode*
+
+The color of the mode label when normal mode is active.
+
+See |crystalline#mode()|.
+
+CrystallineInsertMode                           *hl-CrystallineInsertMode*
+
+The color of the mode label when insert mode is active.
+
+See |crystalline#mode()|.
+
+CrystallineVisualMode                           *hl-CrystallineVisualMode*
+
+The color of the mode label when visual mode is active.
+
+See |crystalline#mode()|.
+
+CrystallineReplaceMode                          *hl-CrystallineReplaceMode*
+
+The color of the mode label when replace mode is active.
+
+See |crystalline#mode()|.
+
+Crystalline                                     *hl-Crystalline*
+
+A color which can be used for the main sections of the statusline.
+
+CrystallineInactive                             *hl-CrystallineInactive*
+
+A color which can be used for inactive statuslines.
+
+CrystallineFill                                 *hl-CrystallineFill*
+
+A color which can be used for the space between the left and right side of the
+statusline.
+
+CrystallineTab                                  *hl-CrystallineTab*
+
+The color of tabs which are not currently selected on the bufferline. It can
+also be used for regular sections of the tabline.
+
+See |crystalline#bufferline()|.
+
+CrystallineTabType                              *hl-CrystallineTabType*
+
+The color of the tab type label on the bufferline
+
+See |crystalline#bufferline()|.
+
+CrystallineTabSel                               *hl-CrystallineTabSel*
+
+The color of tabs which are currently selected on the bufferline if mode
+coloring is not activated.
+
+See |crystalline#bufferline()|.
+
+CrystallineTabFill                              *hl-CrystallineTabFill*
+
+A color which can be used for the space between the left and right side of the
+tabline.
+
+EXAMPLE                                         *crystalline-example*
+
+>
+  function! StatusLine(current)
+    return (a:current ? crystalline#mode() . '%#Crystalline#' : '%#CrystallineInactive#')
+          \ . ' %f%h%w%m%r '
+          \ . (a:current ? '%#CrystallineFill# %{fugitive#head()} ' : '')
+          \ . '%=' . (a:current ? '%#Crystalline# %{&paste?"PASTE ":""}%{&spell?"SPELL ":""}' . crystalline#mode_color() : '')
+          \ . ' %{&ft}[%{&enc}][%{&ffs}] %l/%L %c%V %P '
+  endfunction
+  
+  function! TabLine()
+    let l:vimlabel = has("nvim") ?  " NVIM " : " VIM "
+    return crystalline#bufferline(2, len(l:vimlabel), 1) . '%=%#CrystallineTab# ' . l:vimlabel
+  endfunction
+  
+  let g:crystalline_statusline_fn = 'StatusLine'
+  let g:crystalline_tabline_fn = 'TabLine'
+  let g:crystalline_theme = 'default'
+  
+  set showtabline=2
+  set laststatus=2
+<
+
+See <https://github.com/rbong/vim-crystalline> for more examples.
+
+ vim:tw=78:ts=8:ft=help
