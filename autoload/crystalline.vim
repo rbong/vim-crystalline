@@ -239,7 +239,7 @@ function! crystalline#set_theme(theme) abort
   call function('crystalline#theme#' . a:theme . '#set_theme')()
   augroup CrystallineTheme
     au!
-    au ColorScheme * call function('crystalline#theme#' . a:crystalline_theme . '#set_theme')()
+    au ColorScheme * call function('crystalline#theme#' . g:crystalline_theme . '#set_theme')()
   augroup END
 endfunction
 
