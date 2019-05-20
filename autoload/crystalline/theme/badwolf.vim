@@ -1,15 +1,17 @@
 function! crystalline#theme#badwolf#set_theme() abort
-  hi CrystallineNormalMode  ctermfg=232 ctermbg=154 guifg=#141413 guibg=#aeee00
-  hi CrystallineInsertMode  ctermfg=232 ctermbg=39  guifg=#141413 guibg=#0a9dff
-  hi CrystallineVisualMode  ctermfg=232 ctermbg=214 guifg=#141413 guibg=#ffa724
-  hi CrystallineReplaceMode ctermfg=232 ctermbg=211 guifg=#141413 guibg=#ff9eb8
-  hi Crystalline            ctermfg=222 ctermbg=238 guifg=#f4cf86 guibg=#45413b
-  hi CrystallineInactive    ctermfg=235 ctermbg=238 guifg=#242321 guibg=#45413b
-  hi CrystallineFill        ctermfg=121 ctermbg=235 guifg=#8cffba guibg=#242321
-  hi CrystallineTab         ctermfg=222 ctermbg=238 guifg=#f4cf86 guibg=#45413b
-  hi CrystallineTabType     ctermfg=222 ctermbg=238 guifg=#f4cf86 guibg=#45413b
-  hi CrystallineTabSel      ctermfg=232 ctermbg=154 guifg=#141413 guibg=#aeee00
-  hi CrystallineTabFill     ctermfg=121 ctermbg=235 guifg=#8cffba guibg=#242321
+  call crystalline#generate_theme({
+        \ 'NormalMode':  [[232, 154], ['#141413', '#aeee00']],
+        \ 'InsertMode':  [[232, 39],  ['#141413', '#0a9dff']],
+        \ 'VisualMode':  [[232, 214], ['#141413', '#ffa724']],
+        \ 'ReplaceMode': [[232, 211], ['#141413', '#ff9eb8']],
+        \ '':            [[222, 238], ['#f4cf86', '#45413b']],
+        \ 'Inactive':    [[235, 238], ['#242321', '#45413b']],
+        \ 'Fill':        [[121, 235], ['#8cffba', '#242321']],
+        \ 'Tab':         [[222, 238], ['#f4cf86', '#45413b']],
+        \ 'TabType':     [[222, 238], ['#f4cf86', '#45413b']],
+        \ 'TabSel':      [[232, 154], ['#141413', '#aeee00']],
+        \ 'TabFill':     [[121, 235], ['#8cffba', '#242321']],
+        \ })
 endfunction
 
 " vim:set et sw=2 ts=2 fdm=marker:

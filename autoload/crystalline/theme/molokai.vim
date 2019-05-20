@@ -1,15 +1,17 @@
 function! crystalline#theme#molokai#set_theme() abort
-  hi CrystallineNormalMode  ctermfg=232 ctermbg=144 guifg=#080808 guibg=#e6db74
-  hi CrystallineInsertMode  ctermfg=232 ctermbg=81  guifg=#080808 guibg=#66d9ef
-  hi CrystallineVisualMode  ctermfg=232 ctermbg=118 guifg=#080808 guibg=#a6e22e
-  hi CrystallineReplaceMode ctermfg=232 ctermbg=161 guifg=#080808 guibg=#f92672
-  hi Crystalline            ctermfg=253 ctermbg=16  guifg=#f8f8f0 guibg=#232526
-  hi CrystallineInactive    ctermfg=233 ctermbg=67  guifg=#1b1d1e guibg=#465457
-  hi CrystallineFill        ctermfg=253 ctermbg=67  guifg=#f8f8f0 guibg=#465457
-  hi CrystallineTab         ctermfg=253 ctermbg=16  guifg=#f8f8f0 guibg=#232526
-  hi CrystallineTabType     ctermfg=253 ctermbg=16  guifg=#f8f8f0 guibg=#232526
-  hi CrystallineTabSel      ctermfg=232 ctermbg=144 guifg=#080808 guibg=#e6db74
-  hi CrystallineTabFill     ctermfg=253 ctermbg=67  guifg=#f8f8f0 guibg=#465457
+  call crystalline#generate_theme({
+        \ 'NormalMode':  [[232, 144], ['#080808', '#e6db74']],
+        \ 'InsertMode':  [[232, 81],  ['#080808', '#66d9ef']],
+        \ 'VisualMode':  [[232, 118], ['#080808', '#a6e22e']],
+        \ 'ReplaceMode': [[232, 161], ['#080808', '#f92672']],
+        \ '':            [[253, 16],  ['#f8f8f0', '#232526']],
+        \ 'Inactive':    [[233, 67],  ['#1b1d1e', '#465457']],
+        \ 'Fill':        [[253, 67],  ['#f8f8f0', '#465457']],
+        \ 'Tab':         [[253, 16],  ['#f8f8f0', '#232526']],
+        \ 'TabType':     [[253, 16],  ['#f8f8f0', '#232526']],
+        \ 'TabSel':      [[232, 144], ['#080808', '#e6db74']],
+        \ 'TabFill':     [[253, 67],  ['#f8f8f0', '#465457']],
+        \ })
 endfunction
 
 " vim:set et sw=2 ts=2 fdm=marker:

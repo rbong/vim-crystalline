@@ -49,7 +49,7 @@ function! crystalline#mode_type() abort
 endfunction
 
 function! crystalline#mode_color() abort
-  return g:crystalline_mode_colors[crystalline#mode_type()]
+  return '%#Crystalline' . crystalline#mode_hi() . '#'
 endfunction
 
 function! crystalline#mode_label() abort
@@ -57,8 +57,7 @@ function! crystalline#mode_label() abort
 endfunction
 
 function! crystalline#mode() abort
-  let l:mode = crystalline#mode_type()
-  return g:crystalline_mode_colors[l:mode] . g:crystalline_mode_labels[l:mode]
+  return crystalline#mode_color() . crystalline#mode_label()
 endfunction
 
 function! crystalline#trigger_mode_update() abort
@@ -196,6 +195,98 @@ endfunction
 
 function! crystalline#get_tabline() abort
   return function(g:crystalline_tabline_fn)()
+endfunction
+
+" }}}
+
+" Theme Utils {{{
+
+function! crystalline#get_sep_group(group_a, group_b) abort
+  return a:group_a . 'To' . (a:group_b ==# '' ? 'Line' : a:group_b)
+endfunction
+
+function! crystalline#generate_hi(group, attr) abort
+  let l:cterm = a:attr[0]
+  let l:gui = a:attr[1]
+  let l:extra = len(a:attr) > 2 ? a:attr[2] : ''
+
+  let l:hi = 'hi Crystalline' . a:group
+  let l:hi .= ' ctermfg=' . l:cterm[0] . ' ctermbg=' . l:cterm[1]
+  let l:hi .= ' guifg=' . l:gui[0] . ' guibg=' . l:gui[1]
+  let l:hi .= ' ' . l:extra
+
+  return l:hi
+endfunction
+
+function! crystalline#generate_theme(theme) abort
+  let l:his = []
+
+  for l:group in g:crystalline_hi_groups
+    let l:attr = get(a:theme, l:group, v:none)
+    if type(l:attr) == v:t_none
+      continue
+    endif
+    let l:his += [crystalline#generate_hi(l:group, l:attr)]
+
+    if !get(g:, 'crystalline_enable_sep', 0)
+      continue
+    endif
+
+    for l:group_b in g:crystalline_supported_sep[l:group]
+      let l:attr_b = get(a:theme, l:group_b, v:none)
+      if type(l:attr) == v:t_none
+        continue
+      endif
+
+      let l:sep_attr = [[l:attr[0][1], l:attr_b[0][1]], [l:attr[1][1], l:attr_b[1][1]]]
+      if len(l:attr) > 2
+        let l:sep_attr += [l:attr[2]]
+      endif
+
+      let l:sep_group = crystalline#get_sep_group(l:group, l:group_b)
+      let l:his += [crystalline#generate_hi(l:sep_group, l:sep_attr)]
+    endfor
+  endfor
+
+  if len(l:his) > 0
+    exec join(l:his, ' | ')
+  endif
+endfunction
+
+function! crystalline#mode_hi() abort
+  return g:crystalline_mode_hi_groups[crystalline#mode_type()]
+endfunction
+
+function! crystalline#sep(group_a, group_b, ch, left) abort
+  let l:next_item = '%#Crystalline' . (a:left ? a:group_a : a:group_b) . '#'
+  if !get(g:, 'crystalline_enable_sep', 0) || a:ch ==# ''
+    return l:next_item
+  endif
+  if type(a:group_a) == v:t_none || type(a:group_b) == v:t_none
+    return ''
+  endif
+  let l:sep_item = '%#Crystalline' . crystalline#get_sep_group(a:group_a, a:group_b) . '#'
+  return l:sep_item . a:ch . l:next_item
+endfunction
+
+function! crystalline#mode_sep(group_b, ch, left) abort
+  return crystalline#sep(crystalline#mode_hi(), a:group_b, a:ch, a:left)
+endfunction
+
+function! crystalline#right_sep(group_a, group_b) abort
+  return crystalline#sep(a:group_a, a:group_b, g:crystalline_separators[0], 0)
+endfunction
+
+function! crystalline#left_sep(group_a, group_b) abort
+  return crystalline#sep(a:group_a, a:group_b, g:crystalline_separators[1], 1)
+endfunction
+
+function! crystalline#right_mode_sep(group) abort
+  return crystalline#mode_sep(a:group, g:crystalline_separators[0], 0)
+endfunction
+
+function! crystalline#left_mode_sep(group) abort
+  return crystalline#mode_sep(a:group, g:crystalline_separators[1], 1)
 endfunction
 
 " }}}
