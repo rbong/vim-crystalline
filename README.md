@@ -141,6 +141,21 @@ let g:crystalline_theme = 'default'
 set laststatus=2
 ```
 
+### Hiding Sections Based on Window Width
+
+```vim
+function! StatusLine(current, width)
+  return (a:current ? crystalline#mode() . '%#Crystalline#' : '%#CrystallineInactive#')
+        \ . ' %f%h%w%m%r '
+        \ . (a:current ? '%#CrystallineFill# %{fugitive#head()} ' : '')
+        \ . '%=' . (a:current ? '%#Crystalline# %{&paste?"PASTE ":""}%{&spell?"SPELL ":""}' . crystalline#mode_color() : '')
+        \ . (a:width > 80 ? ' %{&ft}[%{&enc}][%{&ffs}] %l/%L %c%V %P ' : ' ')
+endfunction
+let g:crystalline_statusline_fn = 'StatusLine'
+let g:crystalline_theme = 'default'
+set laststatus=2
+```
+
 ### Using the Bufferline
 
 ```vim
@@ -172,12 +187,12 @@ set showtabline=2
 ### Full Example
 
 ```vim
-function! StatusLine(current)
+function! StatusLine(current, width)
   return (a:current ? crystalline#mode() . '%#Crystalline#' : '%#CrystallineInactive#')
         \ . ' %f%h%w%m%r '
         \ . (a:current ? '%#CrystallineFill# %{fugitive#head()} ' : '')
         \ . '%=' . (a:current ? '%#Crystalline# %{&paste?"PASTE ":""}%{&spell?"SPELL ":""}' . crystalline#mode_color() : '')
-        \ . ' %{&ft}[%{&enc}][%{&ffs}] %l/%L %c%V %P '
+        \ . (a:width > 80 ? ' %{&ft}[%{&enc}][%{&ffs}] %l/%L %c%V %P ' : ' ')
 endfunction
 
 function! TabLine()

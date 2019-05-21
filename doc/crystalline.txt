@@ -162,12 +162,12 @@ tabline.
 EXAMPLE                                         *crystalline-example*
 
 >
-  function! StatusLine(current)
+  function! StatusLine(current, width)
     return (a:current ? crystalline#mode() . '%#Crystalline#' : '%#CrystallineInactive#')
           \ . ' %f%h%w%m%r '
           \ . (a:current ? '%#CrystallineFill# %{fugitive#head()} ' : '')
           \ . '%=' . (a:current ? '%#Crystalline# %{&paste?"PASTE ":""}%{&spell?"SPELL ":""}' . crystalline#mode_color() : '')
-          \ . ' %{&ft}[%{&enc}][%{&ffs}] %l/%L %c%V %P '
+          \ . (a:width > 80 ? ' %{&ft}[%{&enc}][%{&ffs}] %l/%L %c%V %P ' : ' ')
   endfunction
   
   function! TabLine()

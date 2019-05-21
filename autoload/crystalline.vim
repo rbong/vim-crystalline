@@ -69,9 +69,13 @@ function! crystalline#trigger_mode_update() abort
   endif
 endfunction
 
-function! crystalline#get_statusline(current) abort
+function! crystalline#get_statusline(current, win) abort
   call crystalline#trigger_mode_update()
-  return function(g:crystalline_statusline_fn)(a:current)
+  try
+    return function(g:crystalline_statusline_fn)(a:current, winwidth(win_id2win(a:win)))
+  catch /^Vim\%((\a\+)\)\=:E118/
+    return function(g:crystalline_statusline_fn)(a:current)
+  endtry
 endfunction
 
 " }}}
@@ -200,13 +204,13 @@ endfunction
 
 function! crystalline#set_statusline(fn) abort
   let g:crystalline_statusline_fn = a:fn
-  set statusline=%!crystalline#get_statusline(1)
+  exec 'set statusline=%!crystalline#get_statusline(1,' . win_getid() . ')'
   augroup CrystallineAutoStatusline
     au!
-    au BufWinEnter,WinEnter * setlocal statusline=%!crystalline#get_statusline(1)
-    au WinLeave * setlocal statusline=%!crystalline#get_statusline(0)
-    au CmdlineLeave : setlocal statusline=%!crystalline#get_statusline(1)
-    au CmdlineEnter : setlocal statusline=%!crystalline#get_statusline(0)
+    au BufWinEnter,WinEnter * exec 'setlocal statusline=%!crystalline#get_statusline(1,' . win_getid() . ')'
+    au WinLeave * exec 'setlocal statusline=%!crystalline#get_statusline(0,' . win_getid() . ')'
+    au CmdlineLeave : exec 'setlocal statusline=%!crystalline#get_statusline(1,' . win_getid() . ')'
+    au CmdlineEnter : exec 'setlocal statusline=%!crystalline#get_statusline(0,' . win_getid('#') . ')'
   augroup END
 endfunction
 
