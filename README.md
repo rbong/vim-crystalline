@@ -218,5 +218,7 @@ Don't hesitate to [post an issue](https://github.com/rbong/vim-crystalline/issue
 
 For a performance comparison with other statusline plugins, see [the Performance Comparison page on the wiki](https://github.com/rbong/vim-crystalline/wiki/Performance-Comparison).
 
+To port a theme from airline, see [Porting Airline Themes](https://github.com/rbong/vim-crystalline/wiki/Porting-Airline-Themes).
+
 Feel free to [make a pull request](https://github.com/rbong/vim-crystalline/pulls) if you'd like to to contribute.
 It's much appreciated.
