@@ -216,5 +216,7 @@ See `:help crystalline` for more information.
 
 Don't hesitate to [post an issue](https://github.com/rbong/vim-crystalline/issues/new) if you have any questions, suggestions, or bugs.
 
+For a performance comparison with other statusline plugins, see [the Performance Comparison page on the wiki](https://github.com/rbong/vim-crystalline/wiki/Performance-Comparison).
+
 Feel free to [make a pull request](https://github.com/rbong/vim-crystalline/pulls) if you'd like to to contribute.
 It's much appreciated.
