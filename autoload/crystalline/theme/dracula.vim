@@ -8,7 +8,7 @@ function! crystalline#theme#dracula#set_theme() abort
         \ 'Inactive':    [[15, 236], ['#f8f8f2', '#44475a']],
         \ 'Fill':        [[15, 236], ['#f8f8f2', '#44475a']],
         \ 'Tab':         [[15, 61],  ['#f8f8f2', '#5f6a8e']],
-        \ 'TabType':     [[15, 61],  ['#f8f8f2', '#5f6a8e']],
+        \ 'TabType':     [[16, 228], ['#282a36', '#f1fa8c']],
         \ 'TabSel':      [[16, 141], ['#282a36', '#bd93f9'], 'term=bold cterm=bold gui=bold'],
         \ 'TabFill':     [[15, 236], ['#f8f8f2', '#44475a']],
         \ })

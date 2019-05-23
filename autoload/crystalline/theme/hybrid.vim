@@ -9,7 +9,7 @@ function! crystalline#theme#hybrid#set_theme() abort
           \ 'Inactive':    [[243, 236], ['#707880', '#303030']],
           \ 'Fill':        [[250, 237], ['#c5c8c6', '#373b41']],
           \ 'Tab':         [[250, 235], ['#c5c8c6', '#282a2e']],
-          \ 'TabType':     [[250, 235], ['#c5c8c6', '#282a2e']],
+          \ 'TabType':     [[250, 167], ['#c5c8c6', '#cc6666']],
           \ 'TabSel':      [[193, 65],  ['#d7ffaf', '#5F875F']],
           \ 'TabFill':     [[250, 237], ['#c5c8c6', '#373b41']],
           \ })
@@ -23,7 +23,7 @@ function! crystalline#theme#hybrid#set_theme() abort
           \ 'Inactive':    [[59, 247], ['#5f5f5f', '#9e9e9e']],
           \ 'Fill':        [[16, 250], ['#000000', '#bcbcbc']],
           \ 'Tab':         [[16, 252], ['#000000', '#d0d0d0']],
-          \ 'TabType':     [[16, 252], ['#000000', '#d0d0d0']],
+          \ 'TabType':     [[16, 224], ['#000000', '#ffd7d7']],
           \ 'TabSel':      [[22, 194], ['#005f00', '#d7ffd7']],
           \ 'TabFill':     [[16, 250], ['#000000', '#bcbcbc']],
           \ })

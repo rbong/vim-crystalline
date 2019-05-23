@@ -8,7 +8,7 @@ function! crystalline#theme#papercolor#set_theme() abort
         \ 'Inactive':    [[240, 254], ['#585858', '#e4e4e4']],
         \ 'Fill':        [[255, 24],  ['#eeeeee', '#005f87']],
         \ 'Tab':         [[254, 31],  ['#e4e4e4', '#0087af']],
-        \ 'TabType':     [[254, 31],  ['#e4e4e4', '#0087af']],
+        \ 'TabType':     [[24, 254],  ['#005f87', '#e4e4e4']],
         \ 'TabSel':      [[240, 254], ['#585858', '#e4e4e4']],
         \ 'TabFill':     [[255, 24],  ['#eeeeee', '#005f87']],
         \ })

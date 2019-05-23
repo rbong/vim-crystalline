@@ -8,7 +8,7 @@ function! crystalline#theme#default#set_theme() abort
         \ 'Inactive':    [[239, 234], ['#4e4e4e', '#1c1c1c']],
         \ 'Fill':        [[85,  234], ['#9cffd3', '#202020']],
         \ 'Tab':         [[255, 238], ['#ffffff', '#444444']],
-        \ 'TabType':     [[255, 238], ['#ffffff', '#444444']],
+        \ 'TabType':     [[232, 214], ['#000000', '#ffaf00']],
         \ 'TabSel':      [[17,  190], ['#00005f', '#dfff00']],
         \ 'TabFill':     [[85,  234], ['#9cffd3', '#202020']],
         \ })

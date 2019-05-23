@@ -57,6 +57,12 @@ if !exists('g:crystalline_separators')
   let g:crystalline_separators = ['', '']
 endif
 
+if !exists('g:crystalline_tab_separator')
+  let g:crystalline_tab_separator = ''
+endif
+
+let g:crystalline_tab_special = ['[No Name]', '[+] ', ' ', ' ']
+
 " }}}
 
 " Load User Settings {{{

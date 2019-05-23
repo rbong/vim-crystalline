@@ -8,7 +8,7 @@ function! crystalline#theme#jellybeans#set_theme() abort
         \ 'Inactive':    [[243, 235], ['#666666', '#262626']],
         \ 'Fill':        [[59,  233], ['#4f5b66', '#151515']],
         \ 'Tab':         [[231, 235], ['#ffffff', '#262626']],
-        \ 'TabType':     [[231, 235], ['#ffffff', '#262626']],
+        \ 'TabType':     [[231, 88],  ['#ffffff', '#870000']],
         \ 'TabSel':      [[189, 25],  ['#d8dee9', '#0d61ac']],
         \ 'TabFill':     [[59,  233], ['#4f5b66', '#151515']],
         \ })
