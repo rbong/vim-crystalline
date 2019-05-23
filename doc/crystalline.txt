@@ -45,6 +45,30 @@ g:crystalline_theme                             *g:crystalline_theme*
 
 Automatically set the given theme.
 
+g:crystalline_enable_sep                        *g:crystalline_enable_sep*
+
+Enable using special separator symbols between sections/tabs, similar to
+powerline.
+
+Separators will automatically appear on the tabline using
+|crystalline#bufferline()|, and can be generated for the statusline using
+|crystalline#right_sep()|, |crystalline#left_sep()|,
+|crystalline#right_mode_sep()|, and |crystalline#left_mode_sep()|
+
+g:crystalline_separators                        *g:crystalline_separators*
+
+The separator character(s) to use between sections/tabs. By default, it will
+use powerline-style separators.
+
+The setting must be a list of strings, with the first string representing the
+right-facing separator and the second string representing the left-facing
+separator.
+
+g:crystalline_tab_separator                     *g:crystalline_tab_separator*
+
+The separator character(s) to use between unselected tabs. By default, it will
+use the powerline-style separator.
+
 FUNCTIONS                                       *crystalline-functions*
 
 crystalline#mode()                              *crystalline#mode()*
@@ -82,6 +106,33 @@ fit as many tabs as possible.
 "show_mode" indicates if the bufferline should use the currently active mode
 color for the active tab or if it should fall back to |hl-CrystallineTabSel|.
 See |crystalline-highlight-groups| for the list of mode highlight groups.
+
+crystalline#right_sep(group_a, group_b)         *crystalline#right_sep()*
+
+Generate a right-facing separator between the two highlight groups.
+
+Use the group names listed in |crystaline-highlight-groups|, with
+"Crystalline" omitted.
+
+crystalline#left_sep(group_a, group_b)          *crystalline#left_sep()*
+
+Generate a left-facing separator between the two highlight groups.
+
+See |crystalline#right_sep()|.
+
+crystalline#right_mode_sep(group)               *crystalline#right_mode_sep()*
+
+Generate a right-facing separator between the current mode and the given
+group.
+
+See |crystalline#right_sep()|.
+
+crystalline#left_mode_sep(group)                *crystalline#left_mode_sep()*
+
+Generate a left-facing separator between the given group and the current mode.
+
+See |crystalline#right_sep()|.
+
 
 HIGHLIGHT GROUPS                                *crystalline-highlight-groups*
                                                 *crystalline-themes*
@@ -162,12 +213,12 @@ tabline.
 EXAMPLE                                         *crystalline-example*
 
 >
-  function! StatusLine(current, width)
-    return (a:current ? crystalline#mode() . '%#Crystalline#' : '%#CrystallineInactive#')
+  function! StatusLine(current)
+    return (a:current ? crystalline#mode() . crystalline#right_mode_sep('') : '%#CrystallineInactive#')
           \ . ' %f%h%w%m%r '
-          \ . (a:current ? '%#CrystallineFill# %{fugitive#head()} ' : '')
-          \ . '%=' . (a:current ? '%#Crystalline# %{&paste?"PASTE ":""}%{&spell?"SPELL ":""}' . crystalline#mode_color() : '')
-          \ . (a:width > 80 ? ' %{&ft}[%{&enc}][%{&ffs}] %l/%L %c%V %P ' : ' ')
+          \ . (a:current ? crystalline#right_sep('', 'Fill') . ' %{fugitive#head()}' : '')
+          \ . '%=' . (a:current ? crystalline#left_sep('', 'Fill') . ' %{&spell?"SPELL ":""}' . crystalline#left_mode_sep('') : '')
+          \ . ' %{&ft}[%{&enc}][%{&ffs}] %l/%L %c%V %P '
   endfunction
   
   function! TabLine()
@@ -175,6 +226,7 @@ EXAMPLE                                         *crystalline-example*
     return crystalline#bufferline(2, len(l:vimlabel), 1) . '%=%#CrystallineTab# ' . l:vimlabel
   endfunction
   
+  let g:crystalline_enable_sep = 1
   let g:crystalline_statusline_fn = 'StatusLine'
   let g:crystalline_tabline_fn = 'TabLine'
   let g:crystalline_theme = 'default'
