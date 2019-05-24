@@ -207,7 +207,7 @@ function! crystalline#set_statusline(fn) abort
   exec 'set statusline=%!crystalline#get_statusline(1,' . win_getid() . ')'
   augroup CrystallineAutoStatusline
     au!
-    au BufWinEnter,WinEnter * exec 'setlocal statusline=%!crystalline#get_statusline(1,' . win_getid() . ')'
+    au BufWinEnter,WinEnter * exec 'setlocal statusline=%!crystalline#get_statusline(1,' . win_getid('#') . ')'
     au WinLeave * exec 'setlocal statusline=%!crystalline#get_statusline(0,' . win_getid() . ')'
     au CmdlineLeave : exec 'setlocal statusline=%!crystalline#get_statusline(1,' . win_getid() . ')'
     au CmdlineEnter : exec 'setlocal statusline=%!crystalline#get_statusline(0,' . win_getid('#') . ')'
