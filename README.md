@@ -1,5 +1,7 @@
 # vim-crystalline
 
+[![Build Status](https://travis-ci.org/rbong/vim-crystalline.svg?branch=master)](https://travis-ci.org/rbong/vim-crystalline)
+
 Want a nice statusline in vim?
 [vim-airline](https://github.com/vim-airline/vim-airline/) too slow?
 [lightline.vim](https://github.com/itchyny/lightline.vim/) too verbose?
