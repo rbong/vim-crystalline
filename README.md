@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/rbong/vim-crystalline.svg?branch=master)](https://travis-ci.org/rbong/vim-crystalline)
 
 Want a nice statusline in vim?
-[vim-airline](https://github.com/vim-airline/vim-airline/) too slow?
+[vim-airline](https://github.com/vim-airline/vim-airline/) too [slow](https://github.com/rbong/vim-crystalline/wiki/Performance-Comparison)?
 [lightline.vim](https://github.com/itchyny/lightline.vim/) too verbose?
 `vim-crystalline` is for you.
 
@@ -63,6 +63,11 @@ It also comes with a bufferline!
 **solarized (light)**
 
 ![img](https://github.com/rbong/vim-crystalline/wiki/screenshots/solarized_light.png)
+
+**Making your own theme**
+
+To make your own theme, see `:help crystalline-themes`.
+If you'd like to port an airline theme, see [Porting Airline Themes](https://github.com/rbong/vim-crystalline/wiki/Porting-Airline-Themes) on the wiki.
 
 ## Installation
 
@@ -234,10 +239,6 @@ The statusline has default info, mode-based colors, the current git branch, widt
 See `:help crystalline` for more information.
 
 Don't hesitate to [post an issue](https://github.com/rbong/vim-crystalline/issues/new) if you have any questions, suggestions, or bugs.
-
-For a performance comparison with other statusline plugins, see [the Performance Comparison page on the wiki](https://github.com/rbong/vim-crystalline/wiki/Performance-Comparison).
-
-To port a theme from airline, see [Porting Airline Themes](https://github.com/rbong/vim-crystalline/wiki/Porting-Airline-Themes).
 
 Feel free to [make a pull request](https://github.com/rbong/vim-crystalline/pulls) if you'd like to to contribute.
 It's much appreciated.
