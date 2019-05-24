@@ -42,7 +42,7 @@ endfunction
 
 function! crystalline#trigger_mode_update() abort
   let l:mode = crystalline#mode_type()
-  if get(g:, 'crystalline_mode', '') != l:mode
+  if get(g:, 'crystalline_mode', '') !=# l:mode
     let g:crystalline_mode = l:mode
     silent doautocmd User CrystallineModeUpdate
   endif
