@@ -182,7 +182,7 @@ set laststatus=2
 ### Using the Bufferline
 
 ```vim
-set tabline=%!crystalline#bufferline(0, 0, 0)
+set tabline=%!crystalline#bufferline()
 set showtabline=2
 ```
 
