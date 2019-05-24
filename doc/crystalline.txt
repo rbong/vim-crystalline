@@ -144,9 +144,12 @@ If a theme has both light and dark modes, it will look at the 'background'
 setting to determine which mode it should use.
 
 Themes are located in "autoload/crystalline/theme/theme_name.vim" files. In
-order to define a theme, create on seuch file and define a function named
+order to define a theme, create one such file and define a function named
 "crystalline#theme#theme_name#set_theme" which defines the given highlight
 groups.
+
+For an example of creating a custom theme, see the solarized theme:
+<https://github.com/rbong/vim-crystalline/blob/master/autoload/crystalline/theme/solarized.vim>
 
 CrystallineNormalMode                           *hl-CrystallineNormalMode*
 
