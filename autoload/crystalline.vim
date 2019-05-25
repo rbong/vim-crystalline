@@ -231,21 +231,23 @@ function! crystalline#tab_sep(tab, curtab, ntabs, show_mode) abort
 endfunction
 
 function! crystalline#bufferline(...) abort
+  let l:use_buffers = tabpagenr('$') == 1
+
   let l:items = get(a:, 1, 0)
   let l:width = get(a:, 2, 0)
   let l:show_mode = get(a:, 3, 0)
+  let l:allow_mouse = get(a:, 4, 1) && !l:use_buffers
 
-  let l:use_buffers = tabpagenr('$') == 1
-  let l:selhi = l:show_mode ? crystalline#mode_color() : '%#CrystallineTabSel#'
+  let l:tabitems = l:allow_mouse ? 1 : 0
 
   if get(g:, 'crystalline_enable_sep', 0)
     let l:pad = 1
     let l:tabpad = strchars(g:crystalline_separators[0])
-    let l:maxtabs = crystalline#calculate_max_tabs(3, 0, 4, 2 + l:items)
+    let l:maxtabs = crystalline#calculate_max_tabs(3, l:tabitems, 4, 2 + l:items)
   else
     let l:pad = 0
     let l:tabpad = 0
-    let l:maxtabs = crystalline#calculate_max_tabs(2, 0, 2, 1 + l:items)
+    let l:maxtabs = crystalline#calculate_max_tabs(2, l:tabitems, 2, 1 + l:items)
   endif
 
   if l:use_buffers
@@ -261,8 +263,14 @@ function! crystalline#bufferline(...) abort
   let [l:vtabs, l:vntabs, l:vcurtab] = crystalline#visual_tabinfo(l:tabs, l:curtab, l:ntabs, l:pad, l:tabpad)
   let l:tabline .= crystalline#tab_sep(0, l:vcurtab, l:vntabs, l:show_mode)
   for l:i in range(l:vntabs)
+    if l:allow_mouse
+      let l:tabline .= '%' . (l:i + 1) . 'T'
+    endif
     let l:tabline .= l:vtabs[l:i] . crystalline#tab_sep(l:i + 1, l:vcurtab, l:vntabs, l:show_mode)
   endfor
+  if l:allow_mouse
+    let l:tabline .= '%T'
+  endif
 
   return l:tabline
 endfunction

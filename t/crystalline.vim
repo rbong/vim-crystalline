@@ -256,7 +256,7 @@ describe 'crystalline#bufferline'
     tabedit b
     tabedit c
     tabprev
-    Expect crystalline#bufferline(0, 0, 0) == '%#CrystallineTabType# TABS %#CrystallineTab# a %#CrystallineTabSel# b %#CrystallineTab# c %#CrystallineTabFill#'
+    Expect crystalline#bufferline(0, 0, 0) == '%#CrystallineTabType# TABS %#CrystallineTab#%1T a %#CrystallineTabSel#%2T b %#CrystallineTab#%3T c %#CrystallineTabFill#%T'
   end
 
   it 'includes separators when enabled'
@@ -264,7 +264,7 @@ describe 'crystalline#bufferline'
     edit a
     tabedit b
     tabedit c
-    Expect crystalline#bufferline(0, 0, 0) == '%#CrystallineTabType# TABS %#CrystallineTabTypeToTab#%#CrystallineTab# a  b %#CrystallineTabToTabSel#%#CrystallineTabSel# c %#CrystallineTabSelToTabFill#%#CrystallineTabFill#'
+    Expect crystalline#bufferline(0, 0, 0) == '%#CrystallineTabType# TABS %#CrystallineTabTypeToTab#%#CrystallineTab#%1T a %2T b %#CrystallineTabToTabSel#%#CrystallineTabSel#%3T c %#CrystallineTabSelToTabFill#%#CrystallineTabFill#%T'
   end
 
   it 'shows the current mode when enabled'
