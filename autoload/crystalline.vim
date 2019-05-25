@@ -309,8 +309,8 @@ function! crystalline#generate_theme(theme) abort
   unlet! g:crystalline_tab_type_fake_separator
 
   for l:group in g:crystalline_hi_groups
-    let l:attr = get(a:theme, l:group, v:none)
-    if type(l:attr) == v:t_none
+    let l:attr = get(a:theme, l:group, [])
+    if l:attr == []
       continue
     endif
     let l:his += [crystalline#generate_hi(l:group, l:attr)]
@@ -320,8 +320,8 @@ function! crystalline#generate_theme(theme) abort
     endif
 
     for l:group_b in g:crystalline_supported_sep[l:group]
-      let l:attr_b = get(a:theme, l:group_b, v:none)
-      if type(l:attr) == v:t_none
+      let l:attr_b = get(a:theme, l:group_b, [])
+      if l:attr == []
         continue
       endif
 
@@ -356,7 +356,7 @@ function! crystalline#sep(group_a, group_b, ch, left) abort
   if !get(g:, 'crystalline_enable_sep', 0) || a:ch ==# ''
     return l:next_item
   endif
-  if type(a:group_a) == v:t_none || type(a:group_b) == v:t_none
+  if a:group_a == v:null || a:group_b == v:null
     return ''
   endif
   if a:left == 0 && a:group_a ==# 'TabType' && get(g:, 'crystalline_tab_type_fake_separator', ' ') == a:group_b
