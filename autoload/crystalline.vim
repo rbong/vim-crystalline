@@ -432,9 +432,11 @@ function! crystalline#set_theme(theme) abort
   let g:crystalline_mode = ''
   let g:crystalline_theme = a:theme
   call function('crystalline#theme#' . a:theme . '#set_theme')()
+  silent doautocmd User CrystallineSetTheme
   augroup CrystallineTheme
     au!
     au ColorScheme * call function('crystalline#theme#' . g:crystalline_theme . '#set_theme')()
+          \ | silent doautocmd User CrystallineSetTheme
   augroup END
 endfunction
 
