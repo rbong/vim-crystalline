@@ -4,7 +4,7 @@
 
 Want a nice statusline in vim?
 [vim-airline](https://github.com/vim-airline/vim-airline/) too [slow](https://github.com/rbong/vim-crystalline/wiki/Performance-Comparison)?
-[lightline.vim](https://github.com/itchyny/lightline.vim/) too verbose?
+[lightline.vim](https://github.com/itchyny/lightline.vim/) too [verbose](https://github.com/rbong/vim-crystalline/wiki/Configuration-Comparison)?
 `vim-crystalline` is for you.
 
 `vim-crystalline` lets you build your own statusline and tabline in a vanilla vim style.
