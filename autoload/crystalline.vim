@@ -16,13 +16,13 @@ endfunction
 " Status Line Utils {{{
 
 function! crystalline#mode_type() abort
-  if mode(1) =~# '[nc]'
+  if mode() =~# '[nc]'
     return 'n'
-  elseif mode(1) =~# '[it]'
+  elseif mode() =~# '[it]'
     return 'i'
-  elseif mode(1) =~# '[vVsS]'
+  elseif mode() =~# '[vVsS]'
     return 'v'
-  elseif mode(1) ==# 'R'
+  elseif mode() ==# 'R'
     return 'R'
   endif
   return ''
