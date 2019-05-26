@@ -306,7 +306,7 @@ endfunction
 function! crystalline#generate_theme(theme) abort
   let l:his = []
 
-  unlet! g:crystalline_tab_type_fake_separator
+  let g:crystalline_tab_type_fake_separators = []
 
   for l:group in g:crystalline_hi_groups
     let l:attr = get(a:theme, l:group, [])
@@ -333,7 +333,7 @@ function! crystalline#generate_theme(theme) abort
       if l:group ==# 'TabType'
         let l:attr_type = has('gui_running') ? 1 : 0
         if l:attr[l:attr_type][1] == l:attr_b[l:attr_type][1]
-          let g:crystalline_tab_type_fake_separator = l:group_b
+          call add(g:crystalline_tab_type_fake_separators, l:group_b)
         endif
       endif
 
@@ -359,7 +359,7 @@ function! crystalline#sep(group_a, group_b, ch, left) abort
   if a:group_a == v:null || a:group_b == v:null
     return ''
   endif
-  if a:left == 0 && a:group_a ==# 'TabType' && get(g:, 'crystalline_tab_type_fake_separator', ' ') == a:group_b
+  if a:left == 0 && a:group_a ==# 'TabType' && index(get(g:, 'crystalline_tab_type_fake_separators', []), a:group_b) >= 0
     let l:sep_item = g:crystalline_tab_separator
   else
     let l:sep_item = '%#Crystalline' . crystalline#get_sep_group(a:group_a, a:group_b) . '#' . a:ch
