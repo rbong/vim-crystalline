@@ -293,11 +293,8 @@ function! crystalline#generate_hi(group, attr) abort
   let l:extra = len(a:attr) > 2 ? a:attr[2] : ''
 
   let l:hi = 'hi Crystalline' . a:group
-  if has('gui_running')
-    let l:hi .= ' guifg=' . l:gui[0] . ' guibg=' . l:gui[1]
-  else
-    let l:hi .= ' ctermfg=' . l:cterm[0] . ' ctermbg=' . l:cterm[1]
-  endif
+  let l:hi .= ' guifg=' . l:gui[0] . ' guibg=' . l:gui[1]
+  let l:hi .= ' ctermfg=' . l:cterm[0] . ' ctermbg=' . l:cterm[1]
   let l:hi .= ' ' . l:extra
 
   return l:hi
