@@ -52,7 +52,7 @@ It also comes with a bufferline!
 
 ![img](https://github.com/rbong/vim-crystalline/wiki/screenshots/onedark.png)
 
-**papercolor (light)**
+**papercolor**
 
 ![img](https://github.com/rbong/vim-crystalline/wiki/screenshots/papercolor_light.png)
 
