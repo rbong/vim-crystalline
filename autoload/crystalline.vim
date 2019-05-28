@@ -76,14 +76,20 @@ function! crystalline#tablabel(buf, max_width) abort
   return l:left . l:name . l:right
 endfunction
 
+function! crystalline#hide_buf_tab(buf) abort
+  return !bufexists(a:buf) || !buflisted(a:buf) || getbufvar(a:buf, '&ft') ==# 'qf'
+endfunction
+
 function! crystalline#buf_tabinfo(maxtabs) abort
   let l:curbuf = bufnr('%')
   let l:tabs = []
   let l:ntabs = 0
   let l:curtab = -1
 
+  let l:HideBuf = function(get(g:, 'crystalline_hide_buf_tab', 'crystalline#hide_buf_tab'))
+
   for l:i in range(bufnr('$'))
-    if bufexists(l:i + 1) && buflisted(l:i + 1)
+    if !l:HideBuf(l:i + 1)
       call add(l:tabs, l:i + 1)
       let l:ntabs += 1
       if l:i + 1 == l:curbuf
