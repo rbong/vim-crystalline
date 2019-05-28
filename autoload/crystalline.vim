@@ -84,6 +84,9 @@ function! crystalline#buf_tabinfo(maxtabs) abort
 
   for l:i in range(bufnr('$'))
     if bufexists(l:i + 1) && buflisted(l:i + 1)
+      if getbufvar(l:i+1, 'current_syntax') == 'qf'
+        continue
+      endif    
       call add(l:tabs, l:i + 1)
       let l:ntabs += 1
       if l:i + 1 == l:curbuf
