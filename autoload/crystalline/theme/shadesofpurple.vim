@@ -6,7 +6,7 @@ function! crystalline#theme#shadesofpurple#set_theme() abort
         \ 'ReplaceMode': [[234, 204], ['#1E1E3F', '#FF628C']],
         \ '':            [[140, 234], ['#A599E9', '#1E1E3F']],
         \ 'Inactive':    [[234, 140], ['#1E1E3F', '#A599E9']],
-        \ 'Fill':        [[234, 140], ['#1E1E3F', '#A599E9']],
+        \ 'Fill':        [[140, 234], ['#A599E9', '#1E1E3F']],
         \ 'Tab':         [[234, 140], ['#1E1E3F', '#A599E9']],
         \ 'TabType':     [[140, 234], ['#A599E9', '#1E1E3F']],
         \ 'TabSel':      [[234, 140], ['#1E1E3F', '#A599E9']],
