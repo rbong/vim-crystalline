@@ -1,4 +1,4 @@
-function! crystalline#theme#badwolf#set_theme() abort
+function! crystalline#theme#shadesofpurple#set_theme() abort
   call crystalline#generate_theme({
         \ 'NormalMode':  [[140, 234], ['#A599E9', '#1E1E3F']],
         \ 'InsertMode':  [[234, 10],  ['#1E1E3F', '#00FF00']],
