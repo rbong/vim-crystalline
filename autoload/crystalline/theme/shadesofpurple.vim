@@ -4,7 +4,7 @@ function! crystalline#theme#shadesofpurple#set_theme() abort
         \ 'InsertMode':  [[234, 10],  ['#1E1E3F', '#00FF00']],
         \ 'VisualMode':  [[234, 177], ['#1E1E3F', '#c991ff']],
         \ 'ReplaceMode': [[234, 204], ['#1E1E3F', '#FF628C']],
-        \ '':            [[140, 234], ['#A599E9', '#1E1E3F']],
+        \ '':            [[234, 140], ['#1E1E3F', '#A599E9']],
         \ 'Inactive':    [[234, 140], ['#1E1E3F', '#A599E9']],
         \ 'Fill':        [[140, 234], ['#A599E9', '#1E1E3F']],
         \ 'Tab':         [[234, 140], ['#1E1E3F', '#A599E9']],
