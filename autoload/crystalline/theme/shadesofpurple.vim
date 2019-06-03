@@ -10,7 +10,7 @@ function! crystalline#theme#shadesofpurple#set_theme() abort
         \ 'Tab':         [[234, 140], ['#1E1E3F', '#A599E9']],
         \ 'TabType':     [[140, 234], ['#A599E9', '#1E1E3F']],
         \ 'TabSel':      [[234, 140], ['#1E1E3F', '#A599E9']],
-        \ 'TabFill':     [[234, 140], ['#1E1E3F', '#A599E9']],
+        \ 'TabFill':     [[140, 234], ['#A599E9', '#1E1E3F']],
         \ })
 endfunction
 
