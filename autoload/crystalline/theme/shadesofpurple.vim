@@ -7,9 +7,9 @@ function! crystalline#theme#shadesofpurple#set_theme() abort
         \ '':            [[234, 140], ['#1E1E3F', '#A599E9']],
         \ 'Inactive':    [[234, 140], ['#1E1E3F', '#A599E9']],
         \ 'Fill':        [[140, 234], ['#A599E9', '#1E1E3F']],
-        \ 'Tab':         [[234, 226], ['#1E1E3F', '#FAD000']],
+        \ 'Tab':         [[234, 140], ['#1E1E3F', '#A599E9']],
         \ 'TabType':     [[234, 140], ['#1E1E3F', '#A599E9']],
-        \ 'TabSel':      [[234, 140], ['#1E1E3F', '#A599E9']],
+        \ 'TabSel':      [[234, 226], ['#1E1E3F', '#FAD000']],
         \ 'TabFill':     [[140, 234], ['#A599E9', '#1E1E3F']],
         \ })
 endfunction
