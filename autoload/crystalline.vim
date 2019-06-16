@@ -401,9 +401,11 @@ function! crystalline#set_statusline(fn) abort
     au!
     au BufWinEnter,WinEnter * exec 'setlocal statusline=%!crystalline#get_statusline(1,' . win_getid('#') . ')'
     au WinLeave * exec 'setlocal statusline=%!crystalline#get_statusline(0,' . win_getid() . ')'
-    au CmdlineLeave : exec 'setlocal statusline=%!crystalline#get_statusline(1,' . win_getid() . ')'
-    au CmdWinEnter : exec 'setlocal statusline=%!crystalline#get_statusline(1,0)'
-    au CmdlineEnter : exec 'setlocal statusline=%!crystalline#get_statusline(0,' . win_getid() . ')'
+    if exists('#CmdlineLeave') && exists('#CmdWinEnter') && exists('#CmdlineEnter')
+      au CmdlineLeave : exec 'setlocal statusline=%!crystalline#get_statusline(1,' . win_getid() . ')'
+      au CmdWinEnter : exec 'setlocal statusline=%!crystalline#get_statusline(1,0)'
+      au CmdlineEnter : exec 'setlocal statusline=%!crystalline#get_statusline(0,' . win_getid() . ')'
+    endif
   augroup END
 endfunction
 
@@ -415,20 +417,24 @@ function! crystalline#clear_statusline() abort
 endfunction
 
 function! crystalline#set_tabline(fn) abort
-  let g:crystalline_tabline_fn = a:fn
-  set tabline=%!crystalline#get_tabline()
-  augroup CrystallineAutoTabline
-    au!
-    au User CrystallineModeUpdate set tabline=%!crystalline#get_tabline()
-    au InsertLeave * set tabline=%!crystalline#get_tabline()
-  augroup END
+  if exists('+tabline')
+    let g:crystalline_tabline_fn = a:fn
+    set tabline=%!crystalline#get_tabline()
+    augroup CrystallineAutoTabline
+      au!
+      au User CrystallineModeUpdate set tabline=%!crystalline#get_tabline()
+      au InsertLeave * set tabline=%!crystalline#get_tabline()
+    augroup END
+  endif
 endfunction
 
 function! crystalline#clear_tabline() abort
-  set tabline=
-  augroup CrystallineAutoTabline
-    au!
-  augroup END
+  if exists('+tabline')
+    set tabline=
+    augroup CrystallineAutoTabline
+      au!
+    augroup END
+  endif
 endfunction
 
 function! crystalline#set_theme(theme) abort
