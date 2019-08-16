@@ -61,7 +61,21 @@ if !exists('g:crystalline_tab_separator')
   let g:crystalline_tab_separator = ''
 endif
 
-let g:crystalline_tab_special = ['[No Name]', '[+] ', ' ', ' ']
+if !exists('g:crystalline_tab_empty')
+  let g:crystalline_tab_empty = '[No Name]'
+endif
+
+if !exists('g:crystalline_tab_mod')
+  let g:crystalline_tab_mod = '[+]'
+endif
+
+if !exists('g:crystalline_tab_left')
+  let g:crystalline_tab_left = ' '
+endif
+
+if !exists('g:crystalline_tab_nomod')
+  let g:crystalline_tab_nomod = ' '
+endif
 
 " }}}
 

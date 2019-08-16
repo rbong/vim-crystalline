@@ -61,13 +61,22 @@ endfunction
 
 " Tab Line Utils {{{
 
+function! crystalline#get_tab_strings()
+  return [
+        \ g:crystalline_tab_empty,
+        \ g:crystalline_tab_mod,
+        \ g:crystalline_tab_left,
+        \ g:crystalline_tab_nomod
+        \ ]
+endfunction
+
 function! crystalline#calculate_max_tabs(leftitems, tabitems, tabselitems, rightitems) abort
   " at max 80 items are allowed
   return (80 - a:leftitems - a:rightitems - a:tabselitems) / max([a:tabitems, 1])
 endfunction
 
 function! crystalline#tablabel(buf, max_width) abort
-  let [l:empty, l:mod, l:left, l:nomod] = g:crystalline_tab_special
+  let [l:empty, l:mod, l:left, l:nomod] = crystalline#get_tab_strings()
   let l:right = getbufvar(a:buf, '&mod') ? l:mod : l:nomod
   let l:name = pathshorten(bufname(a:buf))[-a:max_width : ]
   if l:name ==# ''
@@ -139,7 +148,7 @@ function! crystalline#visual_tabinfo(tabs, curtab, ntabs, pad, tabpad) abort
     return [[], 0, -1]
   endif
 
-  let [l:empty, l:mod, l:left, l:nomod] = g:crystalline_tab_special
+  let [l:empty, l:mod, l:left, l:nomod] = crystalline#get_tab_strings()
 
   let l:total_width = &columns - a:pad
   let l:per_tab_width = l:total_width / a:ntabs
