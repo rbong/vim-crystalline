@@ -299,7 +299,7 @@ endfunction
 " Theme Utils {{{
 
 function! crystalline#get_sep_group(group_a, group_b) abort
-  return a:group_a . 'To' . (a:group_b ==# '' ? 'Line' : a:group_b)
+  return a:group_a . 'To' . a:group_b
 endfunction
 
 function! crystalline#generate_hi(group, attr) abort

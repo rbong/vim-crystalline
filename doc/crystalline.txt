@@ -184,7 +184,7 @@ The color of the mode label when replace mode is active.
 
 See |crystalline#mode()|.
 
-Crystalline                                     *hl-Crystalline*
+Crystalline                                     *hl-CrystallineLine*
 
 A color which can be used for the main sections of the statusline.
 
@@ -229,19 +229,19 @@ EXAMPLE                                         *crystalline-example*
     let l:s = ''
 
     if a:current
-      let l:s .= crystalline#mode() . crystalline#right_mode_sep('')
+      let l:s .= crystalline#mode() . crystalline#right_mode_sep('Line')
     else
       let l:s .= '%#CrystallineInactive#'
     endif
     let l:s .= ' %f%h%w%m%r '
     if a:current
-      let l:s .= crystalline#right_sep('', 'Fill') . '%{fugitive#head()}'
+      let l:s .= crystalline#right_sep('Line', 'Fill') . '%{fugitive#head()}'
     endif
 
     let l:s .= '%='
     if a:current
-      let l:s .= crystalline#left_sep('', 'Fill') . ' %{&paste ?"PASTE ":""}%{&spell?"SPELL ":""}'
-      let l:s .= crystalline#left_mode_sep('')
+      let l:s .= crystalline#left_sep('Line', 'Fill') . ' %{&paste ?"PASTE ":""}%{&spell?"SPELL ":""}'
+      let l:s .= crystalline#left_mode_sep('Line')
     endif
     if a:width > 80
       let l:s .= ' %{&ft}[%{&enc}][%{&ffs}] %l/%L %c%V %P '

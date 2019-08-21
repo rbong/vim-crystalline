@@ -20,11 +20,11 @@ let g:crystalline_mode_hi_groups = {
 
 if get(g:, 'crystalline_enable_sep', 0)
   let g:crystalline_default_supported_sep = {
-        \ 'NormalMode': ['', 'Fill', 'TabFill', 'Tab'],
-        \ 'InsertMode': ['', 'Fill', 'TabFill', 'Tab'],
-        \ 'VisualMode': ['', 'Fill', 'TabFill', 'Tab'],
-        \ 'ReplaceMode': ['', 'Fill', 'TabFill', 'Tab'],
-        \ '': ['Fill'],
+        \ 'NormalMode': ['Line', 'Fill', 'TabFill', 'Tab'],
+        \ 'InsertMode': ['Line', 'Fill', 'TabFill', 'Tab'],
+        \ 'VisualMode': ['Line', 'Fill', 'TabFill', 'Tab'],
+        \ 'ReplaceMode': ['Line', 'Fill', 'TabFill', 'Tab'],
+        \ 'Line': ['Fill'],
         \ 'Inactive': [],
         \ 'Fill': [],
         \ 'Tab': ['TabSel', 'TabFill', 'NormalMode', 'InsertMode', 'VisualMode', 'ReplaceMode'],
@@ -44,7 +44,7 @@ let g:crystalline_hi_groups = [
         \ 'InsertMode',
         \ 'VisualMode',
         \ 'ReplaceMode',
-        \ '',
+        \ 'Line',
         \ 'Inactive',
         \ 'Fill',
         \ 'Tab',

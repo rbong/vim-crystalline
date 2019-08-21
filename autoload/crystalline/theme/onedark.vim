@@ -4,7 +4,7 @@ function! crystalline#theme#onedark#set_theme() abort
         \ 'InsertMode':  [[235, 39],  ['#282c34', '#61afef']],
         \ 'VisualMode':  [[235, 170], ['#282c34', '#c678dd']],
         \ 'ReplaceMode': [[235, 204], ['#282c34', '#e06c75']],
-        \ '':            [[145, 236], ['#abb2bf', '#3e4452']],
+        \ 'Line':        [[145, 236], ['#abb2bf', '#3e4452']],
         \ 'Inactive':    [[235, 145], ['#282c34', '#abb2bf']],
         \ 'Fill':        [[114, 236], ['#98c379', '#282c34']],
         \ 'Tab':         [[145, 236], ['#abb2bf', '#3e4452']],

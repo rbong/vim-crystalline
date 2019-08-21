@@ -4,7 +4,7 @@ function! crystalline#theme#dracula#set_theme() abort
         \ 'InsertMode':  [[16, 117], ['#8be9fd', '#282a36']],
         \ 'VisualMode':  [[16, 84],  ['#282a36', '#50fa7b']],
         \ 'ReplaceMode': [[16, 222], ['#282a36', '#ffc66d']],
-        \ '':            [[15, 61],  ['#f8f8f2', '#5f6a8e']],
+        \ 'Line':        [[15, 61],  ['#f8f8f2', '#5f6a8e']],
         \ 'Inactive':    [[15, 236], ['#f8f8f2', '#44475a']],
         \ 'Fill':        [[15, 236], ['#f8f8f2', '#44475a']],
         \ 'Tab':         [[15, 61],  ['#f8f8f2', '#5f6a8e']],

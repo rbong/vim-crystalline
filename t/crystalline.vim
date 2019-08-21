@@ -82,7 +82,7 @@ describe 'g:crystalline_theme'
     hi CrystallineInsertMode
     hi CrystallineVisualMode
     hi CrystallineReplaceMode
-    hi Crystalline
+    hi CrystallineLine
     hi CrystallineInactive
     hi CrystallineFill
     hi CrystallineTab
@@ -97,7 +97,7 @@ describe 'g:crystalline_theme'
     hi CrystallineNormalModeToLine
     hi CrystallineNormalModeToTab
     hi CrystallineNormalModeToTabFill
-    hi CrystallineToFill
+    hi CrystallineLineToFill
     hi CrystallineTabTypeToTab
     hi CrystallineTabTypeToTabSel
     hi CrystallineTabTypeToTabFill
@@ -221,14 +221,14 @@ describe 'crystalline#sep'
   end
 
   it 'returns next group when separators disabled'
-    Expect crystalline#sep('', 'Fill', '>', 0) ==# '%#CrystallineFill#'
-    Expect crystalline#sep('', 'Fill', '<', 1) ==# '%#Crystalline#'
+    Expect crystalline#sep('Line', 'Fill', '>', 0) ==# '%#CrystallineFill#'
+    Expect crystalline#sep('Line', 'Fill', '<', 1) ==# '%#CrystallineLine#'
   end
 
   it 'returns separators when enabled'
     let g:crystalline_enable_sep = 1
-    Expect crystalline#sep('', 'Fill', '>', 0) ==# '%#CrystallineToFill#>%#CrystallineFill#'
-    Expect crystalline#sep('', 'Fill', '<', 1) ==# '%#CrystallineToFill#<%#Crystalline#'
+    Expect crystalline#sep('Line', 'Fill', '>', 0) ==# '%#CrystallineLineToFill#>%#CrystallineFill#'
+    Expect crystalline#sep('Line', 'Fill', '<', 1) ==# '%#CrystallineLineToFill#<%#CrystallineLine#'
   end
 end
 
