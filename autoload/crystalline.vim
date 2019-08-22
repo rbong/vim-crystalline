@@ -25,7 +25,7 @@ function! crystalline#mode_type() abort
   elseif mode() ==# 'R'
     return 'R'
   endif
-  return ''
+  return ' '
 endfunction
 
 function! crystalline#mode_color() abort
@@ -42,7 +42,7 @@ endfunction
 
 function! crystalline#trigger_mode_update() abort
   let l:mode = crystalline#mode_type()
-  if get(g:, 'crystalline_mode', '') !=# l:mode
+  if get(g:, 'crystalline_mode', '  ') !=# l:mode
     let g:crystalline_mode = l:mode
     silent doautocmd User CrystallineModeUpdate
   endif
@@ -447,7 +447,7 @@ function! crystalline#clear_tabline() abort
 endfunction
 
 function! crystalline#set_theme(theme) abort
-  let g:crystalline_mode = ''
+  let g:crystalline_mode = ' '
   let g:crystalline_theme = a:theme
   call function('crystalline#theme#' . a:theme . '#set_theme')()
   silent doautocmd User CrystallineSetTheme

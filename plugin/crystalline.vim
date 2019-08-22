@@ -7,7 +7,7 @@ let g:crystalline_mode_labels = {
       \ 'i': ' INSERT ',
       \ 'v': ' VISUAL ',
       \ 'R': ' REPLACE ',
-      \ '': '',
+      \ ' ': '',
       \ }
 
 let g:crystalline_mode_hi_groups = {
@@ -15,7 +15,7 @@ let g:crystalline_mode_hi_groups = {
       \ 'i': 'InsertMode',
       \ 'v': 'VisualMode',
       \ 'R': 'ReplaceMode',
-      \ '': '',
+      \ ' ': '',
       \ }
 
 if get(g:, 'crystalline_enable_sep', 0)
