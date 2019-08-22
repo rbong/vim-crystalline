@@ -51,7 +51,7 @@ endfunction
 function! crystalline#get_statusline(current, win) abort
   call crystalline#trigger_mode_update()
   try
-    return function(g:crystalline_statusline_fn)(a:current, winwidth(win_id2win(a:win)))
+    return function(g:crystalline_statusline_fn)(a:current, winwidth(a:win))
   catch /^Vim\%((\a\+)\)\=:E118/
     return function(g:crystalline_statusline_fn)(a:current)
   endtry
@@ -405,15 +405,16 @@ endfunction
 
 function! crystalline#set_statusline(fn) abort
   let g:crystalline_statusline_fn = a:fn
-  exec 'set statusline=%!crystalline#get_statusline(1,' . win_getid() . ')'
+  let g:crystalline_use_winid = exists('*win_getid')
+  exec 'set statusline=%!crystalline#get_statusline(1,' . (g:crystalline_use_winid ? win_getid() : winnr()) . ')'
   augroup CrystallineAutoStatusline
     au!
-    au BufWinEnter,WinEnter * exec 'setlocal statusline=%!crystalline#get_statusline(1,' . win_getid('#') . ')'
-    au WinLeave * exec 'setlocal statusline=%!crystalline#get_statusline(0,' . win_getid() . ')'
+    au BufWinEnter,WinEnter * exec 'setlocal statusline=%!crystalline#get_statusline(1,' . (g:crystalline_use_winid ? win_getid('#') : winnr('#')) . ')'
+    au WinLeave * exec 'setlocal statusline=%!crystalline#get_statusline(0,' . (g:crystalline_use_winid ? win_getid() : winnr()) . ')'
     if exists('#CmdlineLeave') && exists('#CmdWinEnter') && exists('#CmdlineEnter')
-      au CmdlineLeave : exec 'setlocal statusline=%!crystalline#get_statusline(1,' . win_getid() . ')'
+      au CmdlineLeave : exec 'setlocal statusline=%!crystalline#get_statusline(1,' . (g:crystalline_use_winid ? win_getid() : winnr()) . ')'
       au CmdWinEnter : exec 'setlocal statusline=%!crystalline#get_statusline(1,0)'
-      au CmdlineEnter : exec 'setlocal statusline=%!crystalline#get_statusline(0,' . win_getid() . ')'
+      au CmdlineEnter : exec 'setlocal statusline=%!crystalline#get_statusline(0,' . (g:crystalline_use_winid ? win_getid() : winnr()) . ')'
     endif
   augroup END
 endfunction
