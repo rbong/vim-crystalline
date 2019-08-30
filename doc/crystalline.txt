@@ -244,7 +244,7 @@ EXAMPLE                                         *crystalline-example*
       let l:s .= crystalline#left_mode_sep('')
     endif
     if a:width > 80
-      let l:s .= ' %{&ft}[%{&enc}][%{&ff}] %l/%L %c%V %P '
+      let l:s .= ' %{&ft}[%{&fenc}][%{&ff}] %l/%L %c%V %P '
     else
       let l:s .= ' '
     endif

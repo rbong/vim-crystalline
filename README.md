@@ -116,7 +116,7 @@ set laststatus=2
 ```vim
 function! StatusLine(current)
   return ' %f%h%w%m%r '
-        \ . (a:current ? '%= %{&ft}[%{&enc}][%{&ff}] %l/%L %c%V %P ' : '')
+        \ . (a:current ? '%= %{&ft}[%{&fenc}][%{&ff}] %l/%L %c%V %P ' : '')
 endfunction
 let g:crystalline_statusline_fn = 'StatusLine'
 set laststatus=2
@@ -127,7 +127,7 @@ set laststatus=2
 ```vim
 function! StatusLine(...)
   return '%#Crystalline# %f%h%w%m%r %#CrystallineFill#'
-        \ . '%=%#Crystalline# %{&ft}[%{&enc}][%{&ff}] %l/%L %c%V %P '
+        \ . '%=%#Crystalline# %{&ft}[%{&fenc}][%{&ff}] %l/%L %c%V %P '
 endfunction
 let g:crystalline_statusline_fn = 'StatusLine'
 let g:crystalline_theme = 'default'
@@ -149,7 +149,7 @@ set laststatus=2
 ```vim
 function! StatusLine(current, width)
   return ' %f%h%w%m%r '
-        \ . (a:width > 80 ? '%= %{&ft}[%{&enc}][%{&ff}] %l/%L %c%V %P ' : '')
+        \ . (a:width > 80 ? '%= %{&ft}[%{&fenc}][%{&ff}] %l/%L %c%V %P ' : '')
 endfunction
 let g:crystalline_statusline_fn = 'StatusLine'
 set laststatus=2
@@ -161,7 +161,7 @@ set laststatus=2
 function! StatusLine(...)
   return crystalline#mode() . crystalline#right_mode_sep('')
         \ . ' %f%h%w%m%r ' . crystalline#right_sep('', 'Fill') . '%='
-        \ . crystalline#left_sep('', 'Fill') . ' %{&ft}[%{&enc}][%{&ff}] %l/%L %c%V %P '
+        \ . crystalline#left_sep('', 'Fill') . ' %{&ft}[%{&fenc}][%{&ff}] %l/%L %c%V %P '
 endfunction
 let g:crystalline_enable_sep = 1
 let g:crystalline_statusline_fn = 'StatusLine'
@@ -231,7 +231,7 @@ function! StatusLine(current, width)
     let l:s .= crystalline#left_mode_sep('')
   endif
   if a:width > 80
-    let l:s .= ' %{&ft}[%{&enc}][%{&ff}] %l/%L %c%V %P '
+    let l:s .= ' %{&ft}[%{&fenc}][%{&ff}] %l/%L %c%V %P '
   else
     let l:s .= ' '
   endif
