@@ -85,6 +85,11 @@ function! crystalline#tablabel(buf, max_width) abort
   return l:left . l:name . l:right
 endfunction
 
+function! crystalline#default_tabwidth() abort
+  let [l:empty, l:mod, l:left, l:nomod] = crystalline#get_tab_strings()
+  return len(l:empty) + len(l:left) + max([len(l:mod), len(l:nomod)])
+endfunction
+
 function! crystalline#hide_buf_tab(buf) abort
   return !bufexists(a:buf) || !buflisted(a:buf) || getbufvar(a:buf, '&ft') ==# 'qf'
 endfunction
@@ -246,7 +251,6 @@ endfunction
 function! crystalline#bufferline(...) abort
   let l:enable_sep = get(g:, 'crystalline_enable_sep', 0)
   let l:use_buffers = tabpagenr('$') == 1
-  let [l:empty, l:mod, l:left, l:nomod] = crystalline#get_tab_strings()
 
   let l:items = get(a:, 1, 0)
   let l:width = get(a:, 2, 0)
@@ -255,7 +259,7 @@ function! crystalline#bufferline(...) abort
   let l:tablabel = get(a:, 5, 'crystalline#tablabel')
   let l:tabitems = get(a:, 6, 0) + (l:allow_mouse ? 1 : 0)
   let l:tabselitems = get(a:, 7, l:enable_sep ? 4 : 2)
-  let l:tabwidth = get(a:, 8, len(l:empty) + len(l:left) + max([len(l:mod), len(l:nomod)]))
+  let l:tabwidth = get(a:, 8, crystalline#default_tabwidth())
 
   if l:enable_sep
     let l:pad = 1
