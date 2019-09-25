@@ -258,7 +258,7 @@ function! crystalline#bufferline(...) abort
   let l:allow_mouse = get(a:, 4, 1) && !l:use_buffers
   let l:tablabel = get(a:, 5, 'crystalline#tablabel')
   let l:tabitems = get(a:, 6, 0) + (l:allow_mouse ? 1 : 0)
-  let l:tabselitems = get(a:, 7, l:enable_sep ? 4 : 2)
+  let l:tabselitems = get(a:, 7, 0) + (l:enable_sep ? 4 : 2)
   let l:tabwidth = get(a:, 8, crystalline#default_tabwidth())
 
   if l:enable_sep
