@@ -75,14 +75,20 @@ function! crystalline#calculate_max_tabs(leftitems, tabitems, tabselitems, right
   return (80 - a:leftitems - a:rightitems - a:tabselitems) / max([a:tabitems, 1])
 endfunction
 
-function! crystalline#tablabel(buf, max_width) abort
+function! crystalline#default_tablabel_parts(buf, max_width) abort
   let [l:empty, l:mod, l:left, l:nomod] = crystalline#get_tab_strings()
   let l:right = getbufvar(a:buf, '&mod') ? l:mod : l:nomod
-  let l:name = pathshorten(bufname(a:buf))[-a:max_width : ]
-  if l:name ==# ''
-    let l:name = l:empty
+  let l:name = pathshorten(bufname(a:buf))
+  let l:short_name = l:name[-a:max_width : ]
+  if l:short_name ==# ''
+    let l:short_name = l:empty
   endif
-  return l:left . l:name . l:right
+  return [l:left, l:name, l:short_name, l:right]
+endfunction
+
+function! crystalline#default_tablabel(buf, max_width) abort
+  let [l:left, l:name, l:short_name, l:right] = crystalline#default_tablabel_parts(a:buf, a:max_width)
+  return l:left . l:short_name . l:right
 endfunction
 
 function! crystalline#default_tabwidth() abort
@@ -164,7 +170,7 @@ function! crystalline#visual_tabinfo(tabs, curtab, ntabs, pad, tabpad, tabwidth,
   let l:first = a:curtab > 0 ? a:curtab : 1
   let l:vbufs = [a:tabs[l:first - 1]]
   let l:vtabs = [function(a:tablabel)(l:vbufs[0], l:max_width)]
-  let l:width = len(l:vtabs[0]) + a:tabpad
+  let l:width = strchars(l:vtabs[0]) + a:tabpad
   let l:vcurtab = 1
   let l:vntabs = 1
 
@@ -179,7 +185,7 @@ function! crystalline#visual_tabinfo(tabs, curtab, ntabs, pad, tabpad, tabwidth,
     if l:right <= a:ntabs && !l:right_cutoff
       let l:buf = a:tabs[l:right - 1]
       let l:label = function(a:tablabel)(l:buf, l:max_width)
-      let l:w = len(l:label) + a:tabpad
+      let l:w = strchars(l:label) + a:tabpad
       if l:width + l:w <= l:total_width
         call add(l:vbufs, l:buf)
         call add(l:vtabs, l:label)
@@ -194,7 +200,7 @@ function! crystalline#visual_tabinfo(tabs, curtab, ntabs, pad, tabpad, tabwidth,
     if l:left > 0 && !l:left_cutoff
       let l:buf = a:tabs[l:left - 1]
       let l:label = function(a:tablabel)(l:buf, l:max_width)
-      let l:w = len(l:label) + a:tabpad
+      let l:w = strchars(l:label) + a:tabpad
       if l:width + l:w <= l:total_width
         let l:vbufs = [l:buf] + l:vbufs
         let l:vtabs = [l:label] + l:vtabs
@@ -256,10 +262,10 @@ function! crystalline#bufferline(...) abort
   let l:width = get(a:, 2, 0)
   let l:show_mode = get(a:, 3, 0)
   let l:allow_mouse = get(a:, 4, 1) && !l:use_buffers
-  let l:tablabel = get(a:, 5, 'crystalline#tablabel')
-  let l:tabitems = get(a:, 6, 0) + (l:allow_mouse ? 1 : 0)
-  let l:tabselitems = get(a:, 7, 0) + (l:enable_sep ? 4 : 2)
-  let l:tabwidth = get(a:, 8, crystalline#default_tabwidth())
+  let l:tablabel = get(a:, 5, 'crystalline#default_tablabel')
+  let l:tabwidth = get(a:, 6, crystalline#default_tabwidth())
+  let l:tabitems = get(a:, 7, 0) + (l:allow_mouse ? 1 : 0)
+  let l:tabselitems = get(a:, 8, 0) + (l:enable_sep ? 4 : 2)
 
   if l:enable_sep
     let l:pad = 1
