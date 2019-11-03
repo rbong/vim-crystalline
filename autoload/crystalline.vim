@@ -368,7 +368,7 @@ function! crystalline#sep(group_a, group_b, ch, left) abort
   if !get(g:, 'crystalline_enable_sep', 0) || a:ch ==# ''
     return l:next_item
   endif
-  if a:group_a == v:null || a:group_b == v:null
+  if a:group_a == 0 || a:group_b == 0
     return ''
   endif
   if a:left == 0 && a:group_a ==# 'TabType' && index(get(g:, 'crystalline_tab_type_fake_separators', []), a:group_b) >= 0
