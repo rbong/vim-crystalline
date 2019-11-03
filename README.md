@@ -74,14 +74,18 @@ If you'd like to port an airline theme, see [Porting Airline Themes](https://git
 Using [vim-plug](https://github.com/junegunn/vim-plug), put this in your `.vimrc` between `plug#begin()` and `plug#end()`:
 
 ```vim
-Plug 'rbong/vim-crystalline', { 'branch': 'vim-7' }
+Plug 'rbong/vim-crystalline'
 ```
 
 Now run `:PlugInstall` after restarting vim.
 Refer to your plugin manager of choice's documentation if you don't use `vim-plug`.
 
 The default version of `vim-crystalline` requires Vim 8.
-To install on Vim 7, please see [this thread](https://github.com/rbong/vim-crystalline/issues/12).
+To install on `vim-7`, use:
+
+```vim
+Plug 'rbong/vim-crystalline', { 'branch': 'vim-7' }
+```
 
 ## Examples
 
