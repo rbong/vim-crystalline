@@ -51,10 +51,11 @@ endfunction
 function! crystalline#get_statusline(current, win) abort
   call crystalline#trigger_mode_update()
   try
-    return function(g:crystalline_statusline_fn)(a:current, winwidth(a:win))
+    let l:ret = function(g:crystalline_statusline_fn)(a:current, winwidth(a:win))
   catch /^Vim\%((\a\+)\)\=:E118/
-    return function(g:crystalline_statusline_fn)(a:current)
+    let l:ret = function(g:crystalline_statusline_fn)(a:current)
   endtry
+  return l:ret
 endfunction
 
 " }}}
@@ -368,10 +369,10 @@ function! crystalline#sep(group_a, group_b, ch, left) abort
   if !get(g:, 'crystalline_enable_sep', 0) || a:ch ==# ''
     return l:next_item
   endif
-  if a:group_a == v:null || a:group_b == v:null
+  if a:group_a is 0 || a:group_b is 0
     return ''
   endif
-  if a:left == 0 && a:group_a ==# 'TabType' && index(get(g:, 'crystalline_tab_type_fake_separators', []), a:group_b) >= 0
+  if a:left is 0 && a:group_a ==# 'TabType' && index(get(g:, 'crystalline_tab_type_fake_separators', []), a:group_b) >= 0
     let l:sep_item = g:crystalline_tab_separator
   else
     let l:sep_item = '%#Crystalline' . crystalline#get_sep_group(a:group_a, a:group_b) . '#' . a:ch

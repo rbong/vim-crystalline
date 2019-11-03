@@ -40,7 +40,7 @@ describe 'g:crystalline_statusline_fn'
   end
 
   it 'sets the statusline'
-    Expect &statusline ==# '%!crystalline#get_statusline(1,' . win_getid() . ')'
+    Expect &statusline ==# '%!crystalline#get_statusline(1,' . (exists('*win_getid') ? win_getid() : winnr()) . ')'
   end
 
   it 'defines an autogroup'
@@ -227,6 +227,7 @@ describe 'crystalline#sep'
 
   it 'returns separators when enabled'
     let g:crystalline_enable_sep = 1
+    call crystalline#sep('Line', 'Fill', '>', 0)
     Expect crystalline#sep('Line', 'Fill', '>', 0) ==# '%#CrystallineLineToFill#>%#CrystallineFill#'
     Expect crystalline#sep('Line', 'Fill', '<', 1) ==# '%#CrystallineLineToFill#<%#CrystallineLine#'
   end
