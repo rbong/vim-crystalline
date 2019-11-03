@@ -76,14 +76,25 @@ function! crystalline#calculate_max_tabs(leftitems, tabitems, tabselitems, right
   return (80 - a:leftitems - a:rightitems - a:tabselitems) / max([a:tabitems, 1])
 endfunction
 
-function! crystalline#tablabel(buf, max_width) abort
+function! crystalline#default_tablabel_parts(buf, max_width) abort
   let [l:empty, l:mod, l:left, l:nomod] = crystalline#get_tab_strings()
   let l:right = getbufvar(a:buf, '&mod') ? l:mod : l:nomod
-  let l:name = pathshorten(bufname(a:buf))[-a:max_width : ]
-  if l:name ==# ''
-    let l:name = l:empty
+  let l:name = pathshorten(bufname(a:buf))
+  let l:short_name = l:name[-a:max_width : ]
+  if l:short_name ==# ''
+    let l:short_name = l:empty
   endif
-  return l:left . l:name . l:right
+  return [l:left, l:name, l:short_name, l:right]
+endfunction
+
+function! crystalline#default_tablabel(buf, max_width) abort
+  let [l:left, l:name, l:short_name, l:right] = crystalline#default_tablabel_parts(a:buf, a:max_width)
+  return l:left . l:short_name . l:right
+endfunction
+
+function! crystalline#default_tabwidth() abort
+  let [l:empty, l:mod, l:left, l:nomod] = crystalline#get_tab_strings()
+  return len(l:empty) + len(l:left) + max([len(l:mod), len(l:nomod)])
 endfunction
 
 function! crystalline#hide_buf_tab(buf) abort
@@ -144,16 +155,14 @@ function! crystalline#tabinfo(maxtabs) abort
   return [l:tabs, l:ntabs, l:curtab]
 endfunction
 
-function! crystalline#visual_tabinfo(tabs, curtab, ntabs, pad, tabpad) abort
+function! crystalline#visual_tabinfo(tabs, curtab, ntabs, pad, tabpad, tabwidth, tablabel) abort
   if a:ntabs <= 0
     return [[], 0, -1]
   endif
 
-  let [l:empty, l:mod, l:left, l:nomod] = crystalline#get_tab_strings()
-
   let l:total_width = &columns - a:pad
   let l:per_tab_width = l:total_width / a:ntabs
-  let l:needed_width = len(l:empty) + len(l:left) + max([len(l:mod), len(l:nomod)]) + a:tabpad
+  let l:needed_width = a:tabwidth + a:tabpad
   if l:per_tab_width < l:needed_width
     let l:per_tab_width = l:needed_width
   endif
@@ -161,8 +170,8 @@ function! crystalline#visual_tabinfo(tabs, curtab, ntabs, pad, tabpad) abort
 
   let l:first = a:curtab > 0 ? a:curtab : 1
   let l:vbufs = [a:tabs[l:first - 1]]
-  let l:vtabs = [crystalline#tablabel(l:vbufs[0], l:max_width)]
-  let l:width = len(l:vtabs[0]) + a:tabpad
+  let l:vtabs = [function(a:tablabel)(l:vbufs[0], l:max_width)]
+  let l:width = strchars(l:vtabs[0]) + a:tabpad
   let l:vcurtab = 1
   let l:vntabs = 1
 
@@ -176,8 +185,8 @@ function! crystalline#visual_tabinfo(tabs, curtab, ntabs, pad, tabpad) abort
 
     if l:right <= a:ntabs && !l:right_cutoff
       let l:buf = a:tabs[l:right - 1]
-      let l:label = crystalline#tablabel(l:buf, l:max_width)
-      let l:w = len(l:label) + a:tabpad
+      let l:label = function(a:tablabel)(l:buf, l:max_width)
+      let l:w = strchars(l:label) + a:tabpad
       if l:width + l:w <= l:total_width
         call add(l:vbufs, l:buf)
         call add(l:vtabs, l:label)
@@ -191,8 +200,8 @@ function! crystalline#visual_tabinfo(tabs, curtab, ntabs, pad, tabpad) abort
 
     if l:left > 0 && !l:left_cutoff
       let l:buf = a:tabs[l:left - 1]
-      let l:label = crystalline#tablabel(l:buf, l:max_width)
-      let l:w = len(l:label) + a:tabpad
+      let l:label = function(a:tablabel)(l:buf, l:max_width)
+      let l:w = strchars(l:label) + a:tabpad
       if l:width + l:w <= l:total_width
         let l:vbufs = [l:buf] + l:vbufs
         let l:vtabs = [l:label] + l:vtabs
@@ -247,23 +256,26 @@ function! crystalline#tab_sep(tab, curtab, ntabs, show_mode) abort
 endfunction
 
 function! crystalline#bufferline(...) abort
+  let l:enable_sep = get(g:, 'crystalline_enable_sep', 0)
   let l:use_buffers = tabpagenr('$') == 1
 
   let l:items = get(a:, 1, 0)
   let l:width = get(a:, 2, 0)
   let l:show_mode = get(a:, 3, 0)
   let l:allow_mouse = get(a:, 4, 1) && !l:use_buffers
+  let l:tablabel = get(a:, 5, 'crystalline#default_tablabel')
+  let l:tabwidth = get(a:, 6, crystalline#default_tabwidth())
+  let l:tabitems = get(a:, 7, 0) + (l:allow_mouse ? 1 : 0)
+  let l:tabselitems = get(a:, 8, 0) + (l:enable_sep ? 4 : 2)
 
-  let l:tabitems = l:allow_mouse ? 1 : 0
-
-  if get(g:, 'crystalline_enable_sep', 0)
+  if l:enable_sep
     let l:pad = 1
     let l:tabpad = strchars(g:crystalline_separators[0])
-    let l:maxtabs = crystalline#calculate_max_tabs(3, l:tabitems, 4, 2 + l:items)
+    let l:maxtabs = crystalline#calculate_max_tabs(3, l:tabitems, l:tabselitems, 2 + l:items)
   else
     let l:pad = 0
     let l:tabpad = 0
-    let l:maxtabs = crystalline#calculate_max_tabs(2, l:tabitems, 2, 1 + l:items)
+    let l:maxtabs = crystalline#calculate_max_tabs(2, l:tabitems, l:tabselitems, 1 + l:items)
   endif
 
   if l:use_buffers
@@ -276,7 +288,7 @@ function! crystalline#bufferline(...) abort
     let l:tabline = '%#CrystallineTabType# TABS '
   endif
 
-  let [l:vtabs, l:vntabs, l:vcurtab] = crystalline#visual_tabinfo(l:tabs, l:curtab, l:ntabs, l:pad, l:tabpad)
+  let [l:vtabs, l:vntabs, l:vcurtab] = crystalline#visual_tabinfo(l:tabs, l:curtab, l:ntabs, l:pad, l:tabpad, l:tabwidth, l:tablabel)
   let l:tabline .= crystalline#tab_sep(0, l:vcurtab, l:vntabs, l:show_mode)
   for l:i in range(l:vntabs)
     if l:allow_mouse

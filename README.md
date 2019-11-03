@@ -80,6 +80,9 @@ Plug 'rbong/vim-crystalline'
 Now run `:PlugInstall` after restarting vim.
 Refer to your plugin manager of choice's documentation if you don't use `vim-plug`.
 
+The default version of `vim-crystalline` requires Vim 8.
+To install on Vim 7, please see [this thread](https://github.com/rbong/vim-crystalline/issues/12).
+
 ## Examples
 
 Jump straight to the last example if you just want to see everything crystalline can do.
@@ -113,7 +116,7 @@ set laststatus=2
 ```vim
 function! StatusLine(current)
   return ' %f%h%w%m%r '
-        \ . (a:current ? '%= %{&ft}[%{&enc}][%{&ffs}] %l/%L %c%V %P ' : '')
+        \ . (a:current ? '%= %{&ft}[%{&fenc!=#""?&fenc:&enc}][%{&ff}] %l/%L %c%V %P ' : '')
 endfunction
 let g:crystalline_statusline_fn = 'StatusLine'
 set laststatus=2
@@ -124,7 +127,7 @@ set laststatus=2
 ```vim
 function! StatusLine(...)
   return '%#CrystallineLine# %f%h%w%m%r %#CrystallineFill#'
-        \ . '%=%#CrystallineLine# %{&ft}[%{&enc}][%{&ffs}] %l/%L %c%V %P '
+        \ . '%=%#CrystallineLine# %{&ft}[%{&fenc!=#""?&fenc:&enc}][%{&ff}] %l/%L %c%V %P '
 endfunction
 let g:crystalline_statusline_fn = 'StatusLine'
 let g:crystalline_theme = 'default'
@@ -146,7 +149,7 @@ set laststatus=2
 ```vim
 function! StatusLine(current, width)
   return ' %f%h%w%m%r '
-        \ . (a:width > 80 ? '%= %{&ft}[%{&enc}][%{&ffs}] %l/%L %c%V %P ' : '')
+        \ . (a:width > 80 ? '%= %{&ft}[%{&fenc!=#""?&fenc:&enc}][%{&ff}] %l/%L %c%V %P ' : '')
 endfunction
 let g:crystalline_statusline_fn = 'StatusLine'
 set laststatus=2
@@ -158,7 +161,7 @@ set laststatus=2
 function! StatusLine(...)
   return crystalline#mode() . crystalline#right_mode_sep('Line')
         \ . ' %f%h%w%m%r ' . crystalline#right_sep('Line', 'Fill') . '%='
-        \ . crystalline#left_sep('Line', 'Fill') . ' %{&ft}[%{&enc}][%{&ffs}] %l/%L %c%V %P '
+        \ . crystalline#left_sep('Line', 'Fill') . ' %{&ft}[%{&fenc!=#""?&fenc:&enc}][%{&ff}] %l/%L %c%V %P '
 endfunction
 let g:crystalline_enable_sep = 1
 let g:crystalline_statusline_fn = 'StatusLine'
@@ -228,7 +231,7 @@ function! StatusLine(current, width)
     let l:s .= crystalline#left_mode_sep('Line')
   endif
   if a:width > 80
-    let l:s .= ' %{&ft}[%{&enc}][%{&ffs}] %l/%L %c%V %P '
+    let l:s .= ' %{&ft}[%{&fenc!=#""?&fenc:&enc}][%{&ff}] %l/%L %c%V %P '
   else
     let l:s .= ' '
   endif
