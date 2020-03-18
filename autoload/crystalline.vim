@@ -400,7 +400,7 @@ function! crystalline#right_sep(group_a, group_b) abort
 endfunction
 
 function! crystalline#left_sep(group_a, group_b) abort
-  return crystalline#sep(a:group_a, a:group_b, g:crystalline_separators[1], 1)
+  return crystalline#sep(a:group_b, a:group_a, g:crystalline_separators[1], 1)
 endfunction
 
 function! crystalline#right_mode_sep(group) abort

@@ -123,11 +123,22 @@ Generate a right-facing separator between the two highlight groups.
 Use the group names listed in |crystaline-highlight-groups|, with
 "Crystalline" omitted.
 
+The highlight group that is used for this separator will have the name
+"Crystalline" . group_a . "To" . group_b. For example, if you create a
+separator with crystalline#right_sep('Inactive', 'Fill'), the highlight group
+for this separator will be called "CrystallineInactiveToFill".
+
 crystalline#left_sep(group_a, group_b)          *crystalline#left_sep()*
 
 Generate a left-facing separator between the two highlight groups.
 
-See |crystalline#right_sep()|.
+The highlight group that is used for this separator will have the name
+"Crystalline" . group_b . "To" . group_b. For example, if you create a
+separator with crystalline#left_sep('Inactive', 'Fill'), the highlight group
+for this separator will be called "CrystallineFillToInactive".
+
+Note: the order of the highlight group names is reversed from
+|crystalline#right_sep()|.
 
 crystalline#right_mode_sep(group)               *crystalline#right_mode_sep()*
 
@@ -240,7 +251,7 @@ EXAMPLE                                         *crystalline-example*
 
     let l:s .= '%='
     if a:current
-      let l:s .= crystalline#left_sep('', 'Fill') . ' %{&paste ?"PASTE ":""}%{&spell?"SPELL ":""}'
+      let l:s .= crystalline#left_sep('Fill', '') . ' %{&paste ?"PASTE ":""}%{&spell?"SPELL ":""}'
       let l:s .= crystalline#left_mode_sep('')
     endif
     if a:width > 80
