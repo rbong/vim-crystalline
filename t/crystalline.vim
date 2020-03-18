@@ -90,24 +90,6 @@ describe 'g:crystalline_theme'
     hi CrystallineTabSel
     hi CrystallineTabFill
   end
-
-  it 'defines basic separator groups'
-    let g:crystalline_enable_sep = 1
-    source plugin/crystalline.vim
-    hi CrystallineNormalModeToLine
-    hi CrystallineNormalModeToTab
-    hi CrystallineNormalModeToTabFill
-    hi CrystallineToFill
-    hi CrystallineTabTypeToTab
-    hi CrystallineTabTypeToTabSel
-    hi CrystallineTabTypeToTabFill
-    hi CrystallineTabTypeToNormalMode
-    hi CrystallineTabSelToTab
-    hi CrystallineTabSelToTabFill
-    hi CrystallineTabToTabSel
-    hi CrystallineTabToTabFill
-    hi CrystallineTabToNormalMode
-  end
 end
 
 describe 'g:crystalline_*_separator(s)'
@@ -230,6 +212,15 @@ describe 'crystalline#sep'
     Expect crystalline#sep('', 'Fill', '>', 0) ==# '%#CrystallineToFill#>%#CrystallineFill#'
     Expect crystalline#sep('', 'Fill', '<', 1) ==# '%#CrystallineToFill#<%#Crystalline#'
   end
+
+  it 'automatically creates nonexistent separator highlight groups'
+    let g:crystalline_enable_sep = 1
+    Expect crystalline#sep('', 'Fill', '>', 0) ==# '%#CrystallineToFill#>%#CrystallineFill#'
+    Expect crystalline#sep('Fill', '', '>', 0) ==# '%#CrystallineFillToLine#>%#Crystalline#'
+    hi CrystallineToFill
+    hi CrystallineFillToLine
+  end
+
 end
 
 describe 'crystalline#bufferline'

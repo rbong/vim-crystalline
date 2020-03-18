@@ -334,41 +334,36 @@ function! crystalline#generate_theme(theme) abort
 
   for [l:group, l:attr] in items(a:theme)
     let l:his += [crystalline#generate_hi(l:group, l:attr)]
-
-    if !get(g:, 'crystalline_enable_sep', 0)
-      continue
-    endif
-
-    for l:group_b in g:crystalline_supported_sep[l:group]
-      let l:attr_b = get(a:theme, l:group_b, [])
-      if l:attr == []
-        continue
-      endif
-
-      let l:sep_attr = [[l:attr[0][1], l:attr_b[0][1]], [l:attr[1][1], l:attr_b[1][1]]]
-      if len(l:attr) > 2
-        let l:sep_attr += [l:attr[2]]
-      endif
-
-      if l:group ==# 'TabType'
-        let l:attr_type = has('gui_running') ? 1 : 0
-        if l:attr[l:attr_type][1] == l:attr_b[l:attr_type][1]
-          call add(g:crystalline_tab_type_fake_separators, l:group_b)
-        endif
-      endif
-
-      let l:sep_group = crystalline#get_sep_group(l:group, l:group_b)
-      let l:his += [crystalline#generate_hi(l:sep_group, l:sep_attr)]
-    endfor
   endfor
 
   if len(l:his) > 0
     exec join(l:his, ' | ')
   endif
+  let g:crystalline_theme_config = copy(a:theme)
 endfunction
 
 function! crystalline#mode_hi() abort
   return g:crystalline_mode_hi_groups[crystalline#mode_type()]
+endfunction
+
+function! crystalline#generate_sep_hi(group_a, group_b) abort
+  let l:attr_a = g:crystalline_theme_config[a:group_a]
+  let l:attr_b = g:crystalline_theme_config[a:group_b]
+  let l:sep_attr = [[l:attr_a[0][1], l:attr_b[0][1]], [l:attr_a[1][1], l:attr_b[1][1]]]
+  if len(l:attr_a) > 2
+    let l:sep_attr += [l:attr_a[2]]
+  endif
+
+  if a:group_a ==# 'TabType'
+    let l:attr_type = has('gui_running') ? 1 : 0
+    if l:attr_a[l:attr_type][1] == l:attr_b[l:attr_type][1]
+      call add(g:crystalline_tab_type_fake_separators, a:group_b)
+    endif
+  endif
+
+  let l:sep_group = crystalline#get_sep_group(a:group_a, a:group_b)
+
+  exec crystalline#generate_hi(l:sep_group, l:sep_attr)
 endfunction
 
 function! crystalline#sep(group_a, group_b, ch, left) abort
@@ -382,7 +377,13 @@ function! crystalline#sep(group_a, group_b, ch, left) abort
   if a:left == 0 && a:group_a ==# 'TabType' && index(get(g:, 'crystalline_tab_type_fake_separators', []), a:group_b) >= 0
     let l:sep_item = g:crystalline_tab_separator
   else
-    let l:sep_item = '%#Crystalline' . crystalline#get_sep_group(a:group_a, a:group_b) . '#' . a:ch
+    let l:sep_group = crystalline#get_sep_group(a:group_a, a:group_b)
+    " Create if it doesn't exist
+    if !hlexists(l:sep_group)
+      call crystalline#generate_sep_hi(a:group_a, a:group_b)
+    endif
+
+    let l:sep_item = '%#Crystalline' . l:sep_group . '#' . a:ch
   endif
   return l:sep_item . l:next_item
 endfunction
