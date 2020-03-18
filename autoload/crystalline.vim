@@ -396,6 +396,13 @@ function! crystalline#generate_theme(theme) abort
   let g:crystalline_tab_type_fake_separators = []
 
   for [l:group, l:attr] in items(a:theme)
+    if hlexists('Crystalline' . l:group)
+      continue
+    endif
+    let l:attr = get(a:theme, l:group, [])
+    if l:attr == []
+      continue
+    endif
     let l:his += [crystalline#generate_hi(l:group, l:attr)]
   endfor
 
