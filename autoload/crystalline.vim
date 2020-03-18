@@ -332,11 +332,7 @@ function! crystalline#generate_theme(theme) abort
 
   let g:crystalline_tab_type_fake_separators = []
 
-  for l:group in g:crystalline_hi_groups
-    let l:attr = get(a:theme, l:group, [])
-    if l:attr == []
-      continue
-    endif
+  for [l:group, l:attr] in items(a:theme)
     let l:his += [crystalline#generate_hi(l:group, l:attr)]
 
     if !get(g:, 'crystalline_enable_sep', 0)

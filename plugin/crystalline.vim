@@ -39,20 +39,6 @@ if get(g:, 'crystalline_enable_sep', 0)
   endif
 endif
 
-let g:crystalline_hi_groups = [
-        \ 'NormalMode',
-        \ 'InsertMode',
-        \ 'VisualMode',
-        \ 'ReplaceMode',
-        \ '',
-        \ 'Inactive',
-        \ 'Fill',
-        \ 'Tab',
-        \ 'TabType',
-        \ 'TabSel',
-        \ 'TabFill',
-        \ ]
-
 if !exists('g:crystalline_separators')
   let g:crystalline_separators = ['', '']
 endif
