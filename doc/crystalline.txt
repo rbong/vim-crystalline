@@ -64,6 +64,22 @@ The setting must be a list of strings, with the first string representing the
 right-facing separator and the second string representing the left-facing
 separator.
 
+g:crystalline_supported_sep                  *g:crystalline_supported_sep*
+
+Additional highlight groups for which crystalline should generate separators.
+Crystalline doesn't generate all possible separators by default to improve
+performance.
+
+For example, if you want to use separators between the highlight groups
+"CrystallineFill" and "Crystalline", and between "CrystallineFill" and
+"CrystallineTabSel" (neither of which are defined by default):
+
+>
+  let g:crystalline_supported_sep = {
+  \ 'Fill': ['', 'TabSel']
+  }
+<
+
 g:crystalline_tab_separator                     *g:crystalline_tab_separator*
 
 The separator character(s) to use between unselected tabs. By default, it will
