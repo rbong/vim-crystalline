@@ -20,9 +20,12 @@ g:crystalline_statusline_fn                     *g:crystalline_statusline_fn*
 The output of the given function will be used as the statusline. See
 'statusline' for more information on statusline syntax.
 
-The function should accept one argument, which indicates if the statusline is
-being set for the currently active window using |:setlocal|. You can use this
-parameter to hide or change elements based on inactivity.
+The function should accept one or two arguments. The first argument indicates
+whether the statusline is being set for the currently active window using
+|:setlocal|. You can use this parameter to hide or change elements based on
+inactivity. The second argument contains the width of the current window. You
+can use this parameter to hide sections of the statusline based on window
+width.
 
 For convience, the statusline will be automatically updated when the mode
 changes or the active window changes. If you do not need mode or active window
