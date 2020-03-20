@@ -8,13 +8,17 @@ ITER=${ITER:-100}
 VIM_CMD=${VIM_CMD:-vim -N}
 OUT=${OUT:-line_performance.log}
 DETAILS="${DETAILS:-true}"
+BENCHMARK_OTHERS="${BENCHMARK_OTHERS:-true}"
 
 declare -A STATUSLINES=( \
   ["crystalline"]="${CRYSTALLINE_CLONE_URL:-https://github.com/rbong/vim-crystalline}" \
-  ["lightline"]="${LIGHTLINE_CLONE_URL:-https://github.com/itchyny/lightline.vim}" \
-  ["airline"]="${AIRLINE_CLONE_URL:-https://github.com/vim-airline/vim-airline}" \
-  ["fugitive"]="${FUGITIVE_CLONE_URL:-https://github.com/tpope/vim-fugitive}" \
+  ["fugitive"]="${FUGITIVE_CLONE_URL:-https://github.com/tpope/vim-fugitive}"
 )
+
+if [[ "$BENCHMARK_OTHERS" == true ]]; then
+  STATUSLINES["lightline"]="${LIGHTLINE_CLONE_URL:-https://github.com/itchyny/lightline.vim}"
+  STATUSLINES["airline"]="${AIRLINE_CLONE_URL:-https://github.com/vim-airline/vim-airline}"
+fi
 
 MEASURE_TIME="function! MeasureTime(iter)
     for l:i in range(a:iter)
@@ -87,61 +91,63 @@ done"
 
 $TIME $VIM_CMD -u vimrc.crystalline -c "call MeasureTime(${ITER})"
 
-cat <<EOF > vimrc.lightline
-$MEASURE_TIME
-set runtimepath^=$TEMP_DIR/lightline
-set runtimepath+=$TEMP_DIR/lightline/after
+if [[ "$BENCHMARK_OTHERS" == true ]]; then
+  cat <<EOF > vimrc.lightline
+  $MEASURE_TIME
+  set runtimepath^=$TEMP_DIR/lightline
+  set runtimepath+=$TEMP_DIR/lightline/after
 
-set showtabline=2
-set laststatus=2
+  set showtabline=2
+  set laststatus=2
 EOF
 
-logjust lightline
-$TIME bash -c "for i in \$(seq '"$ITER"'); do
-  $VIM_CMD -u vimrc.lightline -c q
-done"
+  logjust lightline
+  $TIME bash -c "for i in \$(seq '"$ITER"'); do
+    $VIM_CMD -u vimrc.lightline -c q
+  done"
 
-$TIME $VIM_CMD -u vimrc.lightline -c "call MeasureTime(${ITER})"
+  $TIME $VIM_CMD -u vimrc.lightline -c "call MeasureTime(${ITER})"
 
-cat <<EOF > vimrc.airline
-$MEASURE_TIME
-set runtimepath^=$TEMP_DIR/airline
-set runtimepath+=$TEMP_DIR/airline/after
+  cat <<EOF > vimrc.airline
+  $MEASURE_TIME
+  set runtimepath^=$TEMP_DIR/airline
+  set runtimepath+=$TEMP_DIR/airline/after
 EOF
 
-logjust airline
-$TIME bash -c "for i in \$(seq '"$ITER"'); do
-  $VIM_CMD -u vimrc.airline -c q
-done"
+  logjust airline
+  $TIME bash -c "for i in \$(seq '"$ITER"'); do
+    $VIM_CMD -u vimrc.airline -c q
+  done"
 
-$TIME $VIM_CMD -u vimrc.airline -c "call MeasureTime(${ITER})"
+  $TIME $VIM_CMD -u vimrc.airline -c "call MeasureTime(${ITER})"
 
-cat <<EOF > vimrc.airline-optimized
-$MEASURE_TIME
-set runtimepath^=$TEMP_DIR/airline
-set runtimepath+=$TEMP_DIR/airline/after
+  cat <<EOF > vimrc.airline-optimized
+  $MEASURE_TIME
+  set runtimepath^=$TEMP_DIR/airline
+  set runtimepath+=$TEMP_DIR/airline/after
 
-let g:airline_extensions = []
-let g:airline_highlighting_cache = 1
+  let g:airline_extensions = []
+  let g:airline_highlighting_cache = 1
 EOF
 
-logjust airline-opt
-$TIME bash -c "for i in \$(seq '"$ITER"'); do
-  $VIM_CMD -u vimrc.airline-optimized -c q
-done"
+  logjust airline-opt
+  $TIME bash -c "for i in \$(seq '"$ITER"'); do
+    $VIM_CMD -u vimrc.airline-optimized -c q
+  done"
 
-$TIME $VIM_CMD -u vimrc.airline-optimized -c "call MeasureTime(${ITER})"
+  $TIME $VIM_CMD -u vimrc.airline-optimized -c "call MeasureTime(${ITER})"
 
-cat <<EOF > vimrc.vanilla
-$MEASURE_TIME
+  cat <<EOF > vimrc.vanilla
+  $MEASURE_TIME
 EOF
 
-logjust vanilla
-$TIME bash -c "for i in \$(seq '"$ITER"'); do
-  $VIM_CMD -u vimrc.vanilla -c q
-done"
+  logjust vanilla
+  $TIME bash -c "for i in \$(seq '"$ITER"'); do
+    $VIM_CMD -u vimrc.vanilla -c q
+  done"
 
-$TIME $VIM_CMD -u vimrc.vanilla -c "call MeasureTime(${ITER})"
+  $TIME $VIM_CMD -u vimrc.vanilla -c "call MeasureTime(${ITER})"
+fi
 
 if [[ "$DETAILS" == true ]]; then
   log
