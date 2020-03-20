@@ -7,6 +7,7 @@ export LC_ALL=C
 ITER=${ITER:-100}
 VIM_CMD=${VIM_CMD:-vim -N}
 OUT=${OUT:-line_performance.log}
+DETAILS="${DETAILS:-true}"
 
 declare -A STATUSLINES=( \
   ["crystalline"]="${CRYSTALLINE_CLONE_URL:-https://github.com/rbong/vim-crystalline}" \
@@ -142,16 +143,18 @@ done"
 
 $TIME $VIM_CMD -u vimrc.vanilla -c "call MeasureTime(${ITER})"
 
-log
-log '<details>'
-log '<summary>Additional information</summary>'
-log
-log "Terminal: $TERM"
-log
-log Vim:
-log '<pre>'
-$VIM_CMD --version >> "$OUT"
-log '</pre></details>'
+if [[ "$DETAILS" == true ]]; then
+  log
+  log '<details>'
+  log '<summary>Additional information</summary>'
+  log
+  log "Terminal: $TERM"
+  log
+  log Vim:
+  log '<pre>'
+  $VIM_CMD --version >> "$OUT"
+  log '</pre></details>'
+fi
 
 # Postprocess: Join times that start with '|' to the previous line
 sed -Ei ':begin;$!N;s/(.*)\n\|([0-9]+:[0-9]{2}\.[0-9]{2})$/\1 | \2/;tbegin;P;D' "$OUT"
