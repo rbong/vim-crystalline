@@ -76,8 +76,17 @@ if exists('g:crystalline_statusline_fn')
 endif
 
 if exists('g:crystalline_theme')
-  call crystalline#set_theme(g:crystalline_theme)
+  call crystalline#apply_current_theme()
 endif
+
+" }}}
+
+" Setup autogroups {{{
+
+augroup CrystallineTheme
+  au!
+  au ColorScheme * call crystalline#apply_current_theme()
+augroup END
 
 " }}}
 

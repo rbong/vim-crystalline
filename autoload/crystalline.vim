@@ -454,16 +454,19 @@ function! crystalline#clear_tabline() abort
   endif
 endfunction
 
-function! crystalline#set_theme(theme) abort
+function! crystalline#apply_current_theme() abort
   let g:crystalline_mode = ''
-  let g:crystalline_theme = a:theme
-  call function('crystalline#theme#' . a:theme . '#set_theme')()
+  try
+    call function('crystalline#theme#' . g:crystalline_theme . '#set_theme')()
+  catch /^Vim\%((\a\+)\)\=:E118/
+    " theme does not use autoload function
+  endtry
   silent doautocmd User CrystallineSetTheme
-  augroup CrystallineTheme
-    au!
-    au ColorScheme * call function('crystalline#theme#' . g:crystalline_theme . '#set_theme')()
-          \ | silent doautocmd User CrystallineSetTheme
-  augroup END
+endfunction
+
+function! crystalline#set_theme(theme) abort
+  let g:crystalline_theme = a:theme
+  call crystalline#apply_current_theme()
 endfunction
 
 function! crystalline#clear_theme() abort
