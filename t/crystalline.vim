@@ -221,6 +221,19 @@ describe 'crystalline#sep'
     hi CrystallineFillToLine
   end
 
+  it 'dynamically creates separator highlight groups'
+    let g:crystalline_enable_sep = 1
+    hi CrystallineTestGroupA ctermfg=1 ctermbg=2 guifg=#111111 guibg=#222222
+    hi CrystallineTestGroupB ctermfg=3 ctermbg=4 guifg=#333333 guibg=#444444
+    Expect crystalline#sep('TestGroupA', 'TestGroupB', '>', 0) ==# '%#CrystallineTestGroupAToTestGroupB#>%#CrystallineTestGroupB#'
+    hi CrystallineTestGroupAToTestGroupB
+    let attrs =  crystalline#synIDattrs('CrystallineTestGroupAToTestGroupB')
+    Expect attrs.cterm.fg == '2'
+    Expect attrs.cterm.bg == '4'
+    Expect attrs.gui.fg == '#222222'
+    Expect attrs.gui.bg == '#444444'
+  end
+
 end
 
 describe 'crystalline#bufferline'

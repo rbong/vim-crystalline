@@ -314,6 +314,69 @@ function! crystalline#get_sep_group(group_a, group_b) abort
   return a:group_a . 'To' . (a:group_b ==# '' ? 'Line' : a:group_b)
 endfunction
 
+" Returns a dictionary with attributes of a highlight group.
+" Returns an empty dictionary if the highlight group doesn't exist.
+function! crystalline#synIDattrs(hlgroup) abort
+  let l:id = synIDtrans(hlID(a:hlgroup))
+  if !l:id
+    return {}
+  endif
+
+  let l:result = {}
+  let l:modes = ['term','cterm', 'gui']
+  let l:colors = ['fg', 'bg', 'sp']
+  let l:attrs = ['font', 'bold', 'italic', 'reverse', 'inverse', 'standout', 'underline', 'undercurl', 'strikethrough']
+
+  for l:mode in l:modes
+    let l:result[l:mode] = {}
+    let l:result[l:mode]['attrs'] = []
+
+    for l:attr in l:attrs
+      if synIDattr(l:id, l:attr, l:mode)
+        call add(l:result[l:mode].attrs, l:attr)
+      endif
+    endfor
+
+    " term mode has no colors
+    if l:mode == 'term'
+      continue
+    endif
+
+    for l:color in l:colors
+      " cterm mode has no sp color
+      if l:color == 'sp'
+        continue
+      endif
+      let l:res_color = synIDattr(l:id, l:color, l:mode)
+      let l:result[l:mode][l:color] = !empty(l:res_color) ? l:res_color : 'NONE'
+    endfor
+  endfor
+
+  return l:result
+endfunction
+
+" Translates crystalline#synIDattrs() into the format
+" crystalline#generate_hi() understands.
+function! crystalline#get_hl_attrs(group) abort
+  let l:attrs = crystalline#synIDattrs('Crystalline' . a:group)
+  if l:attrs == {}
+    return []
+  endif
+  let l:retval = [[l:attrs.cterm.fg, l:attrs.cterm.bg], [l:attrs.gui.fg, l:attrs.gui.bg]]
+
+  let l:retval_attrs = []
+  for l:mode in keys(l:attrs)
+    if !empty(l:attrs[l:mode].attrs)
+      call add(l:retval_attrs, l:mode . '=' . join(l:attrs[l:mode].attrs, ','))
+    endif
+  endfor
+  if !empty(l:retval_attrs)
+    call add(l:retval, join(l:retval_attrs, ' '))
+  endif
+
+  return l:retval
+endfunction
+
 function! crystalline#generate_hi(group, attr) abort
   let l:cterm = a:attr[0]
   let l:gui = a:attr[1]
@@ -339,7 +402,6 @@ function! crystalline#generate_theme(theme) abort
   if len(l:his) > 0
     exec join(l:his, ' | ')
   endif
-  let g:crystalline_theme_config = copy(a:theme)
 endfunction
 
 function! crystalline#mode_hi() abort
@@ -347,8 +409,8 @@ function! crystalline#mode_hi() abort
 endfunction
 
 function! crystalline#generate_sep_hi(group_a, group_b) abort
-  let l:attr_a = g:crystalline_theme_config[a:group_a]
-  let l:attr_b = g:crystalline_theme_config[a:group_b]
+  let l:attr_a = crystalline#get_hl_attrs(a:group_a)
+  let l:attr_b = crystalline#get_hl_attrs(a:group_b)
   let l:sep_attr = [[l:attr_a[0][1], l:attr_b[0][1]], [l:attr_a[1][1], l:attr_b[1][1]]]
   if len(l:attr_a) > 2
     let l:sep_attr += [l:attr_a[2]]
