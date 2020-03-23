@@ -426,6 +426,7 @@ function! crystalline#generate_sep_hi(group_a, group_b) abort
   let l:sep_group = crystalline#get_sep_group(a:group_a, a:group_b)
 
   exec crystalline#generate_hi(l:sep_group, l:sep_attr)
+  let g:crystalline_sep_hi_groups[l:sep_group] = l:sep_attr
 endfunction
 
 function! crystalline#sep(group_a, group_b, ch, left) abort
@@ -524,6 +525,11 @@ function! crystalline#apply_current_theme() abort
   catch /^Vim\%((\a\+)\)\=:E118/
     " theme does not use autoload function
   endtry
+
+  call crystalline#generate_theme(g:crystalline_sep_hi_groups)
+  " Empty out after adjusting separator HGs
+  let g:crystalline_sep_hi_groups = {}
+
   silent doautocmd User CrystallineSetTheme
 endfunction
 
