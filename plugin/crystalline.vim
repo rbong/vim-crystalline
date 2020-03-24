@@ -18,27 +18,6 @@ let g:crystalline_mode_hi_groups = {
       \ '': '',
       \ }
 
-if get(g:, 'crystalline_enable_sep', 0)
-  let g:crystalline_default_supported_sep = {
-        \ 'NormalMode': ['', 'Fill', 'TabFill', 'Tab'],
-        \ 'InsertMode': ['', 'Fill', 'TabFill', 'Tab'],
-        \ 'VisualMode': ['', 'Fill', 'TabFill', 'Tab'],
-        \ 'ReplaceMode': ['', 'Fill', 'TabFill', 'Tab'],
-        \ '': ['Fill'],
-        \ 'Inactive': [],
-        \ 'Fill': [],
-        \ 'Tab': ['TabSel', 'TabFill', 'NormalMode', 'InsertMode', 'VisualMode', 'ReplaceMode'],
-        \ 'TabType': ['Tab', 'TabSel', 'TabFill', 'NormalMode', 'InsertMode', 'VisualMode', 'ReplaceMode'],
-        \ 'TabSel': ['Tab', 'TabFill'],
-        \ 'TabFill': [],
-        \ }
-  if exists('g:crystalline_supported_sep')
-    call extend(g:crystalline_supported_sep, g:crystalline_default_supported_sep, 'keep')
-  else
-    let g:crystalline_supported_sep = copy(g:crystalline_default_supported_sep)
-  endif
-endif
-
 if !exists('g:crystalline_separators')
   let g:crystalline_separators = ['', '']
 endif
@@ -61,6 +40,10 @@ endif
 
 if !exists('g:crystalline_tab_nomod')
   let g:crystalline_tab_nomod = ' '
+endif
+
+if !exists('g:crystalline_sep_hi_groups')
+  let g:crystalline_sep_hi_groups = {}
 endif
 
 " }}}
@@ -86,6 +69,7 @@ endif
 augroup CrystallineTheme
   au!
   au ColorScheme * call crystalline#apply_current_theme()
+  au OptionSet background call crystalline#apply_current_theme()
 augroup END
 
 " }}}

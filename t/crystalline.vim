@@ -90,24 +90,6 @@ describe 'g:crystalline_theme'
     hi CrystallineTabSel
     hi CrystallineTabFill
   end
-
-  it 'defines basic separator groups'
-    let g:crystalline_enable_sep = 1
-    source plugin/crystalline.vim
-    hi CrystallineNormalModeToLine
-    hi CrystallineNormalModeToTab
-    hi CrystallineNormalModeToTabFill
-    hi CrystallineToFill
-    hi CrystallineTabTypeToTab
-    hi CrystallineTabTypeToTabSel
-    hi CrystallineTabTypeToTabFill
-    hi CrystallineTabTypeToNormalMode
-    hi CrystallineTabSelToTab
-    hi CrystallineTabSelToTabFill
-    hi CrystallineTabToTabSel
-    hi CrystallineTabToTabFill
-    hi CrystallineTabToNormalMode
-  end
 end
 
 describe 'g:crystalline_*_separator(s)'
@@ -230,6 +212,28 @@ describe 'crystalline#sep'
     Expect crystalline#sep('', 'Fill', '>', 0) ==# '%#CrystallineToFill#>%#CrystallineFill#'
     Expect crystalline#sep('', 'Fill', '<', 1) ==# '%#CrystallineToFill#<%#Crystalline#'
   end
+
+  it 'automatically creates nonexistent separator highlight groups'
+    let g:crystalline_enable_sep = 1
+    Expect crystalline#sep('', 'Fill', '>', 0) ==# '%#CrystallineToFill#>%#CrystallineFill#'
+    Expect crystalline#sep('Fill', '', '>', 0) ==# '%#CrystallineFillToLine#>%#Crystalline#'
+    hi CrystallineToFill
+    hi CrystallineFillToLine
+  end
+
+  it 'dynamically creates separator highlight groups'
+    let g:crystalline_enable_sep = 1
+    hi CrystallineTestGroupA ctermfg=1 ctermbg=2 guifg=#111111 guibg=#222222
+    hi CrystallineTestGroupB ctermfg=3 ctermbg=4 guifg=#333333 guibg=#444444
+    Expect crystalline#sep('TestGroupA', 'TestGroupB', '>', 0) ==# '%#CrystallineTestGroupAToTestGroupB#>%#CrystallineTestGroupB#'
+    hi CrystallineTestGroupAToTestGroupB
+    let attrs =  crystalline#synIDattrs('CrystallineTestGroupAToTestGroupB')
+    Expect attrs.cterm.fg == '2'
+    Expect attrs.cterm.bg == '4'
+    Expect attrs.gui.fg == '#222222'
+    Expect attrs.gui.bg == '#444444'
+  end
+
 end
 
 describe 'crystalline#bufferline'
