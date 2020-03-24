@@ -426,7 +426,6 @@ function! crystalline#generate_sep_hi(group_a, group_b) abort
   let l:sep_group = crystalline#get_sep_group(a:group_a, a:group_b)
 
   exec crystalline#generate_hi(l:sep_group, l:sep_attr)
-  let g:crystalline_sep_hi_groups[l:sep_group] = l:sep_attr
 endfunction
 
 function! crystalline#sep(group_a, group_b, ch, left) abort
@@ -440,13 +439,14 @@ function! crystalline#sep(group_a, group_b, ch, left) abort
   if a:left == 0 && a:group_a ==# 'TabType' && index(get(g:, 'crystalline_tab_type_fake_separators', []), a:group_b) >= 0
     let l:sep_item = g:crystalline_tab_separator
   else
-    let l:sep_group = crystalline#get_sep_group(a:group_a, a:group_b)
+    let l:sep_group = 'Crystalline' . crystalline#get_sep_group(a:group_a, a:group_b)
     " Create if it doesn't exist
-    if !hlexists(l:sep_group)
+    if !has_key(g:crystalline_sep_hi_groups, l:sep_group)
       call crystalline#generate_sep_hi(a:group_a, a:group_b)
+      let g:crystalline_sep_hi_groups[l:sep_group] = [a:group_a, a:group_b]
     endif
 
-    let l:sep_item = '%#Crystalline' . l:sep_group . '#' . a:ch
+    let l:sep_item = '%#' . l:sep_group . '#' . a:ch
   endif
   return l:sep_item . l:next_item
 endfunction
@@ -526,8 +526,6 @@ function! crystalline#apply_current_theme() abort
     " theme does not use autoload function
   endtry
 
-  call crystalline#generate_theme(g:crystalline_sep_hi_groups)
-  " Empty out after adjusting separator HGs
   let g:crystalline_sep_hi_groups = {}
 
   silent doautocmd User CrystallineSetTheme

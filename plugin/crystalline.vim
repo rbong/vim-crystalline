@@ -69,6 +69,7 @@ endif
 augroup CrystallineTheme
   au!
   au ColorScheme * call crystalline#apply_current_theme()
+  au OptionSet background call crystalline#apply_current_theme()
 augroup END
 
 " }}}
