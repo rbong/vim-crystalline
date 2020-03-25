@@ -323,15 +323,12 @@ function! crystalline#synIDattrs(hlgroup) abort
   endif
 
   let l:result = {}
-  let l:modes = ['term','cterm', 'gui']
-  let l:colors = ['fg', 'bg', 'sp']
-  let l:attrs = ['font', 'bold', 'italic', 'reverse', 'inverse', 'standout', 'underline', 'undercurl', 'strikethrough']
 
-  for l:mode in l:modes
+  for l:mode in g:crystalline_syn_modes
     let l:result[l:mode] = {}
     let l:result[l:mode]['attrs'] = []
 
-    for l:attr in l:attrs
+    for l:attr in g:crystalline_syn_attrs
       if synIDattr(l:id, l:attr, l:mode)
         call add(l:result[l:mode].attrs, l:attr)
       endif
@@ -342,7 +339,7 @@ function! crystalline#synIDattrs(hlgroup) abort
       continue
     endif
 
-    for l:color in l:colors
+    for l:color in g:crystalline_syn_colors
       " cterm mode has no sp color
       if l:color ==# 'sp'
         continue

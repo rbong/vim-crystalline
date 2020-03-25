@@ -50,6 +50,28 @@ if !exists('g:crystalline_tab_type_fake_separators')
   let g:crystalline_tab_type_fake_separators = {}
 endif
 
+if !exists('g:crystalline_syn_modes')
+  let g:crystalline_syn_modes = ['term', 'cterm', 'gui']
+endif
+
+if !exists('g:crystalline_syn_attrs')
+  let g:crystalline_syn_attrs = [
+        \ 'font',
+        \ 'bold',
+        \ 'italic',
+        \ 'reverse',
+        \ 'inverse',
+        \ 'standout',
+        \ 'underline',
+        \ 'undercurl',
+        \ 'strikethrough'
+        \ ]
+endif
+
+if !exists('g:crystalline_syn_colors')
+  let g:crystalline_syn_colors = ['fg', 'bg', 'sp']
+endif
+
 " }}}
 
 " Load User Settings {{{
