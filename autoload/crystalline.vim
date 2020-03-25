@@ -338,13 +338,13 @@ function! crystalline#synIDattrs(hlgroup) abort
     endfor
 
     " term mode has no colors
-    if l:mode == 'term'
+    if l:mode ==# 'term'
       continue
     endif
 
     for l:color in l:colors
       " cterm mode has no sp color
-      if l:color == 'sp'
+      if l:color ==# 'sp'
         continue
       endif
       let l:res_color = synIDattr(l:id, l:color, l:mode)
