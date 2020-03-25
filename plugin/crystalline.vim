@@ -72,6 +72,10 @@ if !exists('g:crystalline_syn_colors')
   let g:crystalline_syn_colors = ['fg', 'bg', 'sp']
 endif
 
+if !exists('g:crystalline_theme')
+  let g:crystalline_theme = 'default'
+endif
+
 " }}}
 
 " Load User Settings {{{
@@ -84,9 +88,7 @@ if exists('g:crystalline_statusline_fn')
   call crystalline#set_statusline(g:crystalline_statusline_fn)
 endif
 
-if exists('g:crystalline_theme')
-  call crystalline#apply_current_theme()
-endif
+call crystalline#apply_current_theme()
 
 " }}}
 
