@@ -69,15 +69,18 @@ end
 
 describe 'g:crystalline_theme'
   before
-    let g:crystalline_theme = 'default'
+    source plugin/crystalline.vim
   end
 
   after
     call CleanCrystalline()
   end
 
+  it 'loads the "default" theme by default'
+    Expect g:crystalline_theme ==# 'default'
+  end
+
   it 'defines highlight groups'
-    source plugin/crystalline.vim
     hi CrystallineNormalMode
     hi CrystallineInsertMode
     hi CrystallineVisualMode
