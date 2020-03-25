@@ -230,11 +230,40 @@ describe 'crystalline#sep'
     hi CrystallineTestGroupB ctermfg=3 ctermbg=4 guifg=#333333 guibg=#444444
     Expect crystalline#sep('TestGroupA', 'TestGroupB', '>', 0) ==# '%#CrystallineTestGroupAToTestGroupB#>%#CrystallineTestGroupB#'
     hi CrystallineTestGroupAToTestGroupB
-    let attrs =  crystalline#synIDattrs('CrystallineTestGroupAToTestGroupB')
+    let attrs = crystalline#synIDattrs('CrystallineTestGroupAToTestGroupB')
     Expect attrs.cterm.fg == '2'
     Expect attrs.cterm.bg == '4'
     Expect attrs.gui.fg == '#222222'
     Expect attrs.gui.bg == '#444444'
+  end
+
+end
+
+describe 'crystalline#synIDattrs'
+  before
+    source plugin/crystalline.vim
+  end
+
+  after
+    call CleanCrystalline()
+  end
+
+  it 'returns correct values'
+    hi TestHighlightGroup
+          \ ctermfg=1 ctermbg=2
+          \ guifg=green guibg=#222222 guisp=#333333
+          \ term=bold
+          \ cterm=bold,italic,strikethrough
+          \ gui=reverse,standout,underline
+    let attrs = crystalline#synIDattrs('TestHighlightGroup')
+    Expect attrs.cterm.fg == '1'
+    Expect attrs.cterm.bg == '2'
+    Expect attrs.gui.fg == 'green'
+    Expect attrs.gui.bg == '#222222'
+    Expect attrs.gui.sp == '#333333'
+    Expect sort(attrs.term.attrs) == ['bold']
+    Expect sort(attrs.cterm.attrs) == ['bold', 'italic', 'strikethrough']
+    Expect sort(attrs.gui.attrs) == ['reverse', 'standout', 'underline']
   end
 
 end

@@ -340,8 +340,8 @@ function! crystalline#synIDattrs(hlgroup) abort
     endif
 
     for l:color in g:crystalline_syn_colors
-      " cterm mode has no sp color
-      if l:color ==# 'sp'
+      " only gui mode has sp color
+      if l:color ==# 'sp' && l:mode !=# 'gui'
         continue
       endif
       let l:res_color = synIDattr(l:id, l:color, l:mode)
