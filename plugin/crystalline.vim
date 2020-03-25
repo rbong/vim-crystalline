@@ -46,6 +46,10 @@ if !exists('g:crystalline_sep_hi_groups')
   let g:crystalline_sep_hi_groups = {}
 endif
 
+if !exists('g:crystalline_tab_type_fake_separators')
+  let g:crystalline_tab_type_fake_separators = {}
+endif
+
 " }}}
 
 " Load User Settings {{{

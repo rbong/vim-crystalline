@@ -393,8 +393,6 @@ endfunction
 function! crystalline#generate_theme(theme) abort
   let l:his = []
 
-  let g:crystalline_tab_type_fake_separators = []
-
   for [l:group, l:attr] in items(a:theme)
     let l:his += [crystalline#generate_hi(l:group, l:attr)]
   endfor
@@ -419,12 +417,11 @@ function! crystalline#generate_sep_hi(group_a, group_b) abort
   if a:group_a ==# 'TabType'
     let l:attr_type = has('gui_running') ? 1 : 0
     if l:attr_a[l:attr_type][1] == l:attr_b[l:attr_type][1]
-      call add(g:crystalline_tab_type_fake_separators, a:group_b)
+      let g:crystalline_tab_type_fake_separators[a:group_b] = 1
     endif
   endif
 
   let l:sep_group = crystalline#get_sep_group(a:group_a, a:group_b)
-
   exec crystalline#generate_hi(l:sep_group, l:sep_attr)
 endfunction
 
@@ -436,17 +433,18 @@ function! crystalline#sep(group_a, group_b, ch, left) abort
   if a:group_a == v:null || a:group_b == v:null
     return ''
   endif
-  if a:left == 0 && a:group_a ==# 'TabType' && index(get(g:, 'crystalline_tab_type_fake_separators', []), a:group_b) >= 0
+
+  let l:sep_group = crystalline#get_sep_group(a:group_a, a:group_b)
+  " Create if it doesn't exist
+  if !has_key(g:crystalline_sep_hi_groups, l:sep_group)
+    call crystalline#generate_sep_hi(a:group_a, a:group_b)
+    let g:crystalline_sep_hi_groups[l:sep_group] = [a:group_a, a:group_b]
+  endif
+
+  if a:left == 0 && a:group_a ==# 'TabType' && has_key(g:crystalline_tab_type_fake_separators, a:group_b)
     let l:sep_item = g:crystalline_tab_separator
   else
-    let l:sep_group = 'Crystalline' . crystalline#get_sep_group(a:group_a, a:group_b)
-    " Create if it doesn't exist
-    if !has_key(g:crystalline_sep_hi_groups, l:sep_group)
-      call crystalline#generate_sep_hi(a:group_a, a:group_b)
-      let g:crystalline_sep_hi_groups[l:sep_group] = [a:group_a, a:group_b]
-    endif
-
-    let l:sep_item = '%#' . l:sep_group . '#' . a:ch
+    let l:sep_item = '%#Crystalline' . l:sep_group . '#' . a:ch
   endif
   return l:sep_item . l:next_item
 endfunction
@@ -520,13 +518,14 @@ endfunction
 
 function! crystalline#apply_current_theme() abort
   let g:crystalline_mode = ''
+  let g:crystalline_sep_hi_groups = {}
+  let g:crystalline_tab_type_fake_separators = {}
+
   try
     call function('crystalline#theme#' . g:crystalline_theme . '#set_theme')()
   catch /^Vim\%((\a\+)\)\=:E118/
     " theme does not use autoload function
   endtry
-
-  let g:crystalline_sep_hi_groups = {}
 
   silent doautocmd User CrystallineSetTheme
 endfunction
