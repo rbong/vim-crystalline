@@ -236,6 +236,14 @@ describe 'crystalline#sep'
     Expect attrs.gui.fg == '#222222'
     Expect attrs.gui.bg == '#444444'
   end
+
+  it 'adds separator highlight groups to g:crystalline_sep_hi_groups'
+    let g:crystalline_enable_sep = 1
+    Expect g:crystalline_sep_hi_groups == {}
+    call crystalline#sep('', 'Fill', '>', 0)
+    Expect g:crystalline_sep_hi_groups == {'ToFill': ['', 'Fill']}
+  end
+
 end
 
 describe 'crystalline#apply_current_theme'
