@@ -69,15 +69,18 @@ end
 
 describe 'g:crystalline_theme'
   before
-    let g:crystalline_theme = 'default'
+    source plugin/crystalline.vim
   end
 
   after
     call CleanCrystalline()
   end
 
+  it 'loads the "default" theme by default'
+    Expect g:crystalline_theme ==# 'default'
+  end
+
   it 'defines highlight groups'
-    source plugin/crystalline.vim
     hi CrystallineNormalMode
     hi CrystallineInsertMode
     hi CrystallineVisualMode
@@ -227,11 +230,79 @@ describe 'crystalline#sep'
     hi CrystallineTestGroupB ctermfg=3 ctermbg=4 guifg=#333333 guibg=#444444
     Expect crystalline#sep('TestGroupA', 'TestGroupB', '>', 0) ==# '%#CrystallineTestGroupAToTestGroupB#>%#CrystallineTestGroupB#'
     hi CrystallineTestGroupAToTestGroupB
-    let attrs =  crystalline#synIDattrs('CrystallineTestGroupAToTestGroupB')
+    let attrs = crystalline#synIDattrs('CrystallineTestGroupAToTestGroupB')
     Expect attrs.cterm.fg == '2'
     Expect attrs.cterm.bg == '4'
     Expect attrs.gui.fg == '#222222'
     Expect attrs.gui.bg == '#444444'
+  end
+
+  it 'adds separator highlight groups to g:crystalline_sep_hi_groups'
+    let g:crystalline_enable_sep = 1
+    Expect g:crystalline_sep_hi_groups == {}
+    call crystalline#sep('', 'Fill', '>', 0)
+    Expect g:crystalline_sep_hi_groups == {'ToFill': ['', 'Fill']}
+  end
+
+end
+
+describe 'crystalline#apply_current_theme'
+  before
+    set background=dark
+    let g:crystalline_enable_sep = 1
+    source plugin/crystalline.vim
+  end
+
+  after
+    call CleanCrystalline()
+  end
+
+  it 'recomputes separator highlight groups'
+    call crystalline#sep('', 'Fill', '>', 0)
+    let attrs = crystalline#synIDattrs('CrystallineToFill')
+    Expect attrs == {'gui': {'bg': '#202020', 'fg': '#444444', 'attrs': [], 'sp': 'NONE'}, 'term': {'attrs': []}, 'cterm': {'bg': '234', 'fg': '238', 'attrs': []}}
+
+    let g:crystalline_theme = 'gruvbox'
+    call crystalline#apply_current_theme()
+
+    call crystalline#sep('', 'Fill', '>', 0)
+    let attrs = crystalline#synIDattrs('CrystallineToFill')
+    Expect attrs == {'gui': {'bg': '#3c3836', 'fg': '#504945', 'attrs': [], 'sp': 'NONE'}, 'term': {'attrs': []}, 'cterm': {'bg': '237', 'fg': '239', 'attrs': []}}
+  end
+
+  it 'empties out g:crystalline_sep_hi_groups'
+    call crystalline#sep('', 'Fill', '>', 0)
+    call crystalline#apply_current_theme()
+    Expect g:crystalline_sep_hi_groups == {}
+  end
+
+end
+
+describe 'crystalline#synIDattrs'
+  before
+    source plugin/crystalline.vim
+  end
+
+  after
+    call CleanCrystalline()
+  end
+
+  it 'returns correct values'
+    hi TestHighlightGroup
+          \ ctermfg=1 ctermbg=2
+          \ guifg=green guibg=#222222 guisp=#333333
+          \ term=bold
+          \ cterm=bold,italic,strikethrough
+          \ gui=reverse,standout,underline
+    let attrs = crystalline#synIDattrs('TestHighlightGroup')
+    Expect attrs.cterm.fg == '1'
+    Expect attrs.cterm.bg == '2'
+    Expect attrs.gui.fg == 'green'
+    Expect attrs.gui.bg == '#222222'
+    Expect attrs.gui.sp == '#333333'
+    Expect sort(attrs.term.attrs) == ['bold']
+    Expect sort(attrs.cterm.attrs) == ['bold', 'italic', 'strikethrough']
+    Expect sort(attrs.gui.attrs) == ['reverse', 'standout', 'underline']
   end
 
 end

@@ -60,7 +60,6 @@ if !exists('g:crystalline_syn_attrs')
         \ 'bold',
         \ 'italic',
         \ 'reverse',
-        \ 'inverse',
         \ 'standout',
         \ 'underline',
         \ 'undercurl',
