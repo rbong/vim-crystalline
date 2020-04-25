@@ -44,7 +44,7 @@ function! crystalline#trigger_mode_update() abort
   let l:mode = crystalline#mode_type()
   if get(g:, 'crystalline_mode', '') !=# l:mode
     let g:crystalline_mode = l:mode
-    silent doautocmd User CrystallineModeUpdate
+    silent doautocmd <nomodeline> User CrystallineModeUpdate
   endif
 endfunction
 
@@ -524,7 +524,7 @@ function! crystalline#apply_current_theme() abort
     " theme does not use autoload function
   endtry
 
-  silent doautocmd User CrystallineSetTheme
+  silent doautocmd <nomodeline> User CrystallineSetTheme
 endfunction
 
 function! crystalline#set_theme(theme) abort
