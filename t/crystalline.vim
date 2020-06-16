@@ -23,6 +23,7 @@ function! CleanCrystalline()
   unlet! g:crystalline_mode
   unlet! g:crystalline_separators
   unlet! g:crystalline_tab_separator
+  unlet! g:crystalline_mode_labels
   call crystalline#clear_statusline()
   call crystalline#clear_tabline()
   call crystalline#clear_theme()
@@ -116,6 +117,39 @@ describe 'g:crystalline_*_separator(s)'
     source plugin/crystalline.vim
     Expect g:crystalline_separators == ['>', '<']
     Expect g:crystalline_tab_separator ==# '-'
+  end
+end
+
+describe 'g:crystalline_mode_labels'
+  after
+    call CleanCrystalline()
+  end
+
+  it 'sets the default mode labels'
+    source plugin/crystalline.vim
+    Expect g:crystalline_mode_labels == {
+          \ 'n': ' NORMAL ',
+          \ 'i': ' INSERT ',
+          \ 'v': ' VISUAL ',
+          \ 'R': ' REPLACE ',
+          \ '': '',
+          \ }
+  end
+
+  it 'allows overriding mode labels'
+    let g:crystalline_mode_labels = {
+          \ 'n': ' N ',
+          \ 'v': ' V ',
+          \ 'i': ' I ',
+          \ 'R': ' R ',
+          \ }
+    source plugin/crystalline.vim
+    Expect g:crystalline_mode_labels == {
+          \ 'n': ' N ',
+          \ 'v': ' V ',
+          \ 'i': ' I ',
+          \ 'R': ' R ',
+          \ }
   end
 end
 
