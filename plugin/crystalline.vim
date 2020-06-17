@@ -2,13 +2,15 @@ scriptencoding utf-8
 
 " Helper Variables {{{
 
-let g:crystalline_mode_labels = {
-      \ 'n': ' NORMAL ',
-      \ 'i': ' INSERT ',
-      \ 'v': ' VISUAL ',
-      \ 'R': ' REPLACE ',
-      \ '': '',
-      \ }
+if !exists('g:crystalline_mode_labels')
+  let g:crystalline_mode_labels = {
+        \ 'n': ' NORMAL ',
+        \ 'i': ' INSERT ',
+        \ 'v': ' VISUAL ',
+        \ 'R': ' REPLACE ',
+        \ '': '',
+        \ }
+endif
 
 let g:crystalline_mode_hi_groups = {
       \ 'n': 'NormalMode',

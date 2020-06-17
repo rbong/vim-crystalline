@@ -48,6 +48,15 @@ g:crystalline_theme                             *g:crystalline_theme*
 
 Automatically set the given theme.
 
+g:crystalline_mode_labels                       *g:crystalline_mode_labels*
+
+The labels to use for the different modes. By default, it will be the
+capitalized full name of each mode.
+
+The setting must be a dictionary of strings, with the key representing the
+different modes ('n', 'i', 'v' and 'R') and the value representing the label
+for each mode.
+
 g:crystalline_enable_sep                        *g:crystalline_enable_sep*
 
 Enable using special separator symbols between sections/tabs, similar to
