@@ -112,21 +112,51 @@ crystalline#mode_label()                        *crystalline#mode_label()*
 Return a label for the current mode. Can be used to display the current mode
 on the statusline or tabline.
 
-crystalline#bufferline(items, width, show_mode) *crystalline#bufferline()*
+crystalline#bufferline(...)                     *crystalline#bufferline()*
 
-Return a string of items which can be used on the statusline/tabline that
-display the current buffers if there is only one tab, or otherwise displays
-the tabs.
+Return a string of items which can be used on the statusline/tabline. It
+displays the current buffers if there is only one tab, otherwise displays the
+tabs.
 
-"items" tells the function how many items are currently in use. The
-statusline/tabline can only hold 80 items.
+Supported arguments in order are listed below. All arguments are optional.
 
-"width" tells the functions how much width is currently in use so that it can
-fit as many tabs as possible.
+  "items"        Tells the function how many "%" items are already in use. The
+                 statusline/tabline can only hold 80 items.
 
-"show_mode" indicates if the bufferline should use the currently active mode
-color for the active tab or if it should fall back to |hl-CrystallineTabSel|.
-See |crystalline-highlight-groups| for the list of mode highlight groups.
+  "width"        Tells the functions how much screen width is already in use
+                 so that it can fit as many tabs as possible.
+
+  "show_mode"    Indicates if the bufferline should use the currently active
+                 mode color for the active tab or if it should fall back to
+                 |hl-CrystallineTabSel|. See |crystalline-highlight-groups|
+                 for the list of mode highlight groups.
+
+
+  "allow_mouse"  Allow clicking on tabs to switch between them. Not supported
+                 by buffers.
+
+  "tablabel"     The name of the function to use to generate tab labels. The
+                 function must accept two arguments: the buffer number and the
+                 maximum width of the buffer name. The default parts can be
+                 retrieved with |crystalline#default_tablabel_parts()|.
+
+  "tabwidth"     The maximum width of tabs. The default tabwidth can be
+                 retrieved with |crystalline#default_tabwidth()|.
+
+  "tabitems"     The number of "%" items on each tab.
+
+  "tabselitems"  The number of "%" items on each selected tab.
+
+                                                *crystalline#default_tablabel_parts()*
+crystalline#default_tablabel_parts(buf, max_width)
+
+Returns the default tablabel components used in |crystalline#bufferline()|.
+The return value is an array containing the tab left side, full name, short
+name, and right side.
+
+crystalline#default_tabwidth()                  *crystalline#default_tabwidth()*
+
+Returns the default tabwidth for |crystalline#bufferline()|.
 
 crystalline#right_sep(group_a, group_b)         *crystalline#right_sep()*
 
