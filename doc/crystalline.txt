@@ -162,7 +162,7 @@ crystalline#right_sep(group_a, group_b)         *crystalline#right_sep()*
 
 Generate a right-facing separator between the two highlight groups.
 
-Use the group names listed in |crystaline-highlight-groups|, with
+Use the group names listed in |crystalline-highlight-groups|, with
 "Crystalline" omitted.
 
 crystalline#left_sep(group_a, group_b)          *crystalline#left_sep()*
