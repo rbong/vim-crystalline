@@ -159,6 +159,17 @@ let g:crystalline_statusline_fn = 'StatusLine'
 set laststatus=2
 ```
 
+### Specify file type to ignore other windows
+```vim
+" g:crystalline_statusline_fn is a must
+function! IgnoreFileType(current)
+  return '' " custom content
+endfunction
+let g:crystalline_ignore_filetype_list = ['startify', 'undotree', 'tarbar']
+" let g:crystalline_ignore_filetype_fn = 'IgnoreFileType'
+set laststatus=2
+```
+
 ### Adding Powerline-Style Separators Between Sections
 
 ```vim

@@ -472,17 +472,34 @@ endfunction
 
 function! crystalline#set_statusline(fn) abort
   let g:crystalline_statusline_fn = a:fn
-  exec 'set statusline=%!crystalline#get_statusline(1,' . win_getid() . ')'
+  call crystalline#set_local_statusline(1, win_getid())
   augroup CrystallineAutoStatusline
     au!
-    au BufWinEnter,WinEnter * exec 'setlocal statusline=%!crystalline#get_statusline(1,' . win_getid('#') . ')'
-    au WinLeave * exec 'setlocal statusline=%!crystalline#get_statusline(0,' . win_getid() . ')'
+    au BufWinEnter,WinEnter * call crystalline#set_local_statusline(1, win_getid('#'))
+    au WinLeave * call crystalline#set_local_statusline(0, win_getid())
     if exists('#CmdlineLeave') && exists('#CmdWinEnter') && exists('#CmdlineEnter')
-      au CmdlineLeave : exec 'setlocal statusline=%!crystalline#get_statusline(1,' . win_getid() . ')'
-      au CmdWinEnter : exec 'setlocal statusline=%!crystalline#get_statusline(1,0)'
-      au CmdlineEnter : exec 'setlocal statusline=%!crystalline#get_statusline(0,' . win_getid() . ')'
+      au CmdlineLeave : call crystalline#set_local_statusline(1,  win_getid())
+      au CmdWinEnter : call crystalline#set_local_statusline(1, 0)
+      au CmdlineEnter : call crystalline#set_local_statusline(0, win_getid())
     endif
   augroup END
+endfunction
+
+function! crystalline#default_ignore_fn(current)
+  if exists('g:crystalline_ignore_filetype_fn')
+    return '%!' .  function(g:crystalline_ignore_filetype_fn)(a:current)
+  endif
+  return "%#Crystalline" . (a:current ? crystalline#mode_hi() : 'Inactive' ) . "#%{&ft}"
+endfunction
+
+function! crystalline#set_local_statusline(current, win) abort
+    " ignore custom list
+    if exists('g:crystalline_ignore_filetype_list')
+      \ && (index(g:crystalline_ignore_filetype_list, &filetype) > 0 || &filetype == '')
+      exec "setlocal statusline=%!crystalline#default_ignore_fn(" . a:current . ')'
+    else
+      exec 'setlocal statusline=%!crystalline#get_statusline(' . a:current . ',' . a:win . ')'
+    endif
 endfunction
 
 function! crystalline#clear_statusline() abort
