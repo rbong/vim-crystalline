@@ -7,7 +7,7 @@ before_install:
   - curl https://raw.githubusercontent.com/kana/vim-version-manager/master/bin/vvm | python - setup; true
   - source ~/.vvm/etc/login
   - vvm update_itself
-  - vvm use vimorg--v8.2.1989 --install --with-features=huge
+  - vvm use vimorg--v8.2.0055 --install --with-features=huge
   -
   - rvm use 2.5.0 --install --binary --fuzzy
 script: rake ci
