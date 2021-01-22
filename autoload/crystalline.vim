@@ -256,6 +256,7 @@ endfunction
 
 function! crystalline#bufferline(...) abort
   let l:enable_sep = get(g:, 'crystalline_enable_sep', 0)
+  let l:hide_head = get(g:, 'crystalline_hide_tab_header', 0)
   let l:use_buffers = tabpagenr('$') == 1
 
   let l:items = get(a:, 1, 0)
@@ -286,6 +287,8 @@ function! crystalline#bufferline(...) abort
     let [l:tabs, l:ntabs, l:curtab] = crystalline#tabinfo(l:maxtabs)
     let l:tabline = '%#CrystallineTabType# TABS '
   endif
+
+  let l:tabline = ( l:hide_head ? '' : l:tabline )
 
   let [l:vtabs, l:vntabs, l:vcurtab] = crystalline#visual_tabinfo(l:tabs, l:curtab, l:ntabs, l:pad, l:tabpad, l:tabwidth, l:tablabel)
   let l:tabline .= crystalline#tab_sep(0, l:vcurtab, l:vntabs, l:show_mode)

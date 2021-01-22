@@ -81,6 +81,10 @@ g:crystalline_tab_separator                     *g:crystalline_tab_separator*
 The separator character(s) to use between unselected tabs. By default, it will
 use the powerline-style separator.
 
+g:crystalline_hide_tab_header                   *g:crystalline_hide_tab_header*
+
+Force the hide of the tabline header.
+
 g:crystalline_hide_buf_tab                      *g:crystalline_hide_buf_tab*
 
 The name of a function to determine if a buffer should be hidden from tabline
