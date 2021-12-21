@@ -8,7 +8,7 @@ jobs:
       matrix:
         include:
           - vim_type: "Vim"
-            vim_version: "v8.2.3582"
+            vim_version: "v8.2.2277"
             vspec_vim: "vim"
     steps:
       - name: "checkout"
