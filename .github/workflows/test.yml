@@ -1,0 +1,31 @@
+name: "test status"
+on:
+  - "push"
+jobs:
+  test:
+    runs-on: "ubuntu-18.04"
+    strategy:
+      matrix:
+        include:
+          - vim_type: "Vim"
+            vim_version: "v8.2.3582"
+            vspec_vim: "vim"
+    steps:
+      - name: "checkout"
+        uses: "actions/checkout@v2"
+        with:
+          fetch-depth: 1
+      - name: "install ${{ matrix.vim_type }}"
+        uses: "thinca/action-setup-vim@v1"
+        with:
+          vim_version: "${{ matrix.vim_version }}"
+          vim_type: "${{ matrix.vim_type }}"
+      - name: "install ruby"
+        uses: "ruby/setup-ruby@v1"
+        with:
+          ruby-version: "2.5.0"
+          bundler-cache: true
+      - name: "run tests"
+        run: |
+          ${{ matrix.vspec_vim }} --version
+          script -qec " VSPEC_VIM=${{ matrix.vspec_vim }} rake ci"
