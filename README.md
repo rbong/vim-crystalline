@@ -1,6 +1,6 @@
 # vim-crystalline
 
-![test status](https://github.com/rbong/vim-crystalline/actions/workflows/test.yml/badge.svg?branch=master)
+[![test status](https://github.com/rbong/vim-crystalline/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/rbong/vim-crystalline/actions/workflows/test.yml)
 
 Want a nice statusline in vim?
 [vim-airline](https://github.com/vim-airline/vim-airline/) too [slow](https://github.com/rbong/vim-crystalline/wiki/Performance-Comparison)?
