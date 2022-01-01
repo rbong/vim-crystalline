@@ -61,7 +61,7 @@ endfunction
 
 " Tab Line Utils {{{
 
-function! crystalline#get_tab_strings()
+function! crystalline#get_tab_strings() abort
   return [
         \ g:crystalline_tab_empty,
         \ g:crystalline_tab_mod,
