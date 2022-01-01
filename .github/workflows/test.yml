@@ -32,3 +32,18 @@ jobs:
         run: |
           ${{ matrix.vspec_vim }} --version
           script -qec " VSPEC_VIM=${{ matrix.vspec_vim }} rake ci"
+  lint:
+    runs-on: "ubuntu-18.04"
+    steps:
+      - name: "checkout"
+        uses: "actions/checkout@v2"
+      - uses: actions/setup-python@v2
+        with:
+          python-version: "3.x"
+      - name: "run vint"
+        # Must remove tests before linting
+        # https://github.com/Vimjas/vint/issues/330
+        run: |
+          sudo python3 -m pip install vim-vint
+          rm -rf t/
+          vint --color .
