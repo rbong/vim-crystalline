@@ -10,6 +10,9 @@ jobs:
           - vim_type: "Vim"
             vim_version: "v8.2.2277"
             vspec_vim: "vim"
+          - vim_type: "Neovim"
+            vim_version: "stable"
+            vspec_vim: "nvim"
     steps:
       - name: "checkout"
         uses: "actions/checkout@v2"
