@@ -184,6 +184,15 @@ Generate a left-facing separator between the given group and the current mode.
 
 See |crystalline#right_sep()|.
 
+crystalline#left_pad(string[, amount[, char])         *crystalline#left_pad()*
+
+If the given string is non-empty, pads it to the left with the given char and
+amount. By default, pads one space character.
+
+crystalline#right_pad(string[, amount[, char])       *crystalline#right_pad()*
+
+See |crystalline#left_pad()|.
+
 
 HIGHLIGHT GROUPS                                *crystalline-highlight-groups*
                                                 *crystalline-themes*
