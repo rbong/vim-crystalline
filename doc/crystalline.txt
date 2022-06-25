@@ -286,7 +286,7 @@ EXAMPLE                                         *crystalline-example*
     endif
     let l:s .= ' %f%h%w%m%r '
     if a:current
-      let l:s .= crystalline#right_sep('', 'Fill') . '%{FugitiveHead()}'
+      let l:s .= crystalline#right_sep('', 'Fill') . '%{fugitive#Head()}'
     endif
 
     let l:s .= '%='

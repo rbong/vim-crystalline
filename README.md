@@ -142,7 +142,7 @@ set laststatus=2
 
 ```vim
 function! StatusLine(...)
-  return ' %f%h%w%m%r %{FugitiveHead()} %{&paste ?"PASTE ":""}%{&spell?"SPELL ":""}'
+  return ' %f%h%w%m%r %{fugitive#Head()} %{&paste ?"PASTE ":""}%{&spell?"SPELL ":""}'
 endfunction
 let g:crystalline_statusline_fn = 'StatusLine'
 set laststatus=2
@@ -226,7 +226,7 @@ function! StatusLine(current, width)
   endif
   let l:s .= ' %f%h%w%m%r '
   if a:current
-    let l:s .= crystalline#right_sep('', 'Fill') . ' %{FugitiveHead()}'
+    let l:s .= crystalline#right_sep('', 'Fill') . ' %{fugitive#Head()}'
   endif
 
   let l:s .= '%='
