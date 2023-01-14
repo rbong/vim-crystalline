@@ -11,6 +11,10 @@ function! crystalline#clamp(curitem, items, maxitems) abort
   return [l:start, l:start + a:items]
 endfunction
 
+function! crystalline#escape_statusline_string(str) abort
+  return substitute(a:str, '%', '%%', 'g')
+endfunction
+
 " }}}
 
 " Status Line Utils {{{
@@ -78,7 +82,7 @@ endfunction
 function! crystalline#default_tablabel_parts(buf, max_width) abort
   let [l:empty, l:mod, l:left, l:nomod] = crystalline#get_tab_strings()
   let l:right = getbufvar(a:buf, '&mod') ? l:mod : l:nomod
-  let l:name = pathshorten(bufname(a:buf))
+  let l:name = crystalline#escape_statusline_string(pathshorten(bufname(a:buf)))
   let l:short_name = l:name[-a:max_width : ]
   if l:short_name ==# ''
     let l:short_name = l:empty
