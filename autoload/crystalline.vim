@@ -101,7 +101,7 @@ function! crystalline#default_tabwidth() abort
 endfunction
 
 function! crystalline#hide_buf_tab(buf) abort
-  return !bufexists(a:buf) || !buflisted(a:buf) || getbufvar(a:buf, '&ft') ==# 'qf'
+  return !bufexists(a:buf) || (!buflisted(a:buf) && bufnr('%') != a:buf) || getbufvar(a:buf, '&ft') ==# 'qf'
 endfunction
 
 function! crystalline#buf_tabinfo(maxtabs) abort
