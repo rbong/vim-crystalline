@@ -61,6 +61,23 @@ function! crystalline#get_statusline(current, win) abort
   endtry
 endfunction
 
+function! crystalline#init_auto_updates() abort
+  augroup CrystallineAutoStatusline
+    au!
+    if exists('g:crystalline_statusline_fn')
+      au BufWinEnter,WinEnter * exec 'setlocal statusline=%!crystalline#get_statusline(1,' . win_getid('#') . ')'
+      au WinLeave * exec 'setlocal statusline=%!crystalline#get_statusline(0,' . win_getid() . ')'
+      if exists('#CmdlineLeave') && exists('#CmdWinEnter') && exists('#CmdlineEnter')
+        au CmdlineLeave : exec 'setlocal statusline=%!crystalline#get_statusline(1,' . win_getid() . ')'
+        au CmdWinEnter : exec 'setlocal statusline=%!crystalline#get_statusline(1,0)'
+        au CmdlineEnter : exec 'setlocal statusline=%!crystalline#get_statusline(0,' . win_getid() . ')'
+      endif
+    endif
+    au ModeChanged * call crystalline#trigger_mode_update()
+    au InsertLeave * call crystalline#trigger_mode_update()
+  augroup END
+endfunction
+
 " }}}
 
 " Tab Line Utils {{{
@@ -499,16 +516,7 @@ endfunction
 function! crystalline#set_statusline(fn) abort
   let g:crystalline_statusline_fn = a:fn
   exec 'set statusline=%!crystalline#get_statusline(1,' . win_getid() . ')'
-  augroup CrystallineAutoStatusline
-    au!
-    au BufWinEnter,WinEnter * exec 'setlocal statusline=%!crystalline#get_statusline(1,' . win_getid('#') . ')'
-    au WinLeave * exec 'setlocal statusline=%!crystalline#get_statusline(0,' . win_getid() . ')'
-    if exists('#CmdlineLeave') && exists('#CmdWinEnter') && exists('#CmdlineEnter')
-      au CmdlineLeave : exec 'setlocal statusline=%!crystalline#get_statusline(1,' . win_getid() . ')'
-      au CmdWinEnter : exec 'setlocal statusline=%!crystalline#get_statusline(1,0)'
-      au CmdlineEnter : exec 'setlocal statusline=%!crystalline#get_statusline(0,' . win_getid() . ')'
-    endif
-  augroup END
+  call crystalline#init_auto_updates()
 endfunction
 
 function! crystalline#clear_statusline() abort
@@ -525,8 +533,8 @@ function! crystalline#set_tabline(fn) abort
     augroup CrystallineAutoTabline
       au!
       au User CrystallineModeUpdate set tabline=%!crystalline#get_tabline()
-      au InsertLeave * set tabline=%!crystalline#get_tabline()
     augroup END
+    call crystalline#init_auto_updates()
   endif
 endfunction
 
