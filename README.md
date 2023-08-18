@@ -97,20 +97,19 @@ See `:help statusline` for more information on the statusline syntax used in the
 ### Basic Vim Syntax
 
 ```vim
-function! StatusLine()
+function! Statusline()
   return ' %f%h%w%m%r '
 endfunction
-set statusline=%!StatusLine()
+set statusline=%!Statusline()
 set laststatus=2
 ```
 
 ### Statusline Mode Colors
 
 ```vim
-function! StatusLine(...)
+function! g:CrystallineStatuslineFn(...)
   return crystalline#mode() . ' %f%h%w%m%r '
 endfunction
-let g:crystalline_statusline_fn = 'StatusLine'
 let g:crystalline_theme = 'default'
 set laststatus=2
 ```
@@ -118,22 +117,20 @@ set laststatus=2
 ### Hiding Sections In Inactive Windows
 
 ```vim
-function! StatusLine(current)
+function! g:CrystallineStatuslineFn(current)
   return ' %f%h%w%m%r '
         \ . (a:current ? '%= %{&ft}[%{&fenc!=#""?&fenc:&enc}][%{&ff}] %l/%L %c%V %P ' : '')
 endfunction
-let g:crystalline_statusline_fn = 'StatusLine'
 set laststatus=2
 ```
 
 ### Using Themes
 
 ```vim
-function! StatusLine(...)
+function! g:CrystallineStatuslineFn(...)
   return '%#Crystalline# %f%h%w%m%r %#CrystallineFill#'
         \ . '%=%#Crystalline# %{&ft}[%{&fenc!=#""?&fenc:&enc}][%{&ff}] %l/%L %c%V %P '
 endfunction
-let g:crystalline_statusline_fn = 'StatusLine'
 let g:crystalline_theme = 'default'
 set laststatus=2
 ```
@@ -141,34 +138,31 @@ set laststatus=2
 ### Adding More Statusline Information
 
 ```vim
-function! StatusLine(...)
+function! g:CrystallineStatuslineFn(...)
   return ' %f%h%w%m%r %{fugitive#Head()} %{&paste ?"PASTE ":""}%{&spell?"SPELL ":""}'
 endfunction
-let g:crystalline_statusline_fn = 'StatusLine'
 set laststatus=2
 ```
 
 ### Hiding Sections Based on Window Width
 
 ```vim
-function! StatusLine(current, width)
+function! g:CrystallineStatuslineFn(current, width)
   return ' %f%h%w%m%r '
         \ . (a:width > 80 ? '%= %{&ft}[%{&fenc!=#""?&fenc:&enc}][%{&ff}] %l/%L %c%V %P ' : '')
 endfunction
-let g:crystalline_statusline_fn = 'StatusLine'
 set laststatus=2
 ```
 
 ### Adding Powerline-Style Separators Between Sections
 
 ```vim
-function! StatusLine(...)
+function! g:CrystallineStatuslineFn(...)
   return crystalline#mode() . crystalline#right_mode_sep('')
         \ . ' %f%h%w%m%r ' . crystalline#right_sep('', 'Fill') . '%='
         \ . crystalline#left_sep('', 'Fill') . ' %{&ft}[%{&fenc!=#""?&fenc:&enc}][%{&ff}] %l/%L %c%V %P '
 endfunction
 let g:crystalline_enable_sep = 1
-let g:crystalline_statusline_fn = 'StatusLine'
 let g:crystalline_theme = 'default'
 set laststatus=2
 ```
@@ -193,21 +187,19 @@ set guioptions-=e
 ### Bufferline Current Tab Mode Colors
 
 ```vim
-function! TabLine()
+function! g:CrystallineTablineFn()
   return crystalline#bufferline(0, 0, 1)
 endfunction
-let g:crystalline_tabline_fn = 'TabLine'
 set showtabline=2
 ```
 
 ### Adding More Tabline Information
 
 ```vim
-function! TabLine()
+function! g:CrystallineTablineFn()
   let l:vimlabel = has('nvim') ?  ' NVIM ' : ' VIM '
   return crystalline#bufferline(2, len(l:vimlabel), 1) . '%=%#CrystallineTab# ' . l:vimlabel
 endfunction
-let g:crystalline_tabline_fn = 'TabLine'
 set showtabline=2
 ```
 
@@ -216,7 +208,7 @@ The first two options to the bufferline indicate the number of `%` items used an
 ### Full Example
 
 ```vim
-function! StatusLine(current, width)
+function! g:CrystallineStatuslineFn(current, width)
   let l:s = ''
 
   if a:current
@@ -243,14 +235,12 @@ function! StatusLine(current, width)
   return l:s
 endfunction
 
-function! TabLine()
+function! g:CrystallineTablineFn()
   let l:vimlabel = has('nvim') ?  ' NVIM ' : ' VIM '
   return crystalline#bufferline(2, len(l:vimlabel), 1) . '%=%#CrystallineTab# ' . l:vimlabel
 endfunction
 
 let g:crystalline_enable_sep = 1
-let g:crystalline_statusline_fn = 'StatusLine'
-let g:crystalline_tabline_fn = 'TabLine'
 let g:crystalline_theme = 'default'
 
 set showtabline=2

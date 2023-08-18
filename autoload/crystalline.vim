@@ -55,16 +55,16 @@ endfunction
 function! crystalline#get_statusline(current, win) abort
   call crystalline#trigger_mode_update()
   try
-    return function(g:crystalline_statusline_fn)(a:current, winwidth(win_id2win(a:win)))
+    return g:CrystallineStatuslineFn(a:current, winwidth(win_id2win(a:win)))
   catch /^Vim\%((\a\+)\)\=:E118/
-    return function(g:crystalline_statusline_fn)(a:current)
+    return g:CrystallineStatuslineFn(a:current)
   endtry
 endfunction
 
 function! crystalline#init_auto_updates() abort
   augroup CrystallineAutoStatusline
     au!
-    if exists('g:crystalline_statusline_fn')
+    if exists('g:CrystallineStatuslineFn') || exists('*g:CrystallineStatuslineFn')
       au BufWinEnter,WinEnter * exec 'setlocal statusline=%!crystalline#get_statusline(1,' . win_getid('#') . ')'
       au WinLeave * exec 'setlocal statusline=%!crystalline#get_statusline(0,' . win_getid() . ')'
       if exists('#CmdlineLeave') && exists('#CmdWinEnter') && exists('#CmdlineEnter')
@@ -323,10 +323,6 @@ function! crystalline#bufferline(...) abort
   return l:tabline
 endfunction
 
-function! crystalline#get_tabline() abort
-  return function(g:crystalline_tabline_fn)()
-endfunction
-
 " }}}
 
 " Theme Utils {{{
@@ -513,8 +509,7 @@ endfunction
 
 " Setting Management {{{
 
-function! crystalline#set_statusline(fn) abort
-  let g:crystalline_statusline_fn = a:fn
+function! crystalline#init_statusline() abort
   exec 'set statusline=%!crystalline#get_statusline(1,' . win_getid() . ')'
   call crystalline#init_auto_updates()
 endfunction
@@ -526,13 +521,12 @@ function! crystalline#clear_statusline() abort
   augroup END
 endfunction
 
-function! crystalline#set_tabline(fn) abort
+function! crystalline#init_tabline() abort
   if exists('+tabline')
-    let g:crystalline_tabline_fn = a:fn
-    set tabline=%!crystalline#get_tabline()
+    set tabline=%!g:CrystallineTablineFn()
     augroup CrystallineAutoTabline
       au!
-      au User CrystallineModeUpdate set tabline=%!crystalline#get_tabline()
+      au User CrystallineModeUpdate set tabline=%!g:CrystallineTablineFn()
     augroup END
     call crystalline#init_auto_updates()
   endif

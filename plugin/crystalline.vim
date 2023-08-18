@@ -1,5 +1,17 @@
 scriptencoding utf-8
 
+" Deprecations {{{
+
+if exists('g:crystalline_statusline_fn')
+  echoerr 'g:crystalline_statusline_fn is deprecated, use function! g:CrystallineTablineFn'
+endif
+
+if exists('g:crystalline_tabline_fn')
+  echoerr 'g:crystalline_tabline_fn is deprecated, use function! g:CrystallineTablineFn'
+endif
+
+" }}}
+
 " Helper Variables {{{
 
 if !exists('g:crystalline_mode_labels')
@@ -81,12 +93,12 @@ endif
 
 " Load User Settings {{{
 
-if exists('g:crystalline_tabline_fn')
-  call crystalline#set_tabline(g:crystalline_tabline_fn)
+if exists('g:CrystallineTablineFn') || exists('*g:CrystallineTablineFn')
+  call crystalline#init_tabline()
 endif
 
-if exists('g:crystalline_statusline_fn')
-  call crystalline#set_statusline(g:crystalline_statusline_fn)
+if exists('g:CrystallineStatuslineFn') || exists('*g:CrystallineStatuslineFn')
+  call crystalline#init_statusline()
 endif
 
 call crystalline#apply_current_theme()

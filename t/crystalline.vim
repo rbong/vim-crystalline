@@ -16,8 +16,8 @@ function! LoadCrystalline()
 endfunction
 
 function! CleanCrystalline()
-  unlet! g:crystalline_statusline_fn
-  unlet! g:crystalline_tabline_fn
+  unlet! g:CrystallineStatuslineFn
+  unlet! g:CrystallineTablineFn
   unlet! g:crystalline_theme
   unlet! g:crystalline_enable_sep
   unlet! g:crystalline_mode
@@ -30,9 +30,9 @@ function! CleanCrystalline()
   hi clear
 endfunction
 
-describe 'g:crystalline_statusline_fn'
+describe 'g:CrystallineStatuslineFn'
   before
-    let g:crystalline_statusline_fn = 'DefaultLine'
+    let g:CrystallineStatuslineFn = 'DefaultLine'
     source plugin/crystalline.vim
   end
 
@@ -49,9 +49,9 @@ describe 'g:crystalline_statusline_fn'
   end
 end
 
-describe 'g:crystalline_tabline_fn'
+describe 'g:CrystallineTablineFn'
   before
-    let g:crystalline_tabline_fn = 'DefaultLine'
+    let g:CrystallineTablineFn = 'DefaultLine'
     source plugin/crystalline.vim
   end
 
@@ -166,23 +166,23 @@ describe 'crystalline#get_statusline'
   end
 
   it 'returns the statusline setting'
-    let g:crystalline_statusline_fn = 'DefaultLine'
+    let g:CrystallineStatuslineFn = 'DefaultLine'
     Expect crystalline#get_statusline(1, 0) ==# '__DEFAULT__ %f'
   end
 
   it 'passes the current window'
-    let g:crystalline_statusline_fn = 'CurrentStatusLine'
+    let g:CrystallineStatuslineFn = 'CurrentStatusLine'
     Expect crystalline#get_statusline(1, 0) ==# '__CURRENT__ 1'
     Expect crystalline#get_statusline(0, 0) ==# '__CURRENT__ 0'
   end
 
   it 'passes the window width'
-    let g:crystalline_statusline_fn = 'WidthStatusLine'
+    let g:CrystallineStatuslineFn = 'WidthStatusLine'
     Expect crystalline#get_statusline(0, 0) ==# '__WIDTH__ ' . winwidth(0)
   end
 
   it 'triggers a mode update'
-    let g:crystalline_statusline_fn = 'DefaultLine'
+    let g:CrystallineStatuslineFn = 'DefaultLine'
     let g:test_mode = ''
     augroup Test
       au!
@@ -203,7 +203,7 @@ describe 'crystalline#get_tabline'
   end
 
   it 'returns the tabline setting'
-    let g:crystalline_tabline_fn = 'DefaultLine'
+    let g:CrystallineTablineFn = 'DefaultLine'
     Expect crystalline#get_tabline() ==# '__DEFAULT__ %f'
   end
 end
