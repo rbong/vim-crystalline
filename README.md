@@ -107,7 +107,7 @@ set laststatus=2
 ### Statusline Mode Colors
 
 ```vim
-function! g:CrystallineStatuslineFn(...)
+function! g:CrystallineStatuslineFn(ctx)
   return crystalline#mode() . ' %f%h%w%m%r '
 endfunction
 let g:crystalline_theme = 'default'
@@ -117,9 +117,9 @@ set laststatus=2
 ### Hiding Sections In Inactive Windows
 
 ```vim
-function! g:CrystallineStatuslineFn(current)
+function! g:CrystallineStatuslineFn(ctx)
   return ' %f%h%w%m%r '
-        \ . (a:current ? '%= %{&ft}[%{&fenc!=#""?&fenc:&enc}][%{&ff}] %l/%L %c%V %P ' : '')
+        \ . (a:ctx.curr ? '%= %{&ft}[%{&fenc!=#""?&fenc:&enc}][%{&ff}] %l/%L %c%V %P ' : '')
 endfunction
 set laststatus=2
 ```
@@ -127,7 +127,7 @@ set laststatus=2
 ### Using Themes
 
 ```vim
-function! g:CrystallineStatuslineFn(...)
+function! g:CrystallineStatuslineFn(ctx)
   return '%#Crystalline# %f%h%w%m%r %#CrystallineFill#'
         \ . '%=%#Crystalline# %{&ft}[%{&fenc!=#""?&fenc:&enc}][%{&ff}] %l/%L %c%V %P '
 endfunction
@@ -138,7 +138,7 @@ set laststatus=2
 ### Adding More Statusline Information
 
 ```vim
-function! g:CrystallineStatuslineFn(...)
+function! g:CrystallineStatuslineFn(ctx)
   return ' %f%h%w%m%r %{fugitive#Head()} %{&paste ?"PASTE ":""}%{&spell?"SPELL ":""}'
 endfunction
 set laststatus=2
@@ -147,9 +147,9 @@ set laststatus=2
 ### Hiding Sections Based on Window Width
 
 ```vim
-function! g:CrystallineStatuslineFn(current, width)
+function! g:CrystallineStatuslineFn(ctx)
   return ' %f%h%w%m%r '
-        \ . (a:width > 80 ? '%= %{&ft}[%{&fenc!=#""?&fenc:&enc}][%{&ff}] %l/%L %c%V %P ' : '')
+        \ . (a:ctx.w > 80 ? '%= %{&ft}[%{&fenc!=#""?&fenc:&enc}][%{&ff}] %l/%L %c%V %P ' : '')
 endfunction
 set laststatus=2
 ```
@@ -157,7 +157,7 @@ set laststatus=2
 ### Adding Powerline-Style Separators Between Sections
 
 ```vim
-function! g:CrystallineStatuslineFn(...)
+function! g:CrystallineStatuslineFn(ctx)
   return crystalline#mode() . crystalline#right_mode_sep('')
         \ . ' %f%h%w%m%r ' . crystalline#right_sep('', 'Fill') . '%='
         \ . crystalline#left_sep('', 'Fill') . ' %{&ft}[%{&fenc!=#""?&fenc:&enc}][%{&ff}] %l/%L %c%V %P '
@@ -208,25 +208,25 @@ The first two options to the bufferline indicate the number of `%` items used an
 ### Full Example
 
 ```vim
-function! g:CrystallineStatuslineFn(current, width)
+function! g:CrystallineStatuslineFn(ctx)
   let l:s = ''
 
-  if a:current
+  if a:ctx.curr
     let l:s .= crystalline#mode() . crystalline#right_mode_sep('')
   else
     let l:s .= '%#CrystallineInactive#'
   endif
   let l:s .= ' %f%h%w%m%r '
-  if a:current
+  if a:ctx.curr
     let l:s .= crystalline#right_sep('', 'Fill') . ' %{fugitive#Head()}'
   endif
 
   let l:s .= '%='
-  if a:current
+  if a:ctx.curr
     let l:s .= crystalline#left_sep('', 'Fill') . ' %{&paste ?"PASTE ":""}%{&spell?"SPELL ":""}'
     let l:s .= crystalline#left_mode_sep('')
   endif
-  if a:width > 80
+  if a:ctx.w > 80
     let l:s .= ' %{&ft}[%{&fenc!=#""?&fenc:&enc}][%{&ff}] %l/%L %c%V %P '
   else
     let l:s .= ' '

@@ -54,10 +54,15 @@ endfunction
 
 function! crystalline#get_statusline(current, win) abort
   call crystalline#trigger_mode_update()
+  let l:ctx = {
+        \ 'curr': a:current,
+        \ 'w': winwidth(win_id2win(a:win))
+        \ }
   try
-    return g:CrystallineStatuslineFn(a:current, winwidth(win_id2win(a:win)))
-  catch /^Vim\%((\a\+)\)\=:E118/
-    return g:CrystallineStatuslineFn(a:current)
+    return g:CrystallineStatuslineFn(l:ctx)
+  catch /^Vim\%((\a\+)\)\=:E\%(118\|728\|735\)/
+    echoerr 'vim-crystalline: use of deprecated args detected, see :help g:CrystallineStatuslineFn'
+    throw v:exception
   endtry
 endfunction
 

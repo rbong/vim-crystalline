@@ -22,20 +22,14 @@ May be a |function()| reference or defined with |:function|.
 The output of the function will be used as the statusline. See 'statusline'
 for more information on statusline syntax.
 
-The function should accept one or two arguments. The first argument indicates
-whether the statusline is being set for the currently active window using
-|:setlocal|. You can use this parameter to hide or change elements based on
-inactivity. The second argument contains the width of the current window. You
-can use this parameter to hide sections of the statusline based on window
-width.
+The function should accept one argument, which is an object containing the
+following:
 
-For convience, the statusline will be automatically updated when the mode
-changes or the active window changes. If you do not need mode or active window
-information in your statusline, you can use "set statusline=%!MyStatusLine()".
+  curr    Whether the window is the currently focused window.
+  w       The width of the current window.
 
-Since Vim does not provide an |autocommand| for mode changes but it does
-update the statusline, setting the statusline via this method also triggers
-the tabline to update on mode changes.
+If you do not need the statusline to update when the mode or current window
+changes, instead use ":set statusline=%!MyStatusLine()".
 
 g:CrystallineTablineFn                                *g:CrystallineTablineFn*
 
@@ -44,9 +38,8 @@ May be a |function()| reference or defined with |:function|.
 The output of the function will be used as the tabline. See 'statusline' for
 more information on statusline syntax.
 
-For convience, the tabline will be automatically updated when the mode
-changes. If you do not need mode information or colors in your tabline, you
-can use "set tabline=%!MyTabLine()".
+If you do not need the tabline to update when the mode or current window
+changes, instead use ":set statusline=%!MyStatusLine()".
 
 g:crystalline_theme                             *g:crystalline_theme*
 
@@ -280,25 +273,25 @@ tabline.
 EXAMPLE                                         *crystalline-example*
 
 >
-  function! g:CrystallineStatuslineFn(current, width)
+  function! g:CrystallineStatuslineFn(ctx)
     let l:s = ''
 
-    if a:current
+    if a:ctx.curr
       let l:s .= crystalline#mode() . crystalline#right_mode_sep('')
     else
       let l:s .= '%#CrystallineInactive#'
     endif
     let l:s .= ' %f%h%w%m%r '
-    if a:current
-      let l:s .= crystalline#right_sep('', 'Fill') . '%{fugitive#Head()}'
+    if a:ctx.curr
+      let l:s .= crystalline#right_sep('', 'Fill') . ' %{fugitive#Head()}'
     endif
 
     let l:s .= '%='
-    if a:current
+    if a:ctx.curr
       let l:s .= crystalline#left_sep('', 'Fill') . ' %{&paste ?"PASTE ":""}%{&spell?"SPELL ":""}'
       let l:s .= crystalline#left_mode_sep('')
     endif
-    if a:width > 80
+    if a:ctx.w > 80
       let l:s .= ' %{&ft}[%{&fenc!=#""?&fenc:&enc}][%{&ff}] %l/%L %c%V %P '
     else
       let l:s .= ' '
