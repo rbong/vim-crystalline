@@ -108,7 +108,7 @@ set laststatus=2
 
 ```vim
 function! g:CrystallineStatuslineFn(ctx)
-  return crystalline#mode() . ' %f%h%w%m%r '
+  return crystalline#mode_sec() . ' %f%h%w%m%r '
 endfunction
 let g:crystalline_theme = 'default'
 set laststatus=2
@@ -158,7 +158,7 @@ set laststatus=2
 
 ```vim
 function! g:CrystallineStatuslineFn(ctx)
-  return crystalline#mode() . crystalline#right_mode_sep('')
+  return crystalline#mode_sec() . crystalline#right_mode_sep('')
         \ . ' %f%h%w%m%r ' . crystalline#right_sep('', 'Fill') . '%='
         \ . crystalline#left_sep('', 'Fill') . ' %{&ft}[%{&fenc!=#""?&fenc:&enc}][%{&ff}] %l/%L %c%V %P '
 endfunction
@@ -212,7 +212,7 @@ function! g:CrystallineStatuslineFn(ctx)
   let l:s = ''
 
   if a:ctx.curr
-    let l:s .= crystalline#mode() . crystalline#right_mode_sep('')
+    let l:s .= crystalline#mode_sec() . crystalline#right_mode_sep('')
   else
     let l:s .= '%#CrystallineInactive#'
   endif

@@ -1,3 +1,11 @@
+" Deprecated Functions {{{
+
+function! crystalline#mode(...) abort
+  throw 'crystalline: crystalline#mode() is deprecated, use crystalline#mode_sec()'
+endfunction
+
+" }}}
+
 " General Utils {{{
 
 function! crystalline#clamp(curitem, items, maxitems) abort
@@ -40,7 +48,7 @@ function! crystalline#mode_label() abort
   return g:crystalline_mode_labels[crystalline#mode_type()]
 endfunction
 
-function! crystalline#mode() abort
+function! crystalline#mode_sec() abort
   return crystalline#mode_color() . crystalline#mode_label()
 endfunction
 

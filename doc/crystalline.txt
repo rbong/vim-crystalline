@@ -89,7 +89,7 @@ not exist, it is not listed, or it is a quickfix buffer.
 
 FUNCTIONS                                       *crystalline-functions*
 
-crystalline#mode()                              *crystalline#mode()*
+crystalline#mode_sec()                            *crystalline#mode_sec()*
 
 Return a statusline highlight group item and a label for the current mode. Can
 be used as a mode section on the statusline or tabline.
@@ -212,25 +212,25 @@ CrystallineNormalMode                           *hl-CrystallineNormalMode*
 
 The color of the mode label when normal mode is active.
 
-See |crystalline#mode()|.
+See |crystalline#mode_sec()|.
 
 CrystallineInsertMode                           *hl-CrystallineInsertMode*
 
 The color of the mode label when insert mode is active.
 
-See |crystalline#mode()|.
+See |crystalline#mode_sec()|.
 
 CrystallineVisualMode                           *hl-CrystallineVisualMode*
 
 The color of the mode label when visual mode is active.
 
-See |crystalline#mode()|.
+See |crystalline#mode_sec()|.
 
 CrystallineReplaceMode                          *hl-CrystallineReplaceMode*
 
 The color of the mode label when replace mode is active.
 
-See |crystalline#mode()|.
+See |crystalline#mode_sec()|.
 
 Crystalline                                     *hl-Crystalline*
 
@@ -277,7 +277,7 @@ EXAMPLE                                         *crystalline-example*
     let l:s = ''
 
     if a:ctx.curr
-      let l:s .= crystalline#mode() . crystalline#right_mode_sep('')
+      let l:s .= crystalline#mode_sec() . crystalline#right_mode_sep('')
     else
       let l:s .= '%#CrystallineInactive#'
     endif

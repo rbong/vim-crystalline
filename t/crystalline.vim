@@ -220,12 +220,12 @@ describe 'crystalline#mode'
   end
 
   it 'returns the current mode'
-    Expect crystalline#mode() ==# '%#CrystallineNormalMode# NORMAL '
-    exe "normal! i\<c-r>=crystalline#mode()\<cr>"
+    Expect crystalline#mode_sec() ==# '%#CrystallineNormalMode# NORMAL '
+    exe "normal! i\<c-r>=crystalline#mode_sec()\<cr>"
     Expect getline(1) ==# '%#CrystallineInsertMode# INSERT '
-    exe "normal! V\"=crystalline#mode()\<cr>p"
+    exe "normal! V\"=crystalline#mode_sec()\<cr>p"
     Expect getline(1) ==# '%#CrystallineVisualMode# VISUAL '
-    exe "normal! 0R\<c-r>=crystalline#mode()\<cr>"
+    exe "normal! 0R\<c-r>=crystalline#mode_sec()\<cr>"
     Expect getline(1) ==# '%#CrystallineReplaceMode# REPLACE '
   end
 end
