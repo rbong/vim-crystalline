@@ -158,16 +158,21 @@ set laststatus=2
 
 ```vim
 function! g:CrystallineStatuslineFn(ctx)
-  return crystalline#mode_sec() . crystalline#right_mode_sep('')
-        \ . ' %f%h%w%m%r ' . crystalline#right_sep('', 'Fill') . '%='
-        \ . crystalline#left_sep('', 'Fill') . ' %{&ft}[%{&fenc!=#""?&fenc:&enc}][%{&ff}] %l/%L %c%V %P '
+  return crystalline#mode_sec() . crystalline#sep(0, crystalline#mode_hi(), '')
+        \ . ' %f%h%w%m%r ' . crystalline#sep(0, '', 'Fill') . '%='
+        \ . crystalline#sep(1, 'Fill', '') . ' %{&ft}[%{&fenc!=#""?&fenc:&enc}][%{&ff}] %l/%L %c%V %P '
 endfunction
 let g:crystalline_enable_sep = 1
 let g:crystalline_theme = 'default'
 set laststatus=2
 ```
 
-The strings passed to separator functions are groups from `:help crystalline-highlight-groups` with `Crystalline` omitted.
+`crystalline#sep()` generates a separator between highlight groups and starts the next highlight group.
+
+The first argument is the index of the separator to use from `:help g:crystalline_separators`.
+
+The other arguments are groups from `:help crystalline-highlight-groups` with `Crystalline` omitted.
+The first group is the left group, and the second group is the right group.
 
 ### Using the Bufferline
 
@@ -210,21 +215,22 @@ The first two options to the bufferline indicate the number of `%` items used an
 ```vim
 function! g:CrystallineStatuslineFn(ctx)
   let l:s = ''
+  let l:mode_hi = crystalline#mode_hi()
 
   if a:ctx.curr
-    let l:s .= crystalline#mode_sec() . crystalline#right_mode_sep('')
+    let l:s .= crystalline#mode_sec() . crystalline#sep(0, l:mode_hi, '')
   else
     let l:s .= '%#CrystallineInactive#'
   endif
   let l:s .= ' %f%h%w%m%r '
   if a:ctx.curr
-    let l:s .= crystalline#right_sep('', 'Fill') . ' %{fugitive#Head()}'
+    let l:s .= crystalline#sep(0, '', 'Fill') . ' %{fugitive#Head()}'
   endif
 
   let l:s .= '%='
   if a:ctx.curr
-    let l:s .= crystalline#left_sep('', 'Fill') . ' %{&paste ?"PASTE ":""}%{&spell?"SPELL ":""}'
-    let l:s .= crystalline#left_mode_sep('')
+    let l:s .= crystalline#sep(1, 'Fill', '') . ' %{&paste ?"PASTE ":""}%{&spell?"SPELL ":""}'
+    let l:s .= crystalline#sep(1, '', l:mode_hi)
   endif
   if a:ctx.w > 80
     let l:s .= ' %{&ft}[%{&fenc!=#""?&fenc:&enc}][%{&ff}] %l/%L %c%V %P '

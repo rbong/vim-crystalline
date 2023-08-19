@@ -61,22 +61,35 @@ powerline.
 
 Separators will automatically appear on the tabline using
 |crystalline#bufferline()|, and can be generated for the statusline using
-|crystalline#right_sep()|, |crystalline#left_sep()|,
-|crystalline#right_mode_sep()|, and |crystalline#left_mode_sep()|
+|crystalline#sep()|.
 
 g:crystalline_separators                        *g:crystalline_separators*
 
-The separator character(s) to use between sections/tabs. By default, it will
-use powerline-style separators.
+The separators to use between sections/tabs.
 
-The setting must be a list of strings, with the first string representing the
-right-facing separator and the second string representing the left-facing
-separator.
+This is a list of objects containing the following keys:
 
-g:crystalline_tab_separator                     *g:crystalline_tab_separator*
+  ch    The character to use for the separator.
+  dir   The direction of the separator, either ">" or "<".
 
-The separator character(s) to use between unselected tabs. By default, it will
-use the powerline-style separator.
+Defaults to:
+
+>
+  let g:crystalline_separators = [
+        \ { 'ch': '', 'dir': '>' },
+        \ { 'ch': '', 'dir': '<' },
+        \ { 'ch': '', 'dir': '>' },
+        \ { 'ch': '', 'dir': '<' },
+        \ ]
+
+
+g:crystalline_tab_sep_index                     *g:crystalline_tab_sep_index*
+
+The index of the separator to use between tabs. Defaults to 0.
+
+g:crystalline_unselected_tab_sep_index          *g:crystalline_unselected_tab_sep_index*
+
+The index of the separator to use between unselected tabs. Defaults to 2.
 
 g:crystalline_hide_buf_tab                      *g:crystalline_hide_buf_tab*
 
@@ -93,6 +106,13 @@ crystalline#mode_sec()                            *crystalline#mode_sec()*
 
 Return a statusline highlight group item and a label for the current mode. Can
 be used as a mode section on the statusline or tabline.
+
+See |crystalline-highlight-groups| for the list of mode highlight groups.
+
+crystalline#mode_hi()                           *crystalline#mode_hi()*
+
+Return the name of the current mode highlight group with the prefix
+"Crystalline" omitted. Can be used with |crystalline#sep()|.
 
 See |crystalline-highlight-groups| for the list of mode highlight groups.
 
@@ -155,41 +175,22 @@ crystalline#default_tabwidth()                  *crystalline#default_tabwidth()*
 
 Returns the default tabwidth for |crystalline#bufferline()|.
 
-crystalline#right_sep(group_a, group_b)         *crystalline#right_sep()*
+crystalline#sep()                               *crystalline#sep()*
 
-Generate a right-facing separator between the two highlight groups.
+Generate a separator between sections and start a statusline highlight group
+item for the next section.
 
-Use the group names listed in |crystalline-highlight-groups|, with
-"Crystalline" omitted.
+Accepts the following arguments:
 
-crystalline#left_sep(group_a, group_b)          *crystalline#left_sep()*
+  sep_index     The index of the separator from |g:crystalline_separators| to
+                use.
+  left_group    The left side highlight group to use.
+  right_group   The right side highlight group to use.
 
-Generate a left-facing separator between the two highlight groups.
+Highlight groups are the names of highlight groups from
+|crystalline-highlight-groups| with the prefix "Crystalline" omitted.
 
-See |crystalline#right_sep()|.
-
-crystalline#right_mode_sep(group)               *crystalline#right_mode_sep()*
-
-Generate a right-facing separator between the current mode and the given
-group.
-
-See |crystalline#right_sep()|.
-
-crystalline#left_mode_sep(group)                *crystalline#left_mode_sep()*
-
-Generate a left-facing separator between the given group and the current mode.
-
-See |crystalline#right_sep()|.
-
-crystalline#left_pad(string[, amount[, char])         *crystalline#left_pad()*
-
-If the given string is non-empty, pads it to the left with the given char and
-amount. By default, pads one space character.
-
-crystalline#right_pad(string[, amount[, char])       *crystalline#right_pad()*
-
-See |crystalline#left_pad()|.
-
+Groups support the return value from |crystalline#mode_hi()|.
 
 HIGHLIGHT GROUPS                                *crystalline-highlight-groups*
                                                 *crystalline-themes*
@@ -212,25 +213,25 @@ CrystallineNormalMode                           *hl-CrystallineNormalMode*
 
 The color of the mode label when normal mode is active.
 
-See |crystalline#mode_sec()|.
+See |crystalline#mode_sec()| and |crystalline#mode_hi()|.
 
 CrystallineInsertMode                           *hl-CrystallineInsertMode*
 
 The color of the mode label when insert mode is active.
 
-See |crystalline#mode_sec()|.
+See |crystalline#mode_sec()| and |crystalline#mode_hi()|.
 
 CrystallineVisualMode                           *hl-CrystallineVisualMode*
 
 The color of the mode label when visual mode is active.
 
-See |crystalline#mode_sec()|.
+See |crystalline#mode_sec()| and |crystalline#mode_hi()|.
 
 CrystallineReplaceMode                          *hl-CrystallineReplaceMode*
 
 The color of the mode label when replace mode is active.
 
-See |crystalline#mode_sec()|.
+See |crystalline#mode_sec()| and |crystalline#mode_hi()|.
 
 Crystalline                                     *hl-Crystalline*
 
@@ -275,21 +276,22 @@ EXAMPLE                                         *crystalline-example*
 >
   function! g:CrystallineStatuslineFn(ctx)
     let l:s = ''
+    let l:mode_hi = crystalline#mode_hi()
 
     if a:ctx.curr
-      let l:s .= crystalline#mode_sec() . crystalline#right_mode_sep('')
+      let l:s .= crystalline#mode_sec() . crystalline#sep(0, l:mode_hi, '')
     else
       let l:s .= '%#CrystallineInactive#'
     endif
     let l:s .= ' %f%h%w%m%r '
     if a:ctx.curr
-      let l:s .= crystalline#right_sep('', 'Fill') . ' %{fugitive#Head()}'
+      let l:s .= crystalline#sep(0, '', 'Fill') . ' %{fugitive#Head()}'
     endif
 
     let l:s .= '%='
     if a:ctx.curr
-      let l:s .= crystalline#left_sep('', 'Fill') . ' %{&paste ?"PASTE ":""}%{&spell?"SPELL ":""}'
-      let l:s .= crystalline#left_mode_sep('')
+      let l:s .= crystalline#sep(1, 'Fill', '') . ' %{&paste ?"PASTE ":""}%{&spell?"SPELL ":""}'
+      let l:s .= crystalline#sep(1, '', l:mode_hi)
     endif
     if a:ctx.w > 80
       let l:s .= ' %{&ft}[%{&fenc!=#""?&fenc:&enc}][%{&ff}] %l/%L %c%V %P '

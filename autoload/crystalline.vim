@@ -4,6 +4,26 @@ function! crystalline#mode(...) abort
   throw 'crystalline: crystalline#mode() is deprecated, use crystalline#mode_sec()'
 endfunction
 
+function! crystalline#mode_sep(...) abort
+  throw 'crystalline: crystalline#mode_sep() is deprecated, use crystalline#sep()'
+endfunction
+
+function! crystalline#right_sep(...) abort
+  throw 'crystalline: crystalline#right_sep() is deprecated, use crystalline#sep()'
+endfunction
+
+function! crystalline#left_sep(...) abort
+  throw 'crystalline: crystalline#left_sep() is deprecated, use crystalline#sep()'
+endfunction
+
+function! crystalline#right_mode_sep(...) abort
+  throw 'crystalline: crystalline#right_mode_sep() is deprecated, use crystalline#sep()'
+endfunction
+
+function! crystalline#left_mode_sep(...) abort
+  throw 'crystalline: crystalline#left_mode_sep() is deprecated, use crystalline#sep()'
+endfunction
+
 " }}}
 
 " General Utils {{{
@@ -258,34 +278,33 @@ endfunction
 
 function! crystalline#tab_sep(tab, curtab, ntabs, show_mode) abort
   if a:tab == 0
-    let l:group_a = 'TabType'
+    let l:left_group = 'TabType'
   elseif a:tab == a:curtab
     if a:show_mode
-      let l:group_a = g:crystalline_mode_hi_groups[crystalline#mode_type()]
+      let l:left_group = crystalline#mode_hi()
     else
-      let l:group_a = 'TabSel'
+      let l:left_group = 'TabSel'
     endif
   else
-    let l:group_a = 'Tab'
+    let l:left_group = 'Tab'
   endif
 
   if a:tab == a:ntabs
-    let l:group_b = 'TabFill'
+    let l:right_group = 'TabFill'
   elseif a:tab + 1 == a:curtab
     if a:show_mode
-      let l:group_b = g:crystalline_mode_hi_groups[crystalline#mode_type()]
+      let l:right_group = crystalline#mode_hi()
     else
-      let l:group_b = 'TabSel'
+      let l:right_group = 'TabSel'
     endif
   else
-    let l:group_b = 'Tab'
+    let l:right_group = 'Tab'
   endif
 
-  if l:group_a ==# 'Tab' && l:group_b ==# 'Tab'
-    return get(g:, 'crystalline_enable_sep', 0) ? g:crystalline_tab_separator : ''
+  if l:left_group ==# l:right_group
+    return crystalline#sep(g:crystalline_unselected_tab_sep_index, l:left_group, l:right_group)
   endif
-
-  return crystalline#right_sep(l:group_a, l:group_b)
+  return crystalline#sep(g:crystalline_tab_sep_index, l:left_group, l:right_group)
 endfunction
 
 function! crystalline#bufferline(...) abort
@@ -303,7 +322,7 @@ function! crystalline#bufferline(...) abort
 
   if l:enable_sep
     let l:pad = 1
-    let l:tabpad = strchars(g:crystalline_separators[0])
+    let l:tabpad = strchars(g:crystalline_separators[g:crystalline_tab_sep_index].ch)
     let l:maxtabs = crystalline#calculate_max_tabs(3, l:tabitems, l:tabselitems, 2 + l:items)
   else
     let l:pad = 0
@@ -340,8 +359,8 @@ endfunction
 
 " Theme Utils {{{
 
-function! crystalline#get_sep_group(group_a, group_b) abort
-  return a:group_a . 'To' . (a:group_b ==# '' ? 'Line' : a:group_b)
+function! crystalline#get_sep_group(left_group, right_group) abort
+  return a:left_group . 'To' . (a:right_group ==# '' ? 'Line' : a:right_group)
 endfunction
 
 " Returns a dictionary with attributes of a highlight group.
@@ -433,67 +452,75 @@ function! crystalline#mode_hi() abort
   return g:crystalline_mode_hi_groups[crystalline#mode_type()]
 endfunction
 
-function! crystalline#generate_sep_hi(group_a, group_b) abort
-  let l:attr_a = crystalline#get_hl_attrs(a:group_a)
-  let l:attr_b = crystalline#get_hl_attrs(a:group_b)
+function! crystalline#generate_sep_hi(left_group, right_group) abort
+  let l:attr_a = crystalline#get_hl_attrs(a:left_group)
+  let l:attr_b = crystalline#get_hl_attrs(a:right_group)
   let l:sep_attr = [[l:attr_a[0][1], l:attr_b[0][1]], [l:attr_a[1][1], l:attr_b[1][1]]]
   if len(l:attr_a) > 2
     let l:sep_attr += [l:attr_a[2]]
   endif
 
-  if a:group_a ==# 'TabType'
+  if a:left_group ==# 'TabType'
     let l:attr_type = has('gui_running') ? 1 : 0
     if l:attr_a[l:attr_type][1] == l:attr_b[l:attr_type][1]
-      let g:crystalline_tab_type_fake_separators[a:group_b] = 1
+      let g:crystalline_same_bg_sep_groups[crystalline#get_sep_group(a:left_group, a:right_group)] = 1
     endif
   endif
 
-  let l:sep_group = crystalline#get_sep_group(a:group_a, a:group_b)
+  let l:sep_group = crystalline#get_sep_group(a:left_group, a:right_group)
   exec crystalline#generate_hi(l:sep_group, l:sep_attr)
 endfunction
 
-function! crystalline#sep(group_a, group_b, ch, left) abort
-  let l:next_item = '%#Crystalline' . (a:left ? a:group_a : a:group_b) . '#'
-  if !get(g:, 'crystalline_enable_sep', 0) || a:ch ==# ''
-    return l:next_item
-  endif
-  if a:group_a == v:null || a:group_b == v:null
+function! crystalline#sep(sep_index, left_group, right_group) abort
+  if a:left_group == v:null || a:right_group == v:null
     return ''
   endif
 
-  let l:sep_group = crystalline#get_sep_group(a:group_a, a:group_b)
-  " Create if it doesn't exist
-  if !has_key(g:crystalline_sep_hi_groups, l:sep_group)
-    call crystalline#generate_sep_hi(a:group_a, a:group_b)
-    let g:crystalline_sep_hi_groups[l:sep_group] = [a:group_a, a:group_b]
-  endif
-
-  if a:left == 0 && a:group_a ==# 'TabType' && has_key(g:crystalline_tab_type_fake_separators, a:group_b)
-    let l:sep_item = g:crystalline_tab_separator
+  if a:left_group ==# a:right_group
+    let l:next_item = ''
   else
-    let l:sep_item = '%#Crystalline' . l:sep_group . '#' . a:ch
+    let l:next_item = '%#Crystalline' . a:right_group . '#'
   endif
+
+  if !get(g:, 'crystalline_enable_sep', 0)
+    return l:next_item
+  endif
+
+  let l:sep = get(g:crystalline_separators, a:sep_index, { 'ch': '' })
+  let l:ch = l:sep.ch
+
+  if l:ch ==# ''
+    return l:next_item
+  endif
+
+  if l:sep.dir ==# '<'
+    let l:from_group = a:right_group
+    let l:to_group = a:left_group
+  else
+    let l:from_group = a:left_group
+    let l:to_group = a:right_group
+  endif
+
+  if a:left_group ==# a:right_group
+    let l:sep_item = l:ch
+  else
+    let l:sep_group = crystalline#get_sep_group(l:from_group, l:to_group)
+
+    " Create separator highlight group if it doesn't exist
+    if !has_key(g:crystalline_sep_hi_groups, l:sep_group)
+      call crystalline#generate_sep_hi(l:from_group, l:to_group)
+      let g:crystalline_sep_hi_groups[l:sep_group] = [l:from_group, l:to_group]
+    endif
+
+    " Check for same-color separator groups
+    if get(g:crystalline_same_bg_sep_groups, l:sep_group, 0)
+      return l:ch
+    endif
+
+    let l:sep_item = '%#Crystalline' . l:sep_group . '#' . l:ch
+  endif
+
   return l:sep_item . l:next_item
-endfunction
-
-function! crystalline#mode_sep(group_b, ch, left) abort
-  return crystalline#sep(crystalline#mode_hi(), a:group_b, a:ch, a:left)
-endfunction
-
-function! crystalline#right_sep(group_a, group_b) abort
-  return crystalline#sep(a:group_a, a:group_b, g:crystalline_separators[0], 0)
-endfunction
-
-function! crystalline#left_sep(group_a, group_b) abort
-  return crystalline#sep(a:group_a, a:group_b, g:crystalline_separators[1], 1)
-endfunction
-
-function! crystalline#right_mode_sep(group) abort
-  return crystalline#mode_sep(a:group, g:crystalline_separators[0], 0)
-endfunction
-
-function! crystalline#left_mode_sep(group) abort
-  return crystalline#mode_sep(a:group, g:crystalline_separators[1], 1)
 endfunction
 
 " }}}
@@ -557,7 +584,7 @@ endfunction
 function! crystalline#apply_current_theme() abort
   let g:crystalline_mode = ''
   let g:crystalline_sep_hi_groups = {}
-  let g:crystalline_tab_type_fake_separators = {}
+  let g:crystalline_same_bg_sep_groups = {}
 
   try
     call function('crystalline#theme#' . g:crystalline_theme . '#set_theme')()

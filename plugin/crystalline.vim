@@ -10,6 +10,10 @@ if exists('g:crystalline_tabline_fn')
   echoerr 'g:crystalline_tabline_fn is deprecated, use function! g:CrystallineTablineFn'
 endif
 
+if exists('g:crystalline_tab_separator')
+  echoerr 'g:crystalline_tab_separator is deprecated, use g:crystalline_unselected_tab_sep_index'
+endif
+
 " }}}
 
 " Helper Variables {{{
@@ -33,11 +37,24 @@ let g:crystalline_mode_hi_groups = {
       \ }
 
 if !exists('g:crystalline_separators')
-  let g:crystalline_separators = ['', '']
+  let g:crystalline_separators = [
+        \ { 'ch': '', 'dir': '>' },
+        \ { 'ch': '', 'dir': '<' },
+        \ { 'ch': '', 'dir': '>' },
+        \ { 'ch': '', 'dir': '<' },
+        \ ]
 endif
 
-if !exists('g:crystalline_tab_separator')
-  let g:crystalline_tab_separator = ''
+if type(get(g:crystalline_separators, 0, {})) != v:t_dict
+  echoerr "crystalline: detected deprecated use of strings in g:crystalline_separators, use { 'ch': '<character>', 'dir': '>' }"
+endif
+
+if !exists('g:crystalline_tab_sep_index')
+  let g:crystalline_tab_sep_index = 0
+endif
+
+if !exists('g:crystalline_unselected_tab_sep_index')
+  let g:crystalline_unselected_tab_sep_index = 2
 endif
 
 if !exists('g:crystalline_tab_empty')
@@ -60,8 +77,8 @@ if !exists('g:crystalline_sep_hi_groups')
   let g:crystalline_sep_hi_groups = {}
 endif
 
-if !exists('g:crystalline_tab_type_fake_separators')
-  let g:crystalline_tab_type_fake_separators = {}
+if !exists('g:crystalline_same_bg_sep_groups')
+  let g:crystalline_same_bg_sep_groups = {}
 endif
 
 if !exists('g:crystalline_syn_modes')
