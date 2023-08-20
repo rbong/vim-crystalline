@@ -218,7 +218,7 @@ function! crystalline#tabinfo(maxtabs) abort
   return [l:tabs, l:ntabs, l:curtab]
 endfunction
 
-function! crystalline#visual_tabinfo(tabs, curtab, ntabs, pad, tabpad, tabwidth, tablabel) abort
+function! crystalline#visual_tabinfo(tabs, curtab, ntabs, pad, tabpad, tabwidth) abort
   if a:ntabs <= 0
     return [[], 0, -1]
   endif
@@ -233,7 +233,7 @@ function! crystalline#visual_tabinfo(tabs, curtab, ntabs, pad, tabpad, tabwidth,
 
   let l:first = a:curtab > 0 ? a:curtab : 1
   let l:vbufs = [a:tabs[l:first - 1]]
-  let l:vtabs = [function(a:tablabel)(l:vbufs[0], l:max_width)]
+  let l:vtabs = [g:CrystallineTablabelFn(l:vbufs[0], l:max_width)]
   let l:width = strchars(l:vtabs[0]) + a:tabpad
   let l:vcurtab = 1
   let l:vntabs = 1
@@ -248,7 +248,7 @@ function! crystalline#visual_tabinfo(tabs, curtab, ntabs, pad, tabpad, tabwidth,
 
     if l:right <= a:ntabs && !l:right_cutoff
       let l:buf = a:tabs[l:right - 1]
-      let l:label = function(a:tablabel)(l:buf, l:max_width)
+      let l:label = g:CrystallineTablabelFn(l:buf, l:max_width)
       let l:w = strchars(l:label) + a:tabpad
       if l:width + l:w <= l:total_width
         call add(l:vbufs, l:buf)
@@ -263,7 +263,7 @@ function! crystalline#visual_tabinfo(tabs, curtab, ntabs, pad, tabpad, tabwidth,
 
     if l:left > 0 && !l:left_cutoff
       let l:buf = a:tabs[l:left - 1]
-      let l:label = function(a:tablabel)(l:buf, l:max_width)
+      let l:label = g:CrystallineTablabelFn(l:buf, l:max_width)
       let l:w = strchars(l:label) + a:tabpad
       if l:width + l:w <= l:total_width
         let l:vbufs = [l:buf] + l:vbufs
@@ -286,15 +286,11 @@ function! crystalline#visual_tabinfo(tabs, curtab, ntabs, pad, tabpad, tabwidth,
   return [l:vtabs, l:vntabs, l:vcurtab]
 endfunction
 
-function! crystalline#tab_sep(tab, curtab, ntabs, show_mode) abort
+function! crystalline#tab_sep(tab, curtab, ntabs, tab_sel_group) abort
   if a:tab == 0
     let l:left_group = 'TabType'
   elseif a:tab == a:curtab
-    if a:show_mode
-      let l:left_group = crystalline#mode_group('A')
-    else
-      let l:left_group = 'TabSel'
-    endif
+    let l:left_group = a:tab_sel_group
   else
     let l:left_group = 'Tab'
   endif
@@ -302,11 +298,7 @@ function! crystalline#tab_sep(tab, curtab, ntabs, show_mode) abort
   if a:tab == a:ntabs
     let l:right_group = 'TabMid'
   elseif a:tab + 1 == a:curtab
-    if a:show_mode
-      let l:right_group = crystalline#mode_group('A')
-    else
-      let l:right_group = 'TabSel'
-    endif
+    let l:right_group = a:tab_sel_group
   else
     let l:right_group = 'Tab'
   endif
@@ -316,44 +308,53 @@ endfunction
 
 function! crystalline#bufferline(...) abort
   let l:enable_sep = get(g:, 'crystalline_enable_sep', 0)
-  let l:use_buffers = tabpagenr('$') == 1
 
-  let l:items = get(a:, 1, 0)
-  let l:width = get(a:, 2, 0)
-  let l:show_mode = get(a:, 3, 0)
-  let l:allow_mouse = get(a:, 4, 1) && !l:use_buffers
-  let l:tablabel = get(a:, 5, 'crystalline#default_tablabel')
-  let l:tabwidth = get(a:, 6, crystalline#default_tabwidth())
-  let l:tabitems = get(a:, 7, 0) + (l:allow_mouse ? 1 : 0)
-  let l:tabselitems = get(a:, 8, 0) + (l:enable_sep ? 4 : 2)
+  let l:opts = get(a:, 1, {})
+
+  if type(l:opts) == v:t_number
+    echoerr 'crystalline: deprecated args detected to crystalline#bufferline()'
+    let l:opts = {}
+  endif
+
+  let l:used_items = get(l:opts, 'used_items', 0)
+  let l:used_width = get(l:opts, 'used_width', 0)
+  let l:tab_sel_group = get(l:opts, 'tab_sel_group', 'TabSel')
+  let l:show_tab_type = get(l:opts, 'show_tab_type', 1)
+  let l:use_tabs = get(l:opts, 'use_tabs', tabpagenr('$') > 1)
+  let l:allow_mouse = get(l:opts, 'allow_mouse', 1) && l:use_tabs
+  let l:tabwidth = get(l:opts, 'tabwidth', crystalline#default_tabwidth())
+  let l:tabitems = get(l:opts, 'tabitems', 0) + (l:allow_mouse ? 1 : 0)
+  let l:tabselitems = get(l:opts, 'tabselitems', 0) + (l:enable_sep ? 4 : 2)
 
   if l:enable_sep
     let l:pad = 1
     let l:tabpad = strchars(g:crystalline_separators[g:crystalline_tab_sep_index].ch)
-    let l:maxtabs = crystalline#calculate_max_tabs(3, l:tabitems, l:tabselitems, 2 + l:items)
+    let l:maxtabs = crystalline#calculate_max_tabs(3, l:tabitems, l:tabselitems, 2 + l:used_items)
   else
     let l:pad = 0
     let l:tabpad = 0
-    let l:maxtabs = crystalline#calculate_max_tabs(2, l:tabitems, l:tabselitems, 1 + l:items)
+    let l:maxtabs = crystalline#calculate_max_tabs(2, l:tabitems, l:tabselitems, 1 + l:used_items)
   endif
 
-  if l:use_buffers
-    let l:pad += l:width + 9
-    let [l:tabs, l:ntabs, l:curtab] = crystalline#buf_tabinfo(l:maxtabs)
-    let l:tabline = '%#CrystallineTabType# BUFFERS '
-  else
-    let l:pad += l:width + 6
-    let [l:tabs, l:ntabs, l:curtab] = crystalline#tabinfo(l:maxtabs)
-    let l:tabline = '%#CrystallineTabType# TABS '
+  if l:show_tab_type
+    if l:use_tabs
+      let l:pad += l:used_width + 6
+      let [l:tabs, l:ntabs, l:curtab] = crystalline#tabinfo(l:maxtabs)
+      let l:tabline = '%#CrystallineTabType# TABS '
+    else
+      let l:pad += l:used_width + 9
+      let [l:tabs, l:ntabs, l:curtab] = crystalline#buf_tabinfo(l:maxtabs)
+      let l:tabline = '%#CrystallineTabType# BUFFERS '
+    endif
   endif
 
-  let [l:vtabs, l:vntabs, l:vcurtab] = crystalline#visual_tabinfo(l:tabs, l:curtab, l:ntabs, l:pad, l:tabpad, l:tabwidth, l:tablabel)
-  let l:tabline .= crystalline#tab_sep(0, l:vcurtab, l:vntabs, l:show_mode)
+  let [l:vtabs, l:vntabs, l:vcurtab] = crystalline#visual_tabinfo(l:tabs, l:curtab, l:ntabs, l:pad, l:tabpad, l:tabwidth)
+  let l:tabline .= crystalline#tab_sep(0, l:vcurtab, l:vntabs, l:tab_sel_group)
   for l:i in range(l:vntabs)
     if l:allow_mouse
       let l:tabline .= '%' . (l:i + 1) . 'T'
     endif
-    let l:tabline .= l:vtabs[l:i] . crystalline#tab_sep(l:i + 1, l:vcurtab, l:vntabs, l:show_mode)
+    let l:tabline .= l:vtabs[l:i] . crystalline#tab_sep(l:i + 1, l:vcurtab, l:vntabs, l:tab_sel_group)
   endfor
   if l:allow_mouse
     let l:tabline .= '%T'

@@ -41,6 +41,16 @@ more information on statusline syntax.
 If you do not need the tabline to update when the mode or current window
 changes, instead use ":set tabline=%!MyTabLine()".
 
+g:CrystallineTablabelFn                              *g:CrystallineTablabelFn*
+
+May be a |function()| reference or defined with |:function|.
+
+Must accept two arguments, the buffer number and the maximum label width. The
+output of the function will be used as the current buffer/tab label when
+|crystalline#bufferline()| is used.
+
+See also |crystalline#bufferline()|, |crystalline#default_tablabel_parts()|.
+
 g:crystalline_theme                                      *g:crystalline_theme*
 
 Automatically set the given theme.
@@ -98,7 +108,7 @@ not exist, it is not listed, or it is a quickfix buffer.
 
 FUNCTIONS                                              *crystalline-functions*
 
-crystalline#mode_group()                            *crystalline#mode_group()*
+crystalline#mode_group(group)                       *crystalline#mode_group()*
 
 Accepts one argument, the highlight group suffix. Returns the highlight group
 for the current mode with the prefix "Crystalline" omitted.
@@ -113,7 +123,7 @@ Can be used with |crystalline#sep()|.
 
 See |crystalline-highlight-groups| for the list of mode highlight groups.
 
-crystalline#mode_color()                            *crystalline#mode_color()*
+crystalline#mode_color(group)                       *crystalline#mode_color()*
 
 Accepts one argument, the highlight group suffix.
 
@@ -128,7 +138,8 @@ crystalline#mode_label()                            *crystalline#mode_label()*
 Return a label for the current mode. Can be used to display the current mode
 on the statusline or tabline.
 
-crystalline#mode_section()                        *crystalline#mode_section()*
+                                                  *crystalline#mode_section()*
+crystalline#mode_section(sep_index, mode_group, right_group)
 
 Accepts three arguments: the separator index to use, the mode group suffix,
 and the next group. Returns a section displaying the current mode.
@@ -144,42 +155,65 @@ This is equivalent to:
 See also |crystalline#mode_group()|, |crystalline#mode_color()|,
 |crystalline#mode_label()|, |crsytalline#sep()|.
 
-crystalline#bufferline(...)                         *crystalline#bufferline()*
+crystalline#bufferline(opts)                        *crystalline#bufferline()*
 
 Return a string of items which can be used on the statusline/tabline. It
 displays the current buffers if there is only one tab, otherwise displays the
 tabs.
 
-Supported arguments in order are listed below. All arguments are optional.
+Accepts one argument, which is an object containing:
 
-  items        Tells the function how many "%" items are already in use. The
-               statusline/tabline can only hold 80 items.
+  used_items
 
-  width        Tells the functions how much screen width is already in use
-               so that it can fit as many tabs as possible.
+    Tells the function how many "%" items are already in use. The
+    statusline/tabline can only hold 80 items.
 
-  show_mode    Indicates if the bufferline should use the currently active
-               mode color for the active tab or if it should fall back to
-               |hl-CrystallineTabSel|. See |crystalline-highlight-groups|
-               for the list of mode highlight groups.
+  used_width
 
+    Tells the functions how much screen width is already in use so that it can
+    fit as many tabs as possible.
 
-  allow_mouse  Allow clicking on tabs to switch between them. Not supported
-               by buffers.
+  tab_sel_group
 
-  tablabel     The name of the function to use to generate tab labels. The
-               function must accept two arguments: the buffer number and the
-               maximum width of the buffer name. The default parts can be
-               retrieved with |crystalline#default_tablabel_parts()|.
+    The highlight group to use for the currently selected tab. Can use
+    |crystalline#mode_group()| for the current mode color.
 
-  tabwidth     The maximum width of tabs. The default tabwidth can be
-               retrieved with |crystalline#default_tabwidth()|.
+    Defaults to "TabSel".
 
-  tabitems     The number of "%" items on each tab.
+    See |crystalline-highlight-groups| for the list of all highlight groups.
 
-  tabselitems  The number of "%" items on each selected tab.
+  show_tab_type
 
-*crystalline#default_tablabel_parts()                                        *
+    Whether the tab type (buffers/tabs) should be shown.
+
+  use_tabs
+
+    Whether to show tabs rather than buffers. By default, shows tabs when more
+    than one tab is present.
+
+  allow_mouse
+
+    Allow clicking on tabs to switch between them. Not supported by buffers.
+
+  tabwidth
+
+    The maximum width of tabs. See also |crystalline#default_tabwidth()|.
+
+    May be required when using |g:CrystallineTablabelFn|.
+
+  tabitems
+
+    The number of "%" items on each tab.
+
+    May be required when using |g:CrystallineTablabelFn|.
+
+  tabselitems
+
+    The number of "%" items on each selected tab.
+
+    May be required when using |g:CrystallineTablabelFn|.
+
+                                        *crystalline#default_tablabel_parts()*
 crystalline#default_tablabel_parts(buf, max_width)
 
 Returns the default tablabel components used in |crystalline#bufferline()|.
@@ -190,7 +224,7 @@ crystalline#default_tabwidth()                *crystalline#default_tabwidth()*
 
 Returns the default tabwidth for |crystalline#bufferline()|.
 
-crystalline#sep()                                          *crystalline#sep()*
+crystalline#sep(sep_index, left_group, right_group)        *crystalline#sep()*
 
 Generate a separator between sections and start a statusline highlight group
 item for the next section.
@@ -325,7 +359,11 @@ EXAMPLE                                                  *crystalline-example*
 
     function! g:CrystallineTablineFn()
       let l:vimlabel = has('nvim') ?  ' NVIM ' : ' VIM '
-      return crystalline#bufferline(2, len(l:vimlabel), 1) . '%=%#CrystallineTab# ' . l:vimlabel
+      return crystalline#bufferline({
+            \ 'used_items': 2,
+            \ 'used_width': len(l:vimlabel),
+            \ })
+            \ . '%=%#CrystallineTab# ' . l:vimlabel
     endfunction
 
     let g:crystalline_enable_sep = 1

@@ -8,7 +8,7 @@ Want a nice statusline in vim?
 `vim-crystalline` is for you.
 
 `vim-crystalline` lets you build your own statusline and tabline in a vanilla vim style.
-It also comes with a bufferline!
+It also comes with a tabline/bufferline!
 
 ## Obligatory Colorful Theme Screenshots
 
@@ -193,7 +193,7 @@ set guioptions-=e
 
 ```vim
 function! g:CrystallineTablineFn()
-  return crystalline#bufferline(0, 0, 1)
+  return crystalline#bufferline({ 'tab_sel_group': crystalline#mode_group('A') })
 endfunction
 set showtabline=2
 ```
@@ -203,12 +203,14 @@ set showtabline=2
 ```vim
 function! g:CrystallineTablineFn()
   let l:vimlabel = has('nvim') ?  ' NVIM ' : ' VIM '
-  return crystalline#bufferline(2, len(l:vimlabel), 1) . '%=%#CrystallineTab# ' . l:vimlabel
+  return crystalline#bufferline({
+        \ 'used_items': 2,
+        \ 'used_width': len(l:vimlabel),
+        \ })
+        \ . '%=%#CrystallineTab# ' . l:vimlabel
 endfunction
 set showtabline=2
 ```
-
-The first two options to the bufferline indicate the number of `%` items used and the character width used.
 
 ### Full Example
 
@@ -242,7 +244,11 @@ endfunction
 
 function! g:CrystallineTablineFn()
   let l:vimlabel = has('nvim') ?  ' NVIM ' : ' VIM '
-  return crystalline#bufferline(2, len(l:vimlabel), 1) . '%=%#CrystallineTab# ' . l:vimlabel
+  return crystalline#bufferline({
+        \ 'used_items': 2,
+        \ 'used_width': len(l:vimlabel),
+        \ })
+        \ . '%=%#CrystallineTab# ' . l:vimlabel
 endfunction
 
 let g:crystalline_enable_sep = 1

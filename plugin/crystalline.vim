@@ -67,6 +67,10 @@ if !exists('g:crystalline_tab_nomod')
   let g:crystalline_tab_nomod = ' '
 endif
 
+if !exists('g:CrystallineTablabelFn') && !exists('*g:CrystallineTablabelFn')
+  let g:CrystallineTablabelFn = function('crystalline#default_tablabel')
+endif
+
 if !exists('g:crystalline_sep_hi_groups')
   let g:crystalline_sep_hi_groups = {}
 endif
