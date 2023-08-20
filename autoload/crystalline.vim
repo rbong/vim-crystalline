@@ -51,21 +51,8 @@ endfunction
 
 " Status Line Utils {{{
 
-function! crystalline#mode_type() abort
-  if mode() =~# '[nc]'
-    return 'n'
-  elseif mode() =~# '[it]'
-    return 'i'
-  elseif mode() =~# '[vVsS]'
-    return 'v'
-  elseif mode() ==# 'R'
-    return 'R'
-  endif
-  return ''
-endfunction
-
 function! crystalline#mode_group(group) abort
-  return g:crystalline_mode_hi_groups[crystalline#mode_type()] . a:group
+  return g:crystalline_mode_hi_groups[mode()] . a:group
 endfunction
 
 function! crystalline#mode_color(group) abort
@@ -73,7 +60,7 @@ function! crystalline#mode_color(group) abort
 endfunction
 
 function! crystalline#mode_label() abort
-  return g:crystalline_mode_labels[crystalline#mode_type()]
+  return g:crystalline_mode_labels[mode()]
 endfunction
 
 function! crystalline#mode_section(sep_index, mode_group, right_group) abort
@@ -83,7 +70,7 @@ function! crystalline#mode_section(sep_index, mode_group, right_group) abort
 endfunction
 
 function! crystalline#trigger_mode_update() abort
-  let l:mode = crystalline#mode_type()
+  let l:mode = mode()
   if get(g:, 'crystalline_mode', '') !=# l:mode
     let g:crystalline_mode = l:mode
     silent doautocmd <nomodeline> User CrystallineModeUpdate

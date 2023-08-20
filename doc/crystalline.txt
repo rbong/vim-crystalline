@@ -60,9 +60,8 @@ g:crystalline_mode_labels                          *g:crystalline_mode_labels*
 The labels to use for the different modes. By default, it will be the
 capitalized full name of each mode.
 
-The setting must be a dictionary of strings, with the key representing the
-different modes ('n', 'i', 'v' and 'R') and the value representing the label
-for each mode.
+The setting must be a dictionary of strings. The keys are first character
+returned from |mode()| and the values are the labels.
 
 g:crystalline_enable_sep                            *g:crystalline_enable_sep*
 

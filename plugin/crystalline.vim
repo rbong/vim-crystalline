@@ -21,20 +21,40 @@ endif
 if !exists('g:crystalline_mode_labels')
   let g:crystalline_mode_labels = {
         \ 'n': ' NORMAL ',
+        \ 'c': ' NORMAL ',
+        \ 'r': ' NORMAL ',
+        \ '!': ' NORMAL ',
         \ 'i': ' INSERT ',
+        \ 't': ' INSERT ',
         \ 'v': ' VISUAL ',
+        \ 'V': ' VISUAL ',
+        \ '': ' VISUAL ',
+        \ 's': ' VISUAL ',
+        \ 'S': ' VISUAL ',
+        \ '': ' VISUAL ',
         \ 'R': ' REPLACE ',
         \ '': '',
         \ }
 endif
 
-let g:crystalline_mode_hi_groups = {
-      \ 'n': 'NormalMode',
-      \ 'i': 'InsertMode',
-      \ 'v': 'VisualMode',
-      \ 'R': 'ReplaceMode',
-      \ '': '',
-      \ }
+if !exists('g:crystalline_mode_hi_groups')
+  let g:crystalline_mode_hi_groups = {
+        \ 'n': 'NormalMode',
+        \ 'c': 'NormalMode',
+        \ 'r': 'NormalMode',
+        \ '!': 'NormalMode',
+        \ 'i': 'InsertMode',
+        \ 't': 'InsertMode',
+        \ 'v': 'VisualMode',
+        \ 'V': 'VisualMode',
+        \ '': 'VisualMode',
+        \ 's': 'VisualMode',
+        \ 'S': 'VisualMode',
+        \ '': 'VisualMode',
+        \ 'R': 'ReplaceMode',
+        \ '': '',
+        \ }
+endif
 
 if !exists('g:crystalline_separators')
   let g:crystalline_separators = [
