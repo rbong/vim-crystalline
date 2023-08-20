@@ -78,17 +78,17 @@ The separators to use between sections/tabs.
 
 This is a list of objects containing the following keys:
 
-  ch          The character to use for the separator.
-  same_bg_ch  The character to use for the separator when two highlight groups
-              have the same background.
-  dir         The direction of the separator, either ">" or "<".
+  ch        The character to use for the separator.
+  alt_ch    The character to use for the separator when two highlight groups
+            have the same background.
+  dir       The direction of the separator, either ">" or "<".
 
 Defaults to:
 
 >
     let g:crystalline_separators = [
-          \ { 'ch': '', 'same_bg_ch': '', 'dir': '>' },
-          \ { 'ch': '', 'same_bg_ch': '', 'dir': '<' },
+          \ { 'ch': '', 'alt_ch': '', 'dir': '>' },
+          \ { 'ch': '', 'alt_ch': '', 'dir': '<' },
           \ ]
 <
 

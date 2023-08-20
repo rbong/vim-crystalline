@@ -512,7 +512,7 @@ function! crystalline#get_sep(sep_index, left_group, right_group) abort
   endif
 
   if a:left_group ==# a:right_group
-    let l:sep_item = l:sep.same_bg_ch
+    let l:sep_item = l:sep.alt_ch
   else
     let l:sep_group = crystalline#get_sep_group(l:from_group, l:to_group)
 
@@ -524,7 +524,7 @@ function! crystalline#get_sep(sep_index, left_group, right_group) abort
 
     " Check for same-color separator groups
     if get(g:crystalline_same_bg_sep_groups, l:sep_group, 0)
-      let l:sep_item = l:sep.same_bg_ch
+      let l:sep_item = l:sep.alt_ch
     else
       let l:sep_item = '%#Crystalline' . l:sep_group . '#' . l:ch
     endif

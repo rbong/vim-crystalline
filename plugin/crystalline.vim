@@ -58,8 +58,8 @@ endif
 
 if !exists('g:crystalline_separators')
   let g:crystalline_separators = [
-        \ { 'ch': '', 'same_bg_ch': '', 'dir': '>' },
-        \ { 'ch': '', 'same_bg_ch': '', 'dir': '<' },
+        \ { 'ch': '', 'alt_ch': '', 'dir': '>' },
+        \ { 'ch': '', 'alt_ch': '', 'dir': '<' },
         \ ]
 endif
 
