@@ -99,6 +99,10 @@ if !exists('g:crystalline_same_bg_sep_groups')
   let g:crystalline_same_bg_sep_groups = {}
 endif
 
+if !exists('g:crystalline_sep_cache')
+  let g:crystalline_sep_cache = {}
+endif
+
 if !exists('g:crystalline_syn_modes')
   let g:crystalline_syn_modes = ['term', 'cterm', 'gui']
 endif

@@ -480,7 +480,7 @@ function! crystalline#generate_sep_hi(left_group, right_group) abort
   exec crystalline#generate_hi(l:sep_group, l:sep_attr)
 endfunction
 
-function! crystalline#sep(sep_index, left_group, right_group) abort
+function! crystalline#get_sep(sep_index, left_group, right_group) abort
   if a:left_group == v:null || a:right_group == v:null
     return ''
   endif
@@ -495,12 +495,13 @@ function! crystalline#sep(sep_index, left_group, right_group) abort
     return l:next_item
   endif
 
-  let l:sep = get(g:crystalline_separators, a:sep_index, { 'ch': '' })
-  let l:ch = l:sep.ch
+  let l:sep = get(g:crystalline_separators, a:sep_index, {})
 
-  if l:ch ==# ''
+  if empty(l:sep)
     return l:next_item
   endif
+
+  let l:ch = l:sep.ch
 
   if l:sep.dir ==# '<'
     let l:from_group = a:right_group
@@ -530,6 +531,14 @@ function! crystalline#sep(sep_index, left_group, right_group) abort
   endif
 
   return l:sep_item . l:next_item
+endfunction
+
+function! crystalline#sep(sep_index, left_group, right_group)
+  let l:key = a:sep_index . a:left_group . a:right_group
+  if !has_key(g:crystalline_sep_cache, l:key)
+    let g:crystalline_sep_cache[l:key] = crystalline#get_sep(a:sep_index, a:left_group, a:right_group)
+  endif
+  return g:crystalline_sep_cache[l:key]
 endfunction
 
 " }}}
@@ -594,6 +603,7 @@ function! crystalline#apply_current_theme() abort
   let g:crystalline_mode = ''
   let g:crystalline_sep_hi_groups = {}
   let g:crystalline_same_bg_sep_groups = {}
+  let g:crystalline_sep_cache = {}
 
   try
     call function('crystalline#theme#' . g:crystalline_theme . '#set_theme')()
