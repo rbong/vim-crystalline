@@ -69,28 +69,23 @@ The separators to use between sections/tabs.
 
 This is a list of objects containing the following keys:
 
-  ch    The character to use for the separator.
-  dir   The direction of the separator, either ">" or "<".
+  ch          The character to use for the separator.
+  same_bg_ch  The character to use for the separator when two highlight groups
+              have the same background.
+  dir         The direction of the separator, either ">" or "<".
 
 Defaults to:
 
 >
     let g:crystalline_separators = [
-          \ { 'ch': '', 'dir': '>' },
-          \ { 'ch': '', 'dir': '<' },
-          \ { 'ch': '', 'dir': '>' },
-          \ { 'ch': '', 'dir': '<' },
+          \ { 'ch': '', 'same_bg_ch': '', 'dir': '>' },
+          \ { 'ch': '', 'same_bg_ch': '', 'dir': '<' },
           \ ]
 <
 
 g:crystalline_tab_sep_index                      *g:crystalline_tab_sep_index*
 
 The index of the separator to use between tabs. Defaults to 0.
-
-                                      *g:crystalline_unselected_tab_sep_index*
-g:crystalline_unselected_tab_sep_index
-
-The index of the separator to use between unselected tabs. Defaults to 2.
 
 g:crystalline_hide_buf_tab                        *g:crystalline_hide_buf_tab*
 

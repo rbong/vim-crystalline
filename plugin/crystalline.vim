@@ -11,7 +11,7 @@ if exists('g:crystalline_tabline_fn')
 endif
 
 if exists('g:crystalline_tab_separator')
-  echoerr 'g:crystalline_tab_separator is deprecated, use g:crystalline_unselected_tab_sep_index'
+  echoerr 'g:crystalline_tab_separator is deprecated, use g:crystalline_tab_sep_index'
 endif
 
 " }}}
@@ -38,10 +38,8 @@ let g:crystalline_mode_hi_groups = {
 
 if !exists('g:crystalline_separators')
   let g:crystalline_separators = [
-        \ { 'ch': '', 'dir': '>' },
-        \ { 'ch': '', 'dir': '<' },
-        \ { 'ch': '', 'dir': '>' },
-        \ { 'ch': '', 'dir': '<' },
+        \ { 'ch': '', 'same_bg_ch': '', 'dir': '>' },
+        \ { 'ch': '', 'same_bg_ch': '', 'dir': '<' },
         \ ]
 endif
 
@@ -51,10 +49,6 @@ endif
 
 if !exists('g:crystalline_tab_sep_index')
   let g:crystalline_tab_sep_index = 0
-endif
-
-if !exists('g:crystalline_unselected_tab_sep_index')
-  let g:crystalline_unselected_tab_sep_index = 2
 endif
 
 if !exists('g:crystalline_tab_empty')

@@ -311,9 +311,6 @@ function! crystalline#tab_sep(tab, curtab, ntabs, show_mode) abort
     let l:right_group = 'Tab'
   endif
 
-  if l:left_group ==# l:right_group
-    return crystalline#sep(g:crystalline_unselected_tab_sep_index, l:left_group, l:right_group)
-  endif
   return crystalline#sep(g:crystalline_tab_sep_index, l:left_group, l:right_group)
 endfunction
 
@@ -476,11 +473,9 @@ function! crystalline#generate_sep_hi(left_group, right_group) abort
     let l:sep_attr += [l:attr_a[2]]
   endif
 
-  if a:left_group ==# 'TabType'
-    let l:attr_type = has('gui_running') ? 1 : 0
-    if l:attr_a[l:attr_type][1] == l:attr_b[l:attr_type][1]
-      let g:crystalline_same_bg_sep_groups[crystalline#get_sep_group(a:left_group, a:right_group)] = 1
-    endif
+  let l:attr_type = has('gui_running') ? 1 : 0
+  if l:attr_a[l:attr_type][1] == l:attr_b[l:attr_type][1]
+    let g:crystalline_same_bg_sep_groups[crystalline#get_sep_group(a:left_group, a:right_group)] = 1
   endif
 
   let l:sep_group = crystalline#get_sep_group(a:left_group, a:right_group)
@@ -518,7 +513,7 @@ function! crystalline#sep(sep_index, left_group, right_group) abort
   endif
 
   if a:left_group ==# a:right_group
-    let l:sep_item = l:ch
+    let l:sep_item = l:sep.same_bg_ch
   else
     let l:sep_group = crystalline#get_sep_group(l:from_group, l:to_group)
 
@@ -530,10 +525,10 @@ function! crystalline#sep(sep_index, left_group, right_group) abort
 
     " Check for same-color separator groups
     if get(g:crystalline_same_bg_sep_groups, l:sep_group, 0)
-      return l:ch
+      let l:sep_item = l:sep.same_bg_ch
+    else
+      let l:sep_item = '%#Crystalline' . l:sep_group . '#' . l:ch
     endif
-
-    let l:sep_item = '%#Crystalline' . l:sep_group . '#' . l:ch
   endif
 
   return l:sep_item . l:next_item
