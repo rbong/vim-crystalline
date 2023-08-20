@@ -121,6 +121,16 @@ function! crystalline#init_auto_updates() abort
   augroup END
 endfunction
 
+function! crystalline#profile(loops) abort
+  let l:start = reltime()
+  for _ in range(a:loops)
+    redraw!
+  endfor
+  let l:end = reltime()
+  let l:time = reltimefloat(reltime(l:start, l:end)) / a:loops
+  echo printf('redraw time: %f seconds', l:time)
+endfunction
+
 " }}}
 
 " Tab Line Utils {{{
