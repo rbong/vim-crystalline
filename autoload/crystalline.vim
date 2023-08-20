@@ -1,11 +1,15 @@
 " Deprecated Functions {{{
 
 function! crystalline#mode(...) abort
-  throw 'crystalline: crystalline#mode() is deprecated, use crystalline#mode_sec()'
+  throw 'crystalline: crystalline#mode() is deprecated, use crystalline#mode_section()'
+endfunction
+
+function! crystalline#mode_hi(...) abort
+  throw 'crystalline: crystalline#mode_hi() is deprecated, use crystalline#mode_group()'
 endfunction
 
 function! crystalline#mode_sep(...) abort
-  throw 'crystalline: crystalline#mode_sep() is deprecated, use crystalline#sep()'
+  throw 'crystalline: crystalline#mode_sep() is deprecated, use crystalline#sep() with crystalline#mode_group()'
 endfunction
 
 function! crystalline#right_sep(...) abort
@@ -17,11 +21,11 @@ function! crystalline#left_sep(...) abort
 endfunction
 
 function! crystalline#right_mode_sep(...) abort
-  throw 'crystalline: crystalline#right_mode_sep() is deprecated, use crystalline#sep()'
+  throw 'crystalline: crystalline#right_mode_sep() is deprecated, use crystalline#sep() with crystalline#mode_group()'
 endfunction
 
 function! crystalline#left_mode_sep(...) abort
-  throw 'crystalline: crystalline#left_mode_sep() is deprecated, use crystalline#sep()'
+  throw 'crystalline: crystalline#left_mode_sep() is deprecated, use crystalline#sep() with crystalline#mode_group()'
 endfunction
 
 " }}}
@@ -60,16 +64,22 @@ function! crystalline#mode_type() abort
   return ''
 endfunction
 
-function! crystalline#mode_color() abort
-  return '%#Crystalline' . crystalline#mode_hi() . '#'
+function! crystalline#mode_group(group) abort
+  return g:crystalline_mode_hi_groups[crystalline#mode_type()] . a:group
+endfunction
+
+function! crystalline#mode_color(group) abort
+  return '%#Crystalline' . crystalline#mode_group(a:group) . '#'
 endfunction
 
 function! crystalline#mode_label() abort
   return g:crystalline_mode_labels[crystalline#mode_type()]
 endfunction
 
-function! crystalline#mode_sec() abort
-  return crystalline#mode_color() . crystalline#mode_label()
+function! crystalline#mode_section(sep_index, mode_group, right_group) abort
+  return crystalline#mode_color(a:mode_group)
+        \ . crystalline#mode_label() 
+        \ . crystalline#sep(a:sep_index, crystalline#mode_group(a:mode_group), a:right_group)
 endfunction
 
 function! crystalline#trigger_mode_update() abort
@@ -281,7 +291,7 @@ function! crystalline#tab_sep(tab, curtab, ntabs, show_mode) abort
     let l:left_group = 'TabType'
   elseif a:tab == a:curtab
     if a:show_mode
-      let l:left_group = crystalline#mode_hi()
+      let l:left_group = crystalline#mode_group('A')
     else
       let l:left_group = 'TabSel'
     endif
@@ -290,10 +300,10 @@ function! crystalline#tab_sep(tab, curtab, ntabs, show_mode) abort
   endif
 
   if a:tab == a:ntabs
-    let l:right_group = 'TabFill'
+    let l:right_group = 'TabMid'
   elseif a:tab + 1 == a:curtab
     if a:show_mode
-      let l:right_group = crystalline#mode_hi()
+      let l:right_group = crystalline#mode_group('A')
     else
       let l:right_group = 'TabSel'
     endif
@@ -360,7 +370,7 @@ endfunction
 " Theme Utils {{{
 
 function! crystalline#get_sep_group(left_group, right_group) abort
-  return a:left_group . 'To' . (a:right_group ==# '' ? 'Line' : a:right_group)
+  return a:left_group . 'To' . a:right_group
 endfunction
 
 " Returns a dictionary with attributes of a highlight group.
@@ -448,13 +458,19 @@ function! crystalline#generate_theme(theme) abort
   endif
 endfunction
 
-function! crystalline#mode_hi() abort
-  return g:crystalline_mode_hi_groups[crystalline#mode_type()]
-endfunction
-
 function! crystalline#generate_sep_hi(left_group, right_group) abort
+  if (a:left_group == 'Fill' || a:right_group == 'Fill') && !get(g:, 'crystalline_did_warn_deprecated_hi_groups')
+    echoerr 'crystalline: use of deprecated highlight groups detected, see :help crystalline-highlight-groups'
+    let g:crystalline_did_warn_deprecated_hi_groups = 1
+  endif
+
   let l:attr_a = crystalline#get_hl_attrs(a:left_group)
   let l:attr_b = crystalline#get_hl_attrs(a:right_group)
+
+  if empty(l:attr_a) || empty(l:attr_b)
+    return
+  endif
+
   let l:sep_attr = [[l:attr_a[0][1], l:attr_b[0][1]], [l:attr_a[1][1], l:attr_b[1][1]]]
   if len(l:attr_a) > 2
     let l:sep_attr += [l:attr_a[2]]

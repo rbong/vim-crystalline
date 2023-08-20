@@ -1,16 +1,17 @@
 function! crystalline#theme#shadesofpurple#set_theme() abort
   call crystalline#generate_theme({
-        \ 'NormalMode':  [[140, 234], ['#A599E9', '#1E1E3F']],
-        \ 'InsertMode':  [[234, 10],  ['#1E1E3F', '#00FF00']],
-        \ 'VisualMode':  [[234, 177], ['#1E1E3F', '#c991ff']],
-        \ 'ReplaceMode': [[234, 204], ['#1E1E3F', '#FF628C']],
-        \ '':            [[234, 140], ['#1E1E3F', '#A599E9']],
-        \ 'Inactive':    [[234, 140], ['#1E1E3F', '#A599E9']],
-        \ 'Fill':        [[140, 234], ['#A599E9', '#1E1E3F']],
-        \ 'Tab':         [[234, 140], ['#1E1E3F', '#A599E9']],
-        \ 'TabType':     [[234, 140], ['#1E1E3F', '#A599E9']],
-        \ 'TabSel':      [[234, 226], ['#1E1E3F', '#FAD000']],
-        \ 'TabFill':     [[140, 234], ['#A599E9', '#1E1E3F']],
+        \ 'A':            [[140, 234], ['#A599E9', '#1E1E3F']],
+        \ 'B':            [[234, 140], ['#1E1E3F', '#A599E9']],
+        \ 'Mid':          [[140, 234], ['#A599E9', '#1E1E3F']],
+        \ 'InactiveMid':  [[234, 140], ['#1E1E3F', '#A599E9']],
+        \ 'NormalModeA':  [[140, 234], ['#A599E9', '#1E1E3F']],
+        \ 'InsertModeA':  [[234, 10],  ['#1E1E3F', '#00FF00']],
+        \ 'VisualModeA':  [[234, 177], ['#1E1E3F', '#c991ff']],
+        \ 'ReplaceModeA': [[234, 204], ['#1E1E3F', '#FF628C']],
+        \ 'TabType':      [[234, 140], ['#1E1E3F', '#A599E9']],
+        \ 'Tab':          [[234, 140], ['#1E1E3F', '#A599E9']],
+        \ 'TabSel':       [[234, 226], ['#1E1E3F', '#FAD000']],
+        \ 'TabMid':       [[140, 234], ['#A599E9', '#1E1E3F']],
         \ })
 endfunction
 

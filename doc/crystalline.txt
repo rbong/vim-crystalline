@@ -39,7 +39,7 @@ The output of the function will be used as the tabline. See 'statusline' for
 more information on statusline syntax.
 
 If you do not need the tabline to update when the mode or current window
-changes, instead use ":set statusline=%!MyStatusLine()".
+changes, instead use ":set tabline=%!MyTabLine()".
 
 g:crystalline_theme                                      *g:crystalline_theme*
 
@@ -75,13 +75,13 @@ This is a list of objects containing the following keys:
 Defaults to:
 
 >
-  let g:crystalline_separators = [
-        \ { 'ch': '', 'dir': '>' },
-        \ { 'ch': '', 'dir': '<' },
-        \ { 'ch': '', 'dir': '>' },
-        \ { 'ch': '', 'dir': '<' },
-        \ ]
-
+    let g:crystalline_separators = [
+          \ { 'ch': '', 'dir': '>' },
+          \ { 'ch': '', 'dir': '<' },
+          \ { 'ch': '', 'dir': '>' },
+          \ { 'ch': '', 'dir': '<' },
+          \ ]
+<
 
 g:crystalline_tab_sep_index                      *g:crystalline_tab_sep_index*
 
@@ -103,21 +103,24 @@ not exist, it is not listed, or it is a quickfix buffer.
 
 FUNCTIONS                                              *crystalline-functions*
 
-crystalline#mode_sec()                                *crystalline#mode_sec()*
+crystalline#mode_group()                            *crystalline#mode_group()*
 
-Return a statusline highlight group item and a label for the current mode. Can
-be used as a mode section on the statusline or tabline.
+Accepts one argument, the highlight group suffix. Returns the highlight group
+for the current mode with the prefix "Crystalline" omitted.
 
-See |crystalline-highlight-groups| for the list of mode highlight groups.
+For example, in normal mode this returns "NormalModeA":
 
-crystalline#mode_hi()                                  *crystalline#mode_hi()*
+>
+    crystalline#mode_group('A')
+<
 
-Return the name of the current mode highlight group with the prefix
-"Crystalline" omitted. Can be used with |crystalline#sep()|.
+Can be used with |crystalline#sep()|.
 
 See |crystalline-highlight-groups| for the list of mode highlight groups.
 
 crystalline#mode_color()                            *crystalline#mode_color()*
+
+Accepts one argument, the highlight group suffix.
 
 Return a statusline highlight group item for the current mode. Can be used to
 change the color of different sections of the statusline or tabline based on
@@ -130,6 +133,22 @@ crystalline#mode_label()                            *crystalline#mode_label()*
 Return a label for the current mode. Can be used to display the current mode
 on the statusline or tabline.
 
+crystalline#mode_section()                        *crystalline#mode_section()*
+
+Accepts three arguments: the separator index to use, the mode group suffix,
+and the next group. Returns a section displaying the current mode.
+
+This is equivalent to:
+
+>
+    crystalline#mode_color(a:mode_group)
+          \ . crystalline#mode_label() 
+          \ . crystalline#sep(a:sep_index, crystalline#mode_group(a:mode_group), a:right_group)
+<
+
+See also |crystalline#mode_group()|, |crystalline#mode_color()|,
+|crystalline#mode_label()|, |crsytalline#sep()|.
+
 crystalline#bufferline(...)                         *crystalline#bufferline()*
 
 Return a string of items which can be used on the statusline/tabline. It
@@ -138,32 +157,32 @@ tabs.
 
 Supported arguments in order are listed below. All arguments are optional.
 
-  "items"        Tells the function how many "%" items are already in use. The
-                 statusline/tabline can only hold 80 items.
+  items        Tells the function how many "%" items are already in use. The
+               statusline/tabline can only hold 80 items.
 
-  "width"        Tells the functions how much screen width is already in use
-                 so that it can fit as many tabs as possible.
+  width        Tells the functions how much screen width is already in use
+               so that it can fit as many tabs as possible.
 
-  "show_mode"    Indicates if the bufferline should use the currently active
-                 mode color for the active tab or if it should fall back to
-                 |hl-CrystallineTabSel|. See |crystalline-highlight-groups|
-                 for the list of mode highlight groups.
+  show_mode    Indicates if the bufferline should use the currently active
+               mode color for the active tab or if it should fall back to
+               |hl-CrystallineTabSel|. See |crystalline-highlight-groups|
+               for the list of mode highlight groups.
 
 
-  "allow_mouse"  Allow clicking on tabs to switch between them. Not supported
-                 by buffers.
+  allow_mouse  Allow clicking on tabs to switch between them. Not supported
+               by buffers.
 
-  "tablabel"     The name of the function to use to generate tab labels. The
-                 function must accept two arguments: the buffer number and the
-                 maximum width of the buffer name. The default parts can be
-                 retrieved with |crystalline#default_tablabel_parts()|.
+  tablabel     The name of the function to use to generate tab labels. The
+               function must accept two arguments: the buffer number and the
+               maximum width of the buffer name. The default parts can be
+               retrieved with |crystalline#default_tablabel_parts()|.
 
-  "tabwidth"     The maximum width of tabs. The default tabwidth can be
-                 retrieved with |crystalline#default_tabwidth()|.
+  tabwidth     The maximum width of tabs. The default tabwidth can be
+               retrieved with |crystalline#default_tabwidth()|.
 
-  "tabitems"     The number of "%" items on each tab.
+  tabitems     The number of "%" items on each tab.
 
-  "tabselitems"  The number of "%" items on each selected tab.
+  tabselitems  The number of "%" items on each selected tab.
 
 *crystalline#default_tablabel_parts()                                        *
 crystalline#default_tablabel_parts(buf, max_width)
@@ -196,56 +215,61 @@ Groups support the return value from |crystalline#mode_hi()|.
 HIGHLIGHT GROUPS                                *crystalline-highlight-groups*
                                                           *crystalline-themes*
 
-vim-crystalline themes define several highlight groups for use in the
-statusline/tabline.
+vim-crystalline themes typically define these highlight groups.
 
-If a theme has both light and dark modes, it will look at the 'background'
-setting to determine which mode it should use.
+Some themes which come with Crystalline automatically adjust to the
+'background' with light/dark modes.
 
-Themes are located in "autoload/crystalline/theme/theme_name.vim" files. In
-order to define a theme, create one such file and define a function named
-"crystalline#theme#theme_name#set_theme" which defines the given highlight
-groups.
+You can define a new theme by defining an autoload function with the format
+"crystalline#theme#theme_name#set_theme".
+
+Custom themes may define more than just the highlight groups defined here. For
+example, highlight groups "CrystallineC", "CrystallineD",
+"CrystallineNormalModeB", "CrystallineNormalModeMid", etc.
 
 For an example of creating a custom theme, see the solarized theme:
 <https://github.com/rbong/vim-crystalline/blob/master/autoload/crystalline/theme/solarized.vim>
 
-CrystallineNormalMode                               *hl-CrystallineNormalMode*
+CrystallineA                                                 *hl-CrystallineA*
 
-The color of the mode label when normal mode is active.
+Can be used for the color of the leftmost/rightmost section if mode coloring
+is not used.
+
+CrystallineB                                                 *hl-CrystallineB*
+
+Can be used for the color of the second section from the left/right.
+
+CrystallineMid                                             *hl-CrystallineMid*
+
+A color which can be used for the middle of the statusline.
+
+CrystallineInactiveMid                             *hl-CrystallineInactiveMid*
+
+A color which can be used for statuslines on non-current windows.
+
+CrystallineNormalModeA                             *hl-CrystallineNormalModeA*
+
+The color of A sections when normal mode is active.
 
 See |crystalline#mode_sec()| and |crystalline#mode_hi()|.
 
-CrystallineInsertMode                               *hl-CrystallineInsertMode*
+CrystallineInsertModeA                             *hl-CrystallineInsertModeA*
 
-The color of the mode label when insert mode is active.
-
-See |crystalline#mode_sec()| and |crystalline#mode_hi()|.
-
-CrystallineVisualMode                               *hl-CrystallineVisualMode*
-
-The color of the mode label when visual mode is active.
+The color of A sections when insert mode is active.
 
 See |crystalline#mode_sec()| and |crystalline#mode_hi()|.
 
-CrystallineReplaceMode                             *hl-CrystallineReplaceMode*
+CrystallineVisualModeA                             *hl-CrystallineVisualModeA*
 
-The color of the mode label when replace mode is active.
+The color of A sections when visual mode is active.
 
 See |crystalline#mode_sec()| and |crystalline#mode_hi()|.
 
-Crystalline                                                   *hl-Crystalline*
+CrystallineReplaceModeA                           *hl-CrystallineReplaceModeA*
 
-A color which can be used for the main sections of the statusline.
+The color of A sections when replace mode is active.
 
-CrystallineInactive                                   *hl-CrystallineInactive*
-
-A color which can be used for inactive statuslines.
-
-CrystallineFill                                           *hl-CrystallineFill*
-
-A color which can be used for the space between the left and right side of the
-statusline.
+See |crystalline#mode_sec()| and |crystalline#mode_hi()|.
 
 CrystallineTab                                             *hl-CrystallineTab*
 
@@ -262,58 +286,59 @@ See |crystalline#bufferline()|.
 
 CrystallineTabSel                                       *hl-CrystallineTabSel*
 
-The color of tabs which are currently selected on the bufferline if mode
-coloring is not activated.
+Can be used for the color of tabs which are currently selected on the
+bufferline if mode coloring is not used.
 
 See |crystalline#bufferline()|.
 
-CrystallineTabFill                                     *hl-CrystallineTabFill*
+CrystallineTabMid                                       *hl-CrystallineTabMid*
 
 A color which can be used for the space between the left and right side of the
 tabline.
 
+See |crystalline#bufferline()|.
+
 EXAMPLE                                                  *crystalline-example*
 
 >
-  function! g:CrystallineStatuslineFn(ctx)
-    let l:s = ''
-    let l:mode_hi = crystalline#mode_hi()
+    function! g:CrystallineStatuslineFn(ctx)
+      let l:s = ''
 
-    if a:ctx.curr
-      let l:s .= crystalline#mode_sec() . crystalline#sep(0, l:mode_hi, '')
-    else
-      let l:s .= '%#CrystallineInactive#'
-    endif
-    let l:s .= ' %f%h%w%m%r '
-    if a:ctx.curr
-      let l:s .= crystalline#sep(0, '', 'Fill') . ' %{fugitive#Head()}'
-    endif
+      if a:ctx.curr
+        let l:s .= crystalline#mode_section(0, 'A', 'B')
+      else
+        let l:s .= '%#CrystallineInactive#'
+      endif
+      let l:s .= ' %f%h%w%m%r '
+      if a:ctx.curr
+        let l:s .= crystalline#sep(0, 'B', 'Mid') . ' %{fugitive#Head()}'
+      endif
 
-    let l:s .= '%='
-    if a:ctx.curr
-      let l:s .= crystalline#sep(1, 'Fill', '') . ' %{&paste ?"PASTE ":""}%{&spell?"SPELL ":""}'
-      let l:s .= crystalline#sep(1, '', l:mode_hi)
-    endif
-    if a:ctx.w > 80
-      let l:s .= ' %{&ft}[%{&fenc!=#""?&fenc:&enc}][%{&ff}] %l/%L %c%V %P '
-    else
-      let l:s .= ' '
-    endif
+      let l:s .= '%='
+      if a:ctx.curr
+        let l:s .= crystalline#sep(1, 'Mid', 'B') . ' %{&paste ?"PASTE ":""}%{&spell?"SPELL ":""}'
+        let l:s .= crystalline#sep(1, 'B', crystalline#mode_group('A'))
+      endif
+      if a:ctx.w > 80
+        let l:s .= ' %{&ft}[%{&fenc!=#""?&fenc:&enc}][%{&ff}] %l/%L %c%V %P '
+      else
+        let l:s .= ' '
+      endif
 
-    return l:s
-  endfunction
+      return l:s
+    endfunction
 
-  function! g:CrystallineTablineFn()
-    let l:vimlabel = has('nvim') ?  ' NVIM ' : ' VIM '
-    return crystalline#bufferline(2, len(l:vimlabel), 1) . '%=%#CrystallineTab# ' . l:vimlabel
-  endfunction
+    function! g:CrystallineTablineFn()
+      let l:vimlabel = has('nvim') ?  ' NVIM ' : ' VIM '
+      return crystalline#bufferline(2, len(l:vimlabel), 1) . '%=%#CrystallineTab# ' . l:vimlabel
+    endfunction
 
-  let g:crystalline_enable_sep = 1
-  let g:crystalline_theme = 'default'
+    let g:crystalline_enable_sep = 1
+    let g:crystalline_theme = 'default'
 
-  set showtabline=2
-  set guioptions-=e
-  set laststatus=2
+    set showtabline=2
+    set guioptions-=e
+    set laststatus=2
 <
 
 See <https://github.com/rbong/vim-crystalline> for more examples.

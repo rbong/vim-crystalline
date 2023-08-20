@@ -108,7 +108,7 @@ set laststatus=2
 
 ```vim
 function! g:CrystallineStatuslineFn(ctx)
-  return crystalline#mode_sec() . ' %f%h%w%m%r '
+  return crystalline#mode_color('A') . crystalline#mode_label() . ' %f%h%w%m%r '
 endfunction
 let g:crystalline_theme = 'default'
 set laststatus=2
@@ -119,7 +119,7 @@ set laststatus=2
 ```vim
 function! g:CrystallineStatuslineFn(ctx)
   return ' %f%h%w%m%r '
-        \ . (a:ctx.curr ? '%= %{&ft}[%{&fenc!=#""?&fenc:&enc}][%{&ff}] %l/%L %c%V %P ' : '')
+        \ . (a:ctx.curr ? '%= %{&ft}[%{&fenc!=#""?&fenc:&enc}][%{&ff}] %l/%L %c%V %P ' : 'B')
 endfunction
 set laststatus=2
 ```
@@ -128,7 +128,7 @@ set laststatus=2
 
 ```vim
 function! g:CrystallineStatuslineFn(ctx)
-  return '%#Crystalline# %f%h%w%m%r %#CrystallineFill#'
+  return '%#Crystalline# %f%h%w%m%r %#CrystallineMid#'
         \ . '%=%#Crystalline# %{&ft}[%{&fenc!=#""?&fenc:&enc}][%{&ff}] %l/%L %c%V %P '
 endfunction
 let g:crystalline_theme = 'default'
@@ -149,7 +149,7 @@ set laststatus=2
 ```vim
 function! g:CrystallineStatuslineFn(ctx)
   return ' %f%h%w%m%r '
-        \ . (a:ctx.w > 80 ? '%= %{&ft}[%{&fenc!=#""?&fenc:&enc}][%{&ff}] %l/%L %c%V %P ' : '')
+        \ . (a:ctx.w > 80 ? '%= %{&ft}[%{&fenc!=#""?&fenc:&enc}][%{&ff}] %l/%L %c%V %P ' : 'B')
 endfunction
 set laststatus=2
 ```
@@ -158,9 +158,9 @@ set laststatus=2
 
 ```vim
 function! g:CrystallineStatuslineFn(ctx)
-  return crystalline#mode_sec() . crystalline#sep(0, crystalline#mode_hi(), '')
-        \ . ' %f%h%w%m%r ' . crystalline#sep(0, '', 'Fill') . '%='
-        \ . crystalline#sep(1, 'Fill', '') . ' %{&ft}[%{&fenc!=#""?&fenc:&enc}][%{&ff}] %l/%L %c%V %P '
+  return crystalline#mode_section(0, 'A', 'B')
+        \ . ' %f%h%w%m%r ' . crystalline#sep(0, 'B', 'Mid') . '%='
+        \ . crystalline#sep(1, 'Mid', 'B') . ' %{&ft}[%{&fenc!=#""?&fenc:&enc}][%{&ff}] %l/%L %c%V %P '
 endfunction
 let g:crystalline_enable_sep = 1
 let g:crystalline_theme = 'default'
@@ -215,22 +215,21 @@ The first two options to the bufferline indicate the number of `%` items used an
 ```vim
 function! g:CrystallineStatuslineFn(ctx)
   let l:s = ''
-  let l:mode_hi = crystalline#mode_hi()
 
   if a:ctx.curr
-    let l:s .= crystalline#mode_sec() . crystalline#sep(0, l:mode_hi, '')
+    let l:s .= crystalline#mode_section(0, 'A', 'B')
   else
     let l:s .= '%#CrystallineInactive#'
   endif
   let l:s .= ' %f%h%w%m%r '
   if a:ctx.curr
-    let l:s .= crystalline#sep(0, '', 'Fill') . ' %{fugitive#Head()}'
+    let l:s .= crystalline#sep(0, 'B', 'Mid') . ' %{fugitive#Head()}'
   endif
 
   let l:s .= '%='
   if a:ctx.curr
-    let l:s .= crystalline#sep(1, 'Fill', '') . ' %{&paste ?"PASTE ":""}%{&spell?"SPELL ":""}'
-    let l:s .= crystalline#sep(1, '', l:mode_hi)
+    let l:s .= crystalline#sep(1, 'Mid', 'B') . ' %{&paste ?"PASTE ":""}%{&spell?"SPELL ":""}'
+    let l:s .= crystalline#sep(1, 'B', crystalline#mode_group('A'))
   endif
   if a:ctx.w > 80
     let l:s .= ' %{&ft}[%{&fenc!=#""?&fenc:&enc}][%{&ff}] %l/%L %c%V %P '
