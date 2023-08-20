@@ -238,7 +238,7 @@ Accepts the following arguments:
 Highlight groups are the names of highlight groups from
 |crystalline-highlight-groups| with the prefix "Crystalline" omitted.
 
-Groups support the return value from |crystalline#mode_hi()|.
+Groups support the return value from |crystalline#mode_group()|.
 
 HIGHLIGHT GROUPS                                *crystalline-highlight-groups*
                                                           *crystalline-themes*
@@ -279,25 +279,25 @@ CrystallineNormalModeA                             *hl-CrystallineNormalModeA*
 
 The color of A sections when normal mode is active.
 
-See |crystalline#mode_sec()| and |crystalline#mode_hi()|.
+See |crystalline#mode_section()| and |crystalline#mode_group()|.
 
 CrystallineInsertModeA                             *hl-CrystallineInsertModeA*
 
 The color of A sections when insert mode is active.
 
-See |crystalline#mode_sec()| and |crystalline#mode_hi()|.
+See |crystalline#mode_section()| and |crystalline#mode_group()|.
 
 CrystallineVisualModeA                             *hl-CrystallineVisualModeA*
 
 The color of A sections when visual mode is active.
 
-See |crystalline#mode_sec()| and |crystalline#mode_hi()|.
+See |crystalline#mode_section()| and |crystalline#mode_group()|.
 
 CrystallineReplaceModeA                           *hl-CrystallineReplaceModeA*
 
 The color of A sections when replace mode is active.
 
-See |crystalline#mode_sec()| and |crystalline#mode_hi()|.
+See |crystalline#mode_section()| and |crystalline#mode_group()|.
 
 CrystallineTab                                             *hl-CrystallineTab*
 
