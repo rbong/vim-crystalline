@@ -91,38 +91,24 @@ if !exists('g:CrystallineTablabelFn') && !exists('*g:CrystallineTablabelFn')
   let g:CrystallineTablabelFn = function('crystalline#default_tablabel')
 endif
 
-if !exists('g:crystalline_sep_hi_groups')
-  let g:crystalline_sep_hi_groups = {}
-endif
+let g:crystalline_sep_hi_groups = {}
+let g:crystalline_same_bg_sep_groups = {}
+let g:crystalline_sep_cache = {}
 
-if !exists('g:crystalline_same_bg_sep_groups')
-  let g:crystalline_same_bg_sep_groups = {}
-endif
+let g:crystalline_syn_modes = ['term', 'cterm', 'gui']
 
-if !exists('g:crystalline_sep_cache')
-  let g:crystalline_sep_cache = {}
-endif
+let g:crystalline_syn_attrs = [
+      \ 'font',
+      \ 'bold',
+      \ 'italic',
+      \ 'reverse',
+      \ 'standout',
+      \ 'underline',
+      \ 'undercurl',
+      \ 'strikethrough'
+      \ ]
 
-if !exists('g:crystalline_syn_modes')
-  let g:crystalline_syn_modes = ['term', 'cterm', 'gui']
-endif
-
-if !exists('g:crystalline_syn_attrs')
-  let g:crystalline_syn_attrs = [
-        \ 'font',
-        \ 'bold',
-        \ 'italic',
-        \ 'reverse',
-        \ 'standout',
-        \ 'underline',
-        \ 'undercurl',
-        \ 'strikethrough'
-        \ ]
-endif
-
-if !exists('g:crystalline_syn_colors')
-  let g:crystalline_syn_colors = ['fg', 'bg', 'sp']
-endif
+let g:crystalline_syn_colors = ['fg', 'bg', 'sp']
 
 if !exists('g:crystalline_theme')
   let g:crystalline_theme = 'default'
