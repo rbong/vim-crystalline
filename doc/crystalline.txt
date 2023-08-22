@@ -243,88 +243,319 @@ Groups support the return value from |crystalline#mode_group()|.
 HIGHLIGHT GROUPS                                *crystalline-highlight-groups*
                                                           *crystalline-themes*
 
-vim-crystalline themes typically define these highlight groups.
+vim-crystalline themes typically provide these highlight groups.
 
 Some themes which come with Crystalline automatically adjust to the
 'background' with light/dark modes.
 
-You can define a new theme by defining an autoload function with the format
-"crystalline#theme#theme_name#set_theme".
-
-Custom themes may define more than just the highlight groups defined here. For
-example, highlight groups "CrystallineC", "CrystallineD",
-"CrystallineNormalModeB", "CrystallineNormalModeMid", etc.
-
-For an example of creating a custom theme, see the solarized theme:
-<https://github.com/rbong/vim-crystalline/blob/master/autoload/crystalline/theme/solarized.vim>
+You do not have to use any of these groups, for example if you do not which to
+display the current mode, use the default groups.
 
 CrystallineA                                                 *hl-CrystallineA*
-
-Can be used for the color of the leftmost/rightmost section if mode coloring
-is not used.
-
 CrystallineB                                                 *hl-CrystallineB*
 
-Can be used for the color of the second section from the left/right.
+The default leftmost/rightmost and second leftmost/second rightmost statusline
+sections.
+
+Themes may provide more sections such as `CrystallineC`, `CrystallineD`, etc.
 
 CrystallineMid                                             *hl-CrystallineMid*
 
-A color which can be used for the middle of the statusline.
+The middle statusline section.
+
+CrystallineTab                                             *hl-CrystallineTab*
+
+Unselected tabs in the tabline.
+
+CrystallineTabSel                                       *hl-CrystallineTabSel*
+
+Default selected tabs in the tabline.
+
+CrystallineTabMid                                       *hl-CrystallineTabMid*
+
+The middle of the tabline.
+
+CrystallineTabType                                     *hl-CrystallineTabType*
+
+The color of the tab type label on the tabline which reads "BUFFERS"/"TABS".
+
+CrystallineA1                                               *hl-CrystallineA1*
+CrystallineA2                                               *hl-CrystallineA2*
+CrystallineB1                                               *hl-CrystallineB1*
+CrystallineB2                                               *hl-CrystallineB2*
+CrystallineMid1                                           *hl-CrystallineMid1*
+CrystallineMid2                                           *hl-CrystallineMid2*
+CrystallineTab1                                           *hl-CrystallineTab1*
+CrystallineTab2                                           *hl-CrystallineTab2*
+CrystallineTabSel1                                     *hl-CrystallineTabSel1*
+CrystallineTabSel2                                     *hl-CrystallineTabSel2*
+CrystallineTabMid1                                     *hl-CrystallineTabMid1*
+CrystallineTabMid2                                     *hl-CrystallineTabMid2*
+CrystallineTabType1                                   *hl-CrystallineTabType1*
+CrystallineTabType2                                   *hl-CrystallineTabType2*
+
+Variants of the default statusline and tabline groups which can be used to
+indicate different settings and states.
+
+Themes may provide more variants such as `3`, `4`, `5`, etc. or their own
+custom variants.
 
 CrystallineInactiveMid                             *hl-CrystallineInactiveMid*
 
 A color which can be used for statuslines on non-current windows.
 
+CrystallineInactiveA                                 *hl-CrystallineInactiveA*
+CrystallineInactiveA1                               *hl-CrystallineInactiveA1*
+CrystallineInactiveA2                               *hl-CrystallineInactiveA2*
+CrystallineInactiveB                                 *hl-CrystallineInactiveB*
+CrystallineInactiveB1                               *hl-CrystallineInactiveB1*
+CrystallineInactiveB2                               *hl-CrystallineInactiveB2*
+CrystallineInactiveMid                             *hl-CrystallineInactiveMid*
+CrystallineInactiveMid1                           *hl-CrystallineInactiveMid1*
+CrystallineInactiveMid2                           *hl-CrystallineInactiveMid2*
+
+Statusline groups in inactive windows.
+
+See |crystalline-highlight-groups| above for more information groups.
+See also |crystalline#mode_section()| and |crystalline#mode_group()|.
+
 CrystallineNormalModeA                             *hl-CrystallineNormalModeA*
+CrystallineNormalModeA1                           *hl-CrystallineNormalModeA1*
+CrystallineNormalModeA2                           *hl-CrystallineNormalModeA2*
+CrystallineNormalModeB                             *hl-CrystallineNormalModeB*
+CrystallineNormalModeB1                           *hl-CrystallineNormalModeB1*
+CrystallineNormalModeB2                           *hl-CrystallineNormalModeB2*
+CrystallineNormalModeMid                         *hl-CrystallineNormalModeMid*
+CrystallineNormalModeMid1                       *hl-CrystallineNormalModeMid1*
+CrystallineNormalModeMid2                       *hl-CrystallineNormalModeMid2*
+CrystallineNormalModeTab                         *hl-CrystallineNormalModeTab*
+CrystallineNormalModeTab1                       *hl-CrystallineNormalModeTab1*
+CrystallineNormalModeTab2                       *hl-CrystallineNormalModeTab2*
+CrystallineNormalModeTabSel                   *hl-CrystallineNormalModeTabSel*
+CrystallineNormalModeTabSel1                 *hl-CrystallineNormalModeTabSel1*
+CrystallineNormalModeTabSel2                 *hl-CrystallineNormalModeTabSel2*
+CrystallineNormalModeTabMid                   *hl-CrystallineNormalModeTabMid*
+CrystallineNormalModeTabMid1                 *hl-CrystallineNormalModeTabMid1*
+CrystallineNormalModeTabMid2                 *hl-CrystallineNormalModeTabMid2*
+CrystallineNormalModeTabType                 *hl-CrystallineNormalModeTabType*
+CrystallineNormalModeTabType1               *hl-CrystallineNormalModeTabType1*
+CrystallineNormalModeTabType2               *hl-CrystallineNormalModeTabType2*
 
-The color of A sections when normal mode is active.
+Statusline and tabline groups in normal mode.
 
-See |crystalline#mode_section()| and |crystalline#mode_group()|.
+See |crystalline-highlight-groups| above for more information groups.
+See also |crystalline#mode_section()| and |crystalline#mode_group()|.
 
 CrystallineInsertModeA                             *hl-CrystallineInsertModeA*
+CrystallineInsertModeA1                           *hl-CrystallineInsertModeA1*
+CrystallineInsertModeA2                           *hl-CrystallineInsertModeA2*
+CrystallineInsertModeB                             *hl-CrystallineInsertModeB*
+CrystallineInsertModeB1                           *hl-CrystallineInsertModeB1*
+CrystallineInsertModeB2                           *hl-CrystallineInsertModeB2*
+CrystallineInsertModeMid                         *hl-CrystallineInsertModeMid*
+CrystallineInsertModeMid1                       *hl-CrystallineInsertModeMid1*
+CrystallineInsertModeMid2                       *hl-CrystallineInsertModeMid2*
+CrystallineInsertModeTab                         *hl-CrystallineInsertModeTab*
+CrystallineInsertModeTab1                       *hl-CrystallineInsertModeTab1*
+CrystallineInsertModeTab2                       *hl-CrystallineInsertModeTab2*
+CrystallineInsertModeTabSel                   *hl-CrystallineInsertModeTabSel*
+CrystallineInsertModeTabSel1                 *hl-CrystallineInsertModeTabSel1*
+CrystallineInsertModeTabSel2                 *hl-CrystallineInsertModeTabSel2*
+CrystallineInsertModeTabMid                   *hl-CrystallineInsertModeTabMid*
+CrystallineInsertModeTabMid1                 *hl-CrystallineInsertModeTabMid1*
+CrystallineInsertModeTabMid2                 *hl-CrystallineInsertModeTabMid2*
+CrystallineInsertModeTabType                 *hl-CrystallineInsertModeTabType*
+CrystallineInsertModeTabType1               *hl-CrystallineInsertModeTabType1*
+CrystallineInsertModeTabType2               *hl-CrystallineInsertModeTabType2*
 
-The color of A sections when insert mode is active.
+Statusline and tabline groups in insert mode.
 
-See |crystalline#mode_section()| and |crystalline#mode_group()|.
+See |crystalline-highlight-groups| above for more information groups.
+See also |crystalline#mode_section()| and |crystalline#mode_group()|.
+
+CrystallineCommandModeA                           *hl-CrystallineCommandModeA*
+CrystallineCommandModeA1                         *hl-CrystallineCommandModeA1*
+CrystallineCommandModeA2                         *hl-CrystallineCommandModeA2*
+CrystallineCommandModeB                           *hl-CrystallineCommandModeB*
+CrystallineCommandModeB1                         *hl-CrystallineCommandModeB1*
+CrystallineCommandModeB2                         *hl-CrystallineCommandModeB2*
+CrystallineCommandModeMid                       *hl-CrystallineCommandModeMid*
+CrystallineCommandModeMid1                     *hl-CrystallineCommandModeMid1*
+CrystallineCommandModeMid2                     *hl-CrystallineCommandModeMid2*
+CrystallineCommandModeTab                       *hl-CrystallineCommandModeTab*
+CrystallineCommandModeTab1                     *hl-CrystallineCommandModeTab1*
+CrystallineCommandModeTab2                     *hl-CrystallineCommandModeTab2*
+CrystallineCommandModeTabSel                 *hl-CrystallineCommandModeTabSel*
+CrystallineCommandModeTabSel1               *hl-CrystallineCommandModeTabSel1*
+CrystallineCommandModeTabSel2               *hl-CrystallineCommandModeTabSel2*
+CrystallineCommandModeTabMid                 *hl-CrystallineCommandModeTabMid*
+CrystallineCommandModeTabMid1               *hl-CrystallineCommandModeTabMid1*
+CrystallineCommandModeTabMid2               *hl-CrystallineCommandModeTabMid2*
+CrystallineCommandModeTabType               *hl-CrystallineCommandModeTabType*
+CrystallineCommandModeTabType1             *hl-CrystallineCommandModeTabType1*
+CrystallineCommandModeTabType2             *hl-CrystallineCommandModeTabType2*
+
+Statusline and tabline groups in command mode.
+
+See |crystalline-highlight-groups| above for more information groups.
+See also |crystalline#mode_section()| and |crystalline#mode_group()|.
+
+CrystallineInsertModeA                             *hl-CrystallineInsertModeA*
+CrystallineInsertModeA1                           *hl-CrystallineInsertModeA1*
+CrystallineInsertModeA2                           *hl-CrystallineInsertModeA2*
+CrystallineInsertModeB                             *hl-CrystallineInsertModeB*
+CrystallineInsertModeB1                           *hl-CrystallineInsertModeB1*
+CrystallineInsertModeB2                           *hl-CrystallineInsertModeB2*
+CrystallineInsertModeMid                         *hl-CrystallineInsertModeMid*
+CrystallineInsertModeMid1                       *hl-CrystallineInsertModeMid1*
+CrystallineInsertModeMid2                       *hl-CrystallineInsertModeMid2*
+CrystallineInsertModeTab                         *hl-CrystallineInsertModeTab*
+CrystallineInsertModeTab1                       *hl-CrystallineInsertModeTab1*
+CrystallineInsertModeTab2                       *hl-CrystallineInsertModeTab2*
+CrystallineInsertModeTabSel                   *hl-CrystallineInsertModeTabSel*
+CrystallineInsertModeTabSel1                 *hl-CrystallineInsertModeTabSel1*
+CrystallineInsertModeTabSel2                 *hl-CrystallineInsertModeTabSel2*
+CrystallineInsertModeTabMid                   *hl-CrystallineInsertModeTabMid*
+CrystallineInsertModeTabMid1                 *hl-CrystallineInsertModeTabMid1*
+CrystallineInsertModeTabMid2                 *hl-CrystallineInsertModeTabMid2*
+CrystallineInsertModeTabType                 *hl-CrystallineInsertModeTabType*
+CrystallineInsertModeTabType1               *hl-CrystallineInsertModeTabType1*
+CrystallineInsertModeTabType2               *hl-CrystallineInsertModeTabType2*
+
+Statusline and tabline groups in insert mode.
+
+See |crystalline-highlight-groups| above for more information groups.
+See also |crystalline#mode_section()| and |crystalline#mode_group()|.
 
 CrystallineVisualModeA                             *hl-CrystallineVisualModeA*
+CrystallineVisualModeA1                           *hl-CrystallineVisualModeA1*
+CrystallineVisualModeA2                           *hl-CrystallineVisualModeA2*
+CrystallineVisualModeB                             *hl-CrystallineVisualModeB*
+CrystallineVisualModeB1                           *hl-CrystallineVisualModeB1*
+CrystallineVisualModeB2                           *hl-CrystallineVisualModeB2*
+CrystallineVisualModeMid                         *hl-CrystallineVisualModeMid*
+CrystallineVisualModeMid1                       *hl-CrystallineVisualModeMid1*
+CrystallineVisualModeMid2                       *hl-CrystallineVisualModeMid2*
+CrystallineVisualModeTab                         *hl-CrystallineVisualModeTab*
+CrystallineVisualModeTab1                       *hl-CrystallineVisualModeTab1*
+CrystallineVisualModeTab2                       *hl-CrystallineVisualModeTab2*
+CrystallineVisualModeTabSel                   *hl-CrystallineVisualModeTabSel*
+CrystallineVisualModeTabSel1                 *hl-CrystallineVisualModeTabSel1*
+CrystallineVisualModeTabSel2                 *hl-CrystallineVisualModeTabSel2*
+CrystallineVisualModeTabMid                   *hl-CrystallineVisualModeTabMid*
+CrystallineVisualModeTabMid1                 *hl-CrystallineVisualModeTabMid1*
+CrystallineVisualModeTabMid2                 *hl-CrystallineVisualModeTabMid2*
+CrystallineVisualModeTabType                 *hl-CrystallineVisualModeTabType*
+CrystallineVisualModeTabType1               *hl-CrystallineVisualModeTabType1*
+CrystallineVisualModeTabType2               *hl-CrystallineVisualModeTabType2*
 
-The color of A sections when visual mode is active.
+Statusline and tabline groups in visual mode.
 
-See |crystalline#mode_section()| and |crystalline#mode_group()|.
+See |crystalline-highlight-groups| above for more information groups.
+See also |crystalline#mode_section()| and |crystalline#mode_group()|.
 
 CrystallineReplaceModeA                           *hl-CrystallineReplaceModeA*
+CrystallineReplaceModeA1                         *hl-CrystallineReplaceModeA1*
+CrystallineReplaceModeA2                         *hl-CrystallineReplaceModeA2*
+CrystallineReplaceModeB                           *hl-CrystallineReplaceModeB*
+CrystallineReplaceModeB1                         *hl-CrystallineReplaceModeB1*
+CrystallineReplaceModeB2                         *hl-CrystallineReplaceModeB2*
+CrystallineReplaceModeMid                       *hl-CrystallineReplaceModeMid*
+CrystallineReplaceModeMid1                     *hl-CrystallineReplaceModeMid1*
+CrystallineReplaceModeMid2                     *hl-CrystallineReplaceModeMid2*
+CrystallineReplaceModeTab                       *hl-CrystallineReplaceModeTab*
+CrystallineReplaceModeTab1                     *hl-CrystallineReplaceModeTab1*
+CrystallineReplaceModeTab2                     *hl-CrystallineReplaceModeTab2*
+CrystallineReplaceModeTabSel                 *hl-CrystallineReplaceModeTabSel*
+CrystallineReplaceModeTabSel1               *hl-CrystallineReplaceModeTabSel1*
+CrystallineReplaceModeTabSel2               *hl-CrystallineReplaceModeTabSel2*
+CrystallineReplaceModeTabMid                 *hl-CrystallineReplaceModeTabMid*
+CrystallineReplaceModeTabMid1               *hl-CrystallineReplaceModeTabMid1*
+CrystallineReplaceModeTabMid2               *hl-CrystallineReplaceModeTabMid2*
+CrystallineReplaceModeTabType               *hl-CrystallineReplaceModeTabType*
+CrystallineReplaceModeTabType1             *hl-CrystallineReplaceModeTabType1*
+CrystallineReplaceModeTabType2             *hl-CrystallineReplaceModeTabType2*
 
-The color of A sections when replace mode is active.
+Statusline and tabline groups in replace mode.
 
-See |crystalline#mode_section()| and |crystalline#mode_group()|.
+See |crystalline-highlight-groups| above for more information groups.
+See also |crystalline#mode_section()| and |crystalline#mode_group()|.
 
-CrystallineTab                                             *hl-CrystallineTab*
+CrystallineTerminalModeA                         *hl-CrystallineTerminalModeA*
+CrystallineTerminalModeA1                       *hl-CrystallineTerminalModeA1*
+CrystallineTerminalModeA2                       *hl-CrystallineTerminalModeA2*
+CrystallineTerminalModeB                         *hl-CrystallineTerminalModeB*
+CrystallineTerminalModeB1                       *hl-CrystallineTerminalModeB1*
+CrystallineTerminalModeB2                       *hl-CrystallineTerminalModeB2*
+CrystallineTerminalModeMid                     *hl-CrystallineTerminalModeMid*
+CrystallineTerminalModeMid1                   *hl-CrystallineTerminalModeMid1*
+CrystallineTerminalModeMid2                   *hl-CrystallineTerminalModeMid2*
+CrystallineTerminalModeTab                     *hl-CrystallineTerminalModeTab*
+CrystallineTerminalModeTab1                   *hl-CrystallineTerminalModeTab1*
+CrystallineTerminalModeTab2                   *hl-CrystallineTerminalModeTab2*
+CrystallineTerminalModeTabSel               *hl-CrystallineTerminalModeTabSel*
+CrystallineTerminalModeTabSel1             *hl-CrystallineTerminalModeTabSel1*
+CrystallineTerminalModeTabSel2             *hl-CrystallineTerminalModeTabSel2*
+CrystallineTerminalModeTabMid               *hl-CrystallineTerminalModeTabMid*
+CrystallineTerminalModeTabMid1             *hl-CrystallineTerminalModeTabMid1*
+CrystallineTerminalModeTabMid2             *hl-CrystallineTerminalModeTabMid2*
+CrystallineTerminalModeTabType             *hl-CrystallineTerminalModeTabType*
+CrystallineTerminalModeTabType1           *hl-CrystallineTerminalModeTabType1*
+CrystallineTerminalModeTabType2           *hl-CrystallineTerminalModeTabType2*
 
-The color of tabs which are not currently selected on the bufferline. It can
-also be used for regular sections of the tabline.
+Statusline and tabline groups in terminal mode.
 
-See |crystalline#bufferline()|.
+See |crystalline-highlight-groups| above for more information groups.
+See also |crystalline#mode_section()| and |crystalline#mode_group()|.
 
-CrystallineTabType                                     *hl-CrystallineTabType*
+CREATING THEMES                                  *crystalline-creating-themes*
+                                                *crystalline#generate_theme()*
 
-The color of the tab type label on the bufferline
+You can define a new theme by defining an |autoload| function with the format
+`crystalline#theme#theme_name#set_theme()`.
 
-See |crystalline#bufferline()|.
+This function should call `crystalline#generate_theme()` with an object
+defining groups without group prefixes.
 
-CrystallineTabSel                                       *hl-CrystallineTabSel*
+Example:
 
-Can be used for the color of tabs which are currently selected on the
-bufferline if mode coloring is not used.
+>
+    function! crystalline#theme#my_theme#set_theme() abort
+      call crystalline#generate_theme({
+            \ 'A':   [[17,  190], ['#00005f', '#dfff00'], 'bold'],
+            \ 'B':   [[255, 238], ['#ffffff', '#444444'], ''],
+            \ 'Mid': [[85,  234], ['#9cffd3', '#202020'], ''],
+            \ })
+    endfunction
+<
 
-See |crystalline#bufferline()|.
+The list for each group defines the following |:highlight| attributes:
+  `[[<ctermfg>, <ctermbg>], [<guifg>, <guibg>], <extra>]`
 
-CrystallineTabMid                                       *hl-CrystallineTabMid*
+You do not have to define every group in a theme. Groups will fall back to
+the colors for the following groups if they are not defined:
 
-A color which can be used for the space between the left and right side of the
-tabline.
+  `*Tab`       Falls back to `CrystallineInactiveMid` or `CrystallineMid`.
+  `*TabSel`    Falls back to `*A`
+  `*TabMid`    Falls back to `*Mid`.
+  `*TabType`   Falls back to `*B`.
 
-See |crystalline#bufferline()|.
+These fallbacks apply to every group style, for example `NormalModeTabSel`
+falls back to `NormalModeA`.
+
+Variants will fall back to the non-variant version, for example
+`CrystallineA1` will fall back to `CrystallineA`.
+
+At a minimum, you should define `CrystallineA`, `CrystallineB`, and
+`CrystallineMid`, as these have no fallback.
+
+Fallbacks are not supported for numbered variants greater than 5 or any custom
+variants (ex. `CrystallineAMyVariant`) or sections (ex. `CrystallineC`).
+
+For a full example of creating a custom theme, see the solarized theme:
+<https://github.com/rbong/vim-crystalline/blob/master/autoload/crystalline/theme/solarized.vim>
+
+See also |crystalline-highlight-groups|.
 
 EXAMPLE                                                  *crystalline-example*
 

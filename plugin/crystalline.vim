@@ -21,11 +21,11 @@ endif
 if !exists('g:crystalline_mode_labels')
   let g:crystalline_mode_labels = {
         \ 'n': ' NORMAL ',
-        \ 'c': ' NORMAL ',
+        \ 'c': ' COMMAND ',
         \ 'r': ' NORMAL ',
         \ '!': ' NORMAL ',
         \ 'i': ' INSERT ',
-        \ 't': ' INSERT ',
+        \ 't': ' TERMINAL ',
         \ 'v': ' VISUAL ',
         \ 'V': ' VISUAL ',
         \ '': ' VISUAL ',
@@ -40,11 +40,11 @@ endif
 if !exists('g:crystalline_mode_hi_groups')
   let g:crystalline_mode_hi_groups = {
         \ 'n': 'NormalMode',
-        \ 'c': 'NormalMode',
+        \ 'c': 'CommandMode',
         \ 'r': 'NormalMode',
         \ '!': 'NormalMode',
         \ 'i': 'InsertMode',
-        \ 't': 'InsertMode',
+        \ 't': 'TerminalMode',
         \ 'v': 'VisualMode',
         \ 'V': 'VisualMode',
         \ '': 'VisualMode',
@@ -113,6 +113,38 @@ let g:crystalline_syn_colors = ['fg', 'bg', 'sp']
 if !exists('g:crystalline_theme')
   let g:crystalline_theme = 'default'
 endif
+
+if !exists('g:crystalline_theme_styles')
+  let g:crystalline_theme_styles = [
+        \ { 'name': '', 'airline_style': 'normal' },
+        \ { 'name': 'Inactive', 'airline_style': 'inactive', 'has_tabs': 0 },
+        \ { 'name': 'NormalMode', 'airline_style': 'normal' },
+        \ { 'name': 'CommandMode', 'airline_style': 'commandline' },
+        \ { 'name': 'InsertMode', 'airline_style': 'insert' },
+        \ { 'name': 'VisualMode', 'airline_style': 'visual' },
+        \ { 'name': 'ReplaceMode', 'airline_style': 'replace' },
+        \ { 'name': 'TerminalMode', 'airline_style': 'terminal' },
+        \ ]
+endif
+
+let g:crystalline_theme_groups = [
+      \ { 'name': 'A', 'airline_group': ['', 'airline_a'] },
+      \ { 'name': 'B', 'airline_group': ['', 'airline_b'] },
+      \ { 'name': 'Mid', 'airline_group': ['', 'airline_c'] },
+      \ { 'name': 'Tab', 'airline_group': ['inactive', 'airline_c'] },
+      \ { 'name': 'TabSel', 'airline_group': ['', 'airline_a'] },
+      \ { 'name': 'TabMid', 'airline_group': ['', 'airline_x'] },
+      \ { 'name': 'TabType', 'airline_group': ['', 'airline_b'] },
+      \ ]
+
+let g:crystalline_theme_attrs = [
+      \ [0, 0, 'ctermfg'],
+      \ [0, 1, 'ctermbg'],
+      \ [1, 0, 'guifg'],
+      \ [1, 1, 'guibg'],
+      \ ]
+
+let g:crystalline_max_theme_variants = 5
 
 " }}}
 

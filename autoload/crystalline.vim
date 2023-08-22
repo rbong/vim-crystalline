@@ -490,26 +490,120 @@ function! crystalline#get_hl_attrs(group) abort
   return l:retval
 endfunction
 
-function! crystalline#generate_hi(group, attr) abort
-  let l:cterm = a:attr[0]
-  let l:gui = a:attr[1]
-  let l:extra = len(a:attr) > 2 ? a:attr[2] : ''
+function! crystalline#generate_hi(group, attrs) abort
+  let l:has_attrs = 0
 
   let l:hi = 'hi Crystalline' . a:group
-  let l:hi .= ' guifg=' . l:gui[0] . ' guibg=' . l:gui[1]
-  let l:hi .= ' ctermfg=' . l:cterm[0] . ' ctermbg=' . l:cterm[1]
-  let l:hi .= ' ' . l:extra
+
+  for [l:i, l:j, l:name] in g:crystalline_theme_attrs
+    let l:value = a:attrs[l:i][l:j]
+    if !(l:value is '')
+      let l:hi .= ' ' . l:name . '=' . l:value
+      let l:has_attrs = 1
+    endif
+  endfor
+
+  let l:extra = get(a:attrs, 2, '')
+  if !empty(l:extra)
+    let l:hi .= ' ' . l:extra
+    let l:has_attrs = 1
+  endif
+
+  if !l:has_attrs
+    let l:hi .= ' NONE'
+  endif
 
   return l:hi
 endfunction
 
-function! crystalline#generate_theme(theme) abort
-  let l:his = []
+function! crystalline#get_empty_theme_attrs() abort
+  return [['', ''], ['', ''], '']
+endfunction
 
-  for [l:group, l:attr] in items(a:theme)
-    let l:his += [crystalline#generate_hi(l:group, l:attr)]
+function! crystalline#set_theme_fallback_attrs(theme, style, group) abort
+  let l:full_group = a:style . a:group
+
+  if !has_key(a:theme, l:full_group)
+    " set default attrs
+    let l:attrs = crystalline#get_empty_theme_attrs()
+    let a:theme[l:full_group] = l:attrs
+  else
+    let l:attrs = a:theme[l:full_group]
+  endif
+
+  " pad length
+  while len(l:attrs) < 2
+    let l:attrs += [['', '']]
+  endwhil
+  if len(l:attrs) < 3
+    let l:attrs += ['']
+  endif
+
+  " get fallback attrs
+  " assume this function is called in fallback order unless otherwise noted
+  if a:group ==# 'A' || a:group ==# 'B' || a:group ==# 'Mid'
+    if a:style is ''
+      let l:fallback_attrs = crystalline#get_empty_theme_attrs()
+    else
+      let l:fallback_attrs = get(a:theme, a:group, crystalline#get_empty_theme_attrs())
+    endif
+  elseif a:group ==# 'Tab'
+    " ensure inactive mid is set
+    let [l:fallback_attrs, l:_] = crystalline#set_theme_fallback_attrs(a:theme, 'Inactive', 'Mid')
+  elseif a:group ==# 'TabSel'
+    let l:fallback_attrs = a:theme[a:style . 'A']
+  elseif a:group ==# 'TabMid'
+    let l:fallback_attrs = a:theme[a:style . 'Mid']
+  elseif a:group ==# 'TabType'
+    let l:fallback_attrs = a:theme[a:style . 'B']
+  elseif a:group =~# '\d$'
+    " variant
+    let l:fallback_attrs = a:theme[substitute(l:full_group, '\d\+$', '', '')]
+  else
+    let l:fallback_attrs = crystalline#get_empty_theme_attrs()
+  endif
+
+  " set default attributes
+  let l:has_attrs = 0
+  for [l:i, l:j, l:_] in g:crystalline_theme_attrs
+    if l:attrs[l:i][l:j] is ''
+      let l:attrs[l:i][l:j] = l:fallback_attrs[l:i][l:j]
+    else
+      let l:has_attrs = 1
+    endif
   endfor
 
+  " set default extra attributes
+  if !l:has_attrs && empty(l:attrs[2])
+    let l:attrs[2] = l:fallback_attrs[2]
+  endif
+
+  return [l:attrs, l:fallback_attrs]
+endfunction
+
+function! crystalline#generate_theme(theme) abort
+  let l:theme = deepcopy(a:theme)
+  let l:his = []
+
+  " set fallback attributes
+  for l:style in g:crystalline_theme_styles
+    for l:group in g:crystalline_theme_groups
+      call crystalline#set_theme_fallback_attrs(l:theme, l:style.name, l:group.name)
+      for l:variant in range(1, g:crystalline_max_theme_variants)
+        call crystalline#set_theme_fallback_attrs(l:theme, l:style.name, l:group.name . l:variant)
+      endfor
+    endfor
+  endfor
+
+  " generate highlight groups
+  for [l:group, l:attr] in items(l:theme)
+    let l:hi = crystalline#generate_hi(l:group, l:attr)
+    if !empty(l:hi)
+      let l:his += [l:hi]
+    endif
+  endfor
+
+  " execute highlight groups
   if len(l:his) > 0
     exec join(l:his, ' | ')
   endif
