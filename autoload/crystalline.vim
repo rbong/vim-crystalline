@@ -105,6 +105,7 @@ function! crystalline#init_auto_updates() abort
     endif
     au ModeChanged * call crystalline#trigger_mode_update()
     au InsertLeave * call crystalline#trigger_mode_update()
+    au OptionSet * call crystalline#trigger_mode_update()
   augroup END
 endfunction
 
