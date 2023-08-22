@@ -65,7 +65,7 @@ endfunction
 
 function! crystalline#mode_section(sep_index, mode_group, right_group) abort
   return crystalline#mode_color(a:mode_group)
-        \ . crystalline#mode_label() 
+        \ . crystalline#mode_label()
         \ . crystalline#sep(a:sep_index, crystalline#mode_group(a:mode_group), a:right_group)
 endfunction
 
