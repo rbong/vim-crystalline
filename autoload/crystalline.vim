@@ -636,6 +636,101 @@ function! crystalline#generate_sep_hi(left_group, right_group) abort
   exec crystalline#generate_hi(l:sep_group, l:sep_attr)
 endfunction
 
+function! crystalline#get_airline_attrs(theme_name, style, group) abort
+  let l:pal = g:['airline#themes#' . a:theme_name . '#palette']
+
+  if !has_key(get(l:pal, a:style, {}), a:group)
+    return crystalline#get_empty_theme_attrs()
+  endif
+
+  let l:attrs = l:pal[a:style][a:group]
+
+  " rearrange attributes into crystalline order
+  return [[l:attrs[2], l:attrs[3]], [l:attrs[0], l:attrs[1]], get(l:attrs, 4, '')]
+endfunction
+
+function! crystalline#get_airline_style_attrs(theme_name, airline_style, style, has_tabs) abort
+  let l:is_default_style = a:style ==# ''
+  let l:has_tabs = a:style !=# 'Inactive'
+  let l:groups = {}
+
+  for l:group in g:crystalline_theme_groups
+    let l:name = l:group.name
+    let l:airline_group = get(l:group, 'airline_group')
+    if empty(l:airline_group)
+      continue
+    endif
+
+    if !a:has_tabs && l:name =~# '^Tab'
+      continue
+    endif
+
+    let l:airline_style = empty(l:airline_group[0]) ? a:airline_style : l:airline_group[0]
+    let l:airline_group = l:airline_group[1]
+
+    let l:groups[a:style . l:name] = crystalline#get_airline_attrs(a:theme_name, l:airline_style, l:airline_group)
+
+    for [l:variant, l:suffix] in [[1, '_modified'], [2, '_paste']]
+      let l:groups[a:style . l:name . l:variant] = crystalline#get_airline_attrs(a:theme_name, l:airline_style . l:suffix, l:airline_group)
+    endfor
+  endfor
+
+  return l:groups
+endfunction
+
+function! crystalline#port_airline_theme(theme_name) abort
+  " get all style attributes
+  let l:groups = {}
+  for l:style in g:crystalline_theme_styles
+    let l:name = l:style.name
+    let l:airline_style = get(l:style, 'airline_style')
+    if empty(l:airline_style)
+      continue
+    endif
+    call extend(l:groups, crystalline#get_airline_style_attrs(a:theme_name, l:airline_style, l:name, get(l:style, 'has_tabs', 1)))
+  endfor
+
+  " get fallbacks and filter duplicate styles
+  let l:unique_groups = {}
+  for l:style in g:crystalline_theme_styles
+    for l:group in g:crystalline_theme_groups
+      for l:variant in ['', '0', '1']
+        let [l:attrs, l:fallback_attrs] = crystalline#set_theme_fallback_attrs(l:groups, l:style.name, l:group.name . l:variant)
+        let l:str_attrs = string(l:attrs)
+        if l:str_attrs !=# string(l:fallback_attrs)
+          let l:unique_groups[l:style.name . l:group.name . l:variant] = l:str_attrs
+        endif
+      endfor
+    endfor
+  endfor
+  let l:groups = l:unique_groups
+
+  " find max group length for padding
+  let l:max_group_len = 0
+  for [l:group, l:rules] in items(l:groups)
+    if len(l:group) > l:max_group_len
+      let l:max_group_len = len(l:group)
+    endif
+  endfor
+
+  " build output
+  let l:o = 'call crystalline#generate_theme({'
+  for l:style in g:crystalline_theme_styles
+    for l:group in g:crystalline_theme_groups
+      for l:variant in ['', '0', '1']
+        let l:group_name = l:style.name . l:group.name . l:variant
+        if has_key(l:groups, l:group_name)
+          let l:attrs = l:groups[l:group_name]
+          let l:o .= "\n      \\ '" . l:group_name . "': " . repeat(' ', l:max_group_len - len(l:group_name)) . l:attrs . ','
+        endif
+      endfor
+    endfor
+  endfor
+  let l:o .= "\n      \\ })"
+
+  return l:o
+endfunction
+
 " }}}
 
 " Padding Utils {{{
