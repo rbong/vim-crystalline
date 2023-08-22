@@ -118,6 +118,67 @@ function! crystalline#profile(loops) abort
   echo printf('redraw time: %f seconds', l:time)
 endfunction
 
+function! crystalline#get_sep(sep_index, left_group, right_group) abort
+  if a:left_group == v:null || a:right_group == v:null
+    return ''
+  endif
+
+  if a:left_group ==# a:right_group
+    let l:next_item = ''
+  else
+    let l:next_item = '%#Crystalline' . a:right_group . '#'
+  endif
+
+  if !get(g:, 'crystalline_enable_sep', 0)
+    return l:next_item
+  endif
+
+  let l:sep = get(g:crystalline_separators, a:sep_index, {})
+
+  if empty(l:sep)
+    return l:next_item
+  endif
+
+  let l:ch = l:sep.ch
+
+  if l:sep.dir ==# '<'
+    let l:from_group = a:right_group
+    let l:to_group = a:left_group
+  else
+    let l:from_group = a:left_group
+    let l:to_group = a:right_group
+  endif
+
+  if a:left_group ==# a:right_group
+    let l:sep_item = l:sep.alt_ch
+  else
+    let l:sep_group = crystalline#get_sep_group(l:from_group, l:to_group)
+
+    " Create separator highlight group if it doesn't exist
+    if !has_key(g:crystalline_sep_hi_groups, l:sep_group)
+      call crystalline#generate_sep_hi(l:from_group, l:to_group)
+      let g:crystalline_sep_hi_groups[l:sep_group] = [l:from_group, l:to_group]
+    endif
+
+    " Check for same-color separator groups
+    if get(g:crystalline_same_bg_sep_groups, l:sep_group, 0)
+      let l:sep_item = l:sep.alt_ch
+    else
+      let l:sep_item = '%#Crystalline' . l:sep_group . '#' . l:ch
+    endif
+  endif
+
+  return l:sep_item . l:next_item
+endfunction
+
+function! crystalline#sep(sep_index, left_group, right_group) abort
+  let l:key = a:sep_index . a:left_group . a:right_group
+  if !has_key(g:crystalline_sep_cache, l:key)
+    let g:crystalline_sep_cache[l:key] = crystalline#get_sep(a:sep_index, a:left_group, a:right_group)
+  endif
+  return g:crystalline_sep_cache[l:key]
+endfunction
+
 " }}}
 
 " Tab Line Utils {{{
@@ -478,67 +539,6 @@ function! crystalline#generate_sep_hi(left_group, right_group) abort
 
   let l:sep_group = crystalline#get_sep_group(a:left_group, a:right_group)
   exec crystalline#generate_hi(l:sep_group, l:sep_attr)
-endfunction
-
-function! crystalline#get_sep(sep_index, left_group, right_group) abort
-  if a:left_group == v:null || a:right_group == v:null
-    return ''
-  endif
-
-  if a:left_group ==# a:right_group
-    let l:next_item = ''
-  else
-    let l:next_item = '%#Crystalline' . a:right_group . '#'
-  endif
-
-  if !get(g:, 'crystalline_enable_sep', 0)
-    return l:next_item
-  endif
-
-  let l:sep = get(g:crystalline_separators, a:sep_index, {})
-
-  if empty(l:sep)
-    return l:next_item
-  endif
-
-  let l:ch = l:sep.ch
-
-  if l:sep.dir ==# '<'
-    let l:from_group = a:right_group
-    let l:to_group = a:left_group
-  else
-    let l:from_group = a:left_group
-    let l:to_group = a:right_group
-  endif
-
-  if a:left_group ==# a:right_group
-    let l:sep_item = l:sep.alt_ch
-  else
-    let l:sep_group = crystalline#get_sep_group(l:from_group, l:to_group)
-
-    " Create separator highlight group if it doesn't exist
-    if !has_key(g:crystalline_sep_hi_groups, l:sep_group)
-      call crystalline#generate_sep_hi(l:from_group, l:to_group)
-      let g:crystalline_sep_hi_groups[l:sep_group] = [l:from_group, l:to_group]
-    endif
-
-    " Check for same-color separator groups
-    if get(g:crystalline_same_bg_sep_groups, l:sep_group, 0)
-      let l:sep_item = l:sep.alt_ch
-    else
-      let l:sep_item = '%#Crystalline' . l:sep_group . '#' . l:ch
-    endif
-  endif
-
-  return l:sep_item . l:next_item
-endfunction
-
-function! crystalline#sep(sep_index, left_group, right_group)
-  let l:key = a:sep_index . a:left_group . a:right_group
-  if !has_key(g:crystalline_sep_cache, l:key)
-    let g:crystalline_sep_cache[l:key] = crystalline#get_sep(a:sep_index, a:left_group, a:right_group)
-  endif
-  return g:crystalline_sep_cache[l:key]
 endfunction
 
 " }}}
