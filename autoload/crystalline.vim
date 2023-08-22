@@ -95,12 +95,12 @@ function! crystalline#init_auto_updates() abort
   augroup CrystallineAutoStatusline
     au!
     if exists('g:CrystallineStatuslineFn') || exists('*g:CrystallineStatuslineFn')
-      au BufWinEnter,WinEnter * exec 'setlocal statusline=%!crystalline#get_statusline(1,' . win_getid('#') . ')'
-      au WinLeave * exec 'setlocal statusline=%!crystalline#get_statusline(0,' . win_getid() . ')'
+      au BufWinEnter,WinEnter * exec 'setlocal statusline=%!crystalline#get_statusline(v:true,' . win_getid('#') . ')'
+      au WinLeave * exec 'setlocal statusline=%!crystalline#get_statusline(v:false,' . win_getid() . ')'
       if exists('#CmdlineLeave') && exists('#CmdWinEnter') && exists('#CmdlineEnter')
-        au CmdlineLeave : exec 'setlocal statusline=%!crystalline#get_statusline(1,' . win_getid() . ')'
-        au CmdWinEnter : exec 'setlocal statusline=%!crystalline#get_statusline(1,0)'
-        au CmdlineEnter : exec 'setlocal statusline=%!crystalline#get_statusline(0,' . win_getid() . ')'
+        au CmdlineLeave : exec 'setlocal statusline=%!crystalline#get_statusline(v:true,' . win_getid() . ')'
+        au CmdWinEnter : exec 'setlocal statusline=%!crystalline#get_statusline(v:true,0)'
+        au CmdlineEnter : exec 'setlocal statusline=%!crystalline#get_statusline(v:false,' . win_getid() . ')'
       endif
     endif
     au ModeChanged * call crystalline#trigger_mode_update()
