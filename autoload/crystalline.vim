@@ -161,8 +161,13 @@ function! crystalline#get_sep(sep_index, left_group, right_group) abort
       let g:crystalline_sep_hi_groups[l:sep_group] = [l:from_group, l:to_group]
     endif
 
-    " Check for same-color separator groups
-    if get(g:crystalline_same_bg_sep_groups, l:sep_group, 0)
+    if get(g:crystalline_skip_sep_groups, l:sep_group, 0)
+      " Skip separator highlight group
+      let l:sep_item = l:sep.alt_ch
+    elseif get(g:crystalline_alt_sep_groups, l:sep_group, 0)
+      if l:sep.dir ==# '<'
+        return l:next_item . l:sep.alt_ch
+      endif
       let l:sep_item = l:sep.alt_ch
     else
       let l:sep_item = '%#Crystalline' . l:sep_group . '#' . l:ch
@@ -619,10 +624,18 @@ function! crystalline#generate_sep_hi(left_group, right_group) abort
     let g:crystalline_did_warn_deprecated_hi_groups = 1
   endif
 
+  let l:sep_group = crystalline#get_sep_group(a:left_group, a:right_group)
+
   let l:attr_a = crystalline#get_hl_attrs(a:left_group)
   let l:attr_b = crystalline#get_hl_attrs(a:right_group)
 
   if empty(l:attr_a) || empty(l:attr_b)
+    return
+  endif
+
+  let l:attr_type = has('gui_running') ? 1 : 0
+  if l:attr_a[l:attr_type] == l:attr_b[l:attr_type]
+    let g:crystalline_skip_sep_groups[l:sep_group] = 1
     return
   endif
 
@@ -631,12 +644,6 @@ function! crystalline#generate_sep_hi(left_group, right_group) abort
     let l:sep_attr += [l:attr_a[2]]
   endif
 
-  let l:attr_type = has('gui_running') ? 1 : 0
-  if l:attr_a[l:attr_type][1] == l:attr_b[l:attr_type][1]
-    let g:crystalline_same_bg_sep_groups[crystalline#get_sep_group(a:left_group, a:right_group)] = 1
-  endif
-
-  let l:sep_group = crystalline#get_sep_group(a:left_group, a:right_group)
   exec crystalline#generate_hi(l:sep_group, l:sep_attr)
 endfunction
 
@@ -796,7 +803,8 @@ endfunction
 function! crystalline#apply_current_theme() abort
   let g:crystalline_mode = ''
   let g:crystalline_sep_hi_groups = {}
-  let g:crystalline_same_bg_sep_groups = {}
+  let g:crystalline_skip_sep_groups = {}
+  let g:crystalline_alt_sep_groups = {}
   let g:crystalline_sep_cache = {}
 
   try

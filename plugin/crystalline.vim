@@ -92,7 +92,8 @@ if !exists('g:CrystallineTablabelFn') && !exists('*g:CrystallineTablabelFn')
 endif
 
 let g:crystalline_sep_hi_groups = {}
-let g:crystalline_same_bg_sep_groups = {}
+let g:crystalline_skip_sep_groups = {}
+let g:crystalline_alt_sep_groups = {}
 let g:crystalline_sep_cache = {}
 
 let g:crystalline_syn_modes = ['term', 'cterm', 'gui']
