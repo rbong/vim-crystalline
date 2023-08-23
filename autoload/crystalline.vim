@@ -610,6 +610,10 @@ function! crystalline#generate_theme(theme) abort
 endfunction
 
 function! crystalline#generate_sep_hi(left_group, right_group) abort
+  if get(g:, 'crystalline_no_generate_sep_hi')
+    return
+  endif
+
   if (a:left_group == 'Fill' || a:right_group == 'Fill') && !get(g:, 'crystalline_did_warn_deprecated_hi_groups')
     echoerr 'crystalline: use of deprecated highlight groups detected, see :help crystalline-highlight-groups'
     let g:crystalline_did_warn_deprecated_hi_groups = 1
