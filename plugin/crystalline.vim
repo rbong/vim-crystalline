@@ -10,8 +10,12 @@ if exists('g:crystalline_tabline_fn')
   echoerr 'g:crystalline_tabline_fn is deprecated, use function! g:CrystallineTablineFn'
 endif
 
+if exists('g:crystalline_hide_buf_tab')
+  echoerr "g:crystalline_hide_buf_tab is deprecated, use function! g:CrystallineHideBufferFn"
+endif
+
 if exists('g:crystalline_tab_separator')
-  echoerr 'g:crystalline_tab_separator is deprecated, use g:crystalline_tab_sep_index'
+  echoerr "g:crystalline_tab_separator is deprecated, see :help crystalline#buffers_or_tabs()"
 endif
 
 " }}}
@@ -87,8 +91,24 @@ if !exists('g:crystalline_tab_nomod')
   let g:crystalline_tab_nomod = ' '
 endif
 
-if !exists('g:CrystallineTablabelFn') && !exists('*g:CrystallineTablabelFn')
-  let g:CrystallineTablabelFn = function('crystalline#default_tablabel')
+if !exists('g:crystalline_tabs_tab_type_label')
+  let g:crystalline_tabs_tab_type_label = ' TABS '
+endif
+
+if !exists('g:crystalline_buffers_tab_type_label')
+  let g:crystalline_buffers_tab_type_label = ' BUFFERS '
+endif
+
+if !exists('g:crystalline_tab_min_path_parts')
+  let g:crystalline_tab_min_path_parts = 3
+endif
+
+if !exists('g:CrystallineTabFn') && !exists('*g:CrystallineTabFn')
+  let g:CrystallineTabFn = function('crystalline#default_tab')
+endif
+
+if !exists('g:CrystallineHideBufferFn') && !exists('*g:CrystallineHideBufferFn')
+  let g:CrystallineHideBufferFn = function('crystalline#default_hide_buffer')
 endif
 
 let g:crystalline_sep_hi_groups = {}

@@ -41,15 +41,37 @@ more information on statusline syntax.
 If you do not need the tabline to update when the mode or current window
 changes, instead use ":set tabline=%!MyTabLine()".
 
-g:CrystallineTablabelFn                              *g:CrystallineTablabelFn*
+g:CrystallineTabFn                                        *g:CrystallineTabFn*
 
 May be a |function()| reference or defined with |:function|.
 
-Must accept two arguments, the buffer number and the maximum label width. The
-output of the function will be used as the current buffer/tab label when
-|crystalline#bufferline()| is used.
+The output of the function will be used as tabs/buffers for functions such as
+|crystalline#tabs_or_buffers()|.
 
-See also |crystalline#bufferline()|, |crystalline#default_tablabel_parts()|.
+The function should accept the following arguments:
+
+  buf         The buffer number.
+  max_width   The maximum width of the tab.
+  is_sel      Whether this is the currently selected tab.
+
+The return value of the function is a list with three values:
+
+  tab     The tab content.
+  width   The visible width of the tab content.
+  items   The number of |'statusline'| items used in the tab.
+
+Defaults to |crystalline#default_tab()|.
+
+g:CrystallineHideBufferFn                          *g:CrystallineHideBufferFn*
+
+May be a |function()| reference or defined with |:function()|.
+
+Should accept a single argument, the buffer number.
+
+The output of the function is a bool which determines if a buffer is hidden
+when using functions such as |crystalline#tabs_or_buffers()|.
+
+Defaults to |crystalline#default_hide_buffer()|.
 
 g:crystalline_theme                                      *g:crystalline_theme*
 
@@ -92,19 +114,6 @@ Defaults to:
           \ ]
 <
 
-g:crystalline_tab_sep_index                      *g:crystalline_tab_sep_index*
-
-The index of the separator to use between tabs. Defaults to 0.
-
-g:crystalline_hide_buf_tab                        *g:crystalline_hide_buf_tab*
-
-The name of a function to determine if a buffer should be hidden from tabline
-using |crystalline#bufferline()|. The function must accept one argument, the
-buffer number.
-
-Defaults to 'crystalline#hide_buf_tab', which returns true if a buffer does
-not exist, it is not listed, or it is a quickfix buffer.
-
 FUNCTIONS                                              *crystalline-functions*
 
 crystalline#mode_group(group)                       *crystalline#mode_group()*
@@ -117,8 +126,6 @@ For example, in normal mode this returns "NormalModeA":
 >
     crystalline#mode_group('A')
 <
-
-Can be used with |crystalline#sep()|.
 
 See |crystalline-highlight-groups| for the list of mode highlight groups.
 
@@ -152,76 +159,7 @@ This is equivalent to:
 <
 
 See also |crystalline#mode_group()|, |crystalline#mode_color()|,
-|crystalline#mode_label()|, |crsytalline#sep()|.
-
-crystalline#bufferline(opts)                        *crystalline#bufferline()*
-
-Return a string of items which can be used on the statusline/tabline. It
-displays the current buffers if there is only one tab, otherwise displays the
-tabs.
-
-Accepts one argument, which is an object containing:
-
-  used_items
-
-    Tells the function how many "%" items are already in use. The
-    statusline/tabline can only hold 80 items.
-
-  used_width
-
-    Tells the functions how much screen width is already in use so that it can
-    fit as many tabs as possible.
-
-  tab_sel_group
-
-    The highlight group to use for the currently selected tab. Can use
-    |crystalline#mode_group()| for the current mode color.
-
-    Defaults to "TabSel".
-
-    See |crystalline-highlight-groups| for the list of all highlight groups.
-
-  show_tab_type
-
-    Whether the tab type (buffers/tabs) should be shown.
-
-  use_tabs
-
-    Whether to show tabs rather than buffers. By default, shows tabs when more
-    than one tab is present.
-
-  allow_mouse
-
-    Allow clicking on tabs to switch between them. Not supported by buffers.
-
-  tabwidth
-
-    The maximum width of tabs. See also |crystalline#default_tabwidth()|.
-
-    May be required when using |g:CrystallineTablabelFn|.
-
-  tabitems
-
-    The number of "%" items on each tab.
-
-    May be required when using |g:CrystallineTablabelFn|.
-
-  tabselitems
-
-    The number of "%" items on each selected tab.
-
-    May be required when using |g:CrystallineTablabelFn|.
-
-                                        *crystalline#default_tablabel_parts()*
-crystalline#default_tablabel_parts(buf, max_width)
-
-Returns the default tablabel components used in |crystalline#bufferline()|.
-The return value is an array containing the tab left side, full name, short
-name, and right side.
-
-crystalline#default_tabwidth()                *crystalline#default_tabwidth()*
-
-Returns the default tabwidth for |crystalline#bufferline()|.
+|crystalline#mode_label()|, |crystalline#sep()|.
 
 crystalline#sep(sep_index, left_group, right_group)        *crystalline#sep()*
 
@@ -239,6 +177,117 @@ Highlight groups are the names of highlight groups from
 |crystalline-highlight-groups| with the prefix "Crystalline" omitted.
 
 Groups support the return value from |crystalline#mode_group()|.
+
+crystalline#default_tab(buf, max_width, is_sel)    *crystalline#default_tab()*
+
+The default tab function to use for |g:CrystallineTabFn|.
+
+Returns the buffer name shortened using |pathshorten()|.
+
+Returns an indicator after the buffer name if the buffer has unsaved changes.
+
+crystalline#tabs_or_buffers(...)               *crystalline#tabs_or_buffers()*
+
+Returns a string containing tabs or buffers for the |'tabline'| or
+|'statusline'|.
+
+Accepts a single optional argument, which is an object containing the
+following:
+
+  `is_buffers`
+      Display buffers instead of tabs.
+      Defaults to false.
+
+  `enable_sep`
+      Enable separators.
+      Defaults to false.
+
+  `sep_index`
+      The index of the separator to use in |g:crystalline_separators|.
+      Defaults to 0.
+
+  `enable_mouse`
+      Enable mouse controls. Not compatible with buffers.
+      Defaults to true.
+
+  `min_width`
+      The minium visible width of the tabs/buffers.
+      Takes precedence over `max_width`.
+      Defaults to 24.
+
+  `max_width`
+      The maximum visible width of the tabs/buffers.
+      This option should reflect available space.
+      Defaults to the width of the screen.
+
+  `min_tab_width`
+      The minimum width of individual tabs/buffers.
+      Defaults to the space required for an empty buffer.
+
+  `min_tab_sel_width`
+      The minimum width of the currently selected tab/buffer.
+      Defaults to `min_tab_width`.
+
+  `max_items`
+      The maximum number of |'statusline'| or |'tabline'| items.
+      This option should reflect the number of available items.
+
+      Defaults to 80, which is the maximum number of items supported by VIM.
+
+  `show_mode`
+      Whether the current mode should be prepended to highlight groups.
+
+  `group_variant`
+      The variant to append to all group names.
+
+  `left_group`
+      The group to the left of the tabs/buffers.
+
+      If set and `enable_sep` is true, creates a |crystalline#sep()| between
+      the tabs/buffers and the group.
+
+      Defaults to "TabMid" if `sep_index` is left facing.
+
+  `right_group`
+      The group to the right of the tabs/buffers.
+      Works inverse to `left_group`.
+
+See |crystalline-highlight-groups| for more info on groups.
+
+crystalline#tabs(...)                                     *crystalline#tabs()*
+
+Returns a string containing tabs for the |'tabline'| or |'statusline'|.
+
+Accepts the same arguments as |crystalline#tabs_or_buffers()|.
+
+crystalline#buffers(...)                               *crystalline#buffers()*
+
+Returns a string containing tab-style buffers for the |'tabline'| or
+|'statusline'|.
+
+Accepts the same arguments as |crystalline#tabs_or_buffers()|.
+
+crystalline#default_tabline(...)               *crystalline#default_tabline()*
+
+Returns a |'tabline'| string which shows |crystalline#tabs_or_buffers()| and a
+|crystalline#tab_type_label()|.
+
+Buffers are shown if only one tab is present. Otherwise, tabs are shown.
+
+Accepts the same arguments as |crystalline#tabs_or_buffers()|.
+
+                                    *crystalline#default_tabline_is_buffers()*
+crystalline#default_tabline_is_buffers()
+
+Returns true if |crystalline#default_tabline()| would show buffers.
+
+crystalline#tab_type_label(...)                 *crystalline#tab_type_label()*
+
+Returns a string indicating whether tabs or buffers are currently being
+displayed.
+
+Accepts a single optional argument, which is a bool indicating that buffers
+are currently being displayed.
 
 HIGHLIGHT GROUPS                                *crystalline-highlight-groups*
                                                           *crystalline-themes*
@@ -589,12 +638,15 @@ EXAMPLE                                                  *crystalline-example*
 
     function! g:CrystallineTablineFn()
       let l:vimlabel = has('nvim') ?  ' NVIM ' : ' VIM '
-      return crystalline#bufferline({
-            \ 'used_items': 2,
-            \ 'used_width': len(l:vimlabel),
+      return crystalline#default_tabline({
+            \ 'show_mode': 1,
+            \ 'enable_sep': 1,
+            \ 'max_items': 80 - 2,
+            \ 'max_width': &columns - strchars(l:vimlabel),
             \ })
             \ . '%=%#CrystallineTab# ' . l:vimlabel
     endfunction
+    set showtabline=2
 
     let g:crystalline_enable_sep = 1
     let g:crystalline_theme = 'default'

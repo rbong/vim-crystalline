@@ -8,7 +8,6 @@ Want a nice statusline in vim?
 `vim-crystalline` is for you.
 
 `vim-crystalline` lets you build your own statusline and tabline in a vanilla vim style.
-It also comes with a tabline/bufferline!
 
 ## Obligatory Colorful Theme Screenshots
 
@@ -174,26 +173,29 @@ The first argument is the index of the separator to use from `:help g:crystallin
 The other arguments are groups from `:help crystalline-highlight-groups` with `Crystalline` omitted.
 The first group is the left group, and the second group is the right group.
 
-### Using the Bufferline
+### Using the Default Tabline
 
 ```vim
-set tabline=%!crystalline#bufferline()
+set tabline=%!crystalline#default_tabline()
 set showtabline=2
 ```
 
-### Enabling the Bufferline in Gvim
+Shows buffers if there is only one tab, otherwise shows tabs.
+For more flexible buffers/tabs, see `:help crystalline#tabs_or_buffers()`.
+
+### Enabling the Default Tabline in Gvim
 
 ```vim
-set tabline=%!crystalline#bufferline()
+set tabline=%!crystalline#default_tabline()
 set showtabline=2
 set guioptions-=e
 ```
 
-### Bufferline Current Tab Mode Colors
+### Tabline Current Tab Mode Colors
 
 ```vim
 function! g:CrystallineTablineFn()
-  return crystalline#bufferline({ 'tab_sel_group': crystalline#mode_group('A') })
+  return crystalline#default_tabline({ 'show_mode': 1 })
 endfunction
 set showtabline=2
 ```
@@ -203,9 +205,9 @@ set showtabline=2
 ```vim
 function! g:CrystallineTablineFn()
   let l:vimlabel = has('nvim') ?  ' NVIM ' : ' VIM '
-  return crystalline#bufferline({
-        \ 'used_items': 2,
-        \ 'used_width': len(l:vimlabel),
+  return crystalline#default_tabline({
+        \ 'max_items': 80 - 2,
+        \ 'max_width': &columns - strchars(l:vimlabel),
         \ })
         \ . '%=%#CrystallineTab# ' . l:vimlabel
 endfunction
@@ -244,12 +246,15 @@ endfunction
 
 function! g:CrystallineTablineFn()
   let l:vimlabel = has('nvim') ?  ' NVIM ' : ' VIM '
-  return crystalline#bufferline({
-        \ 'used_items': 2,
-        \ 'used_width': len(l:vimlabel),
+  return crystalline#default_tabline({
+        \ 'show_mode': 1,
+        \ 'enable_sep': 1,
+        \ 'max_items': 80 - 2,
+        \ 'max_width': &columns - strchars(l:vimlabel),
         \ })
         \ . '%=%#CrystallineTab# ' . l:vimlabel
 endfunction
+set showtabline=2
 
 let g:crystalline_enable_sep = 1
 let g:crystalline_theme = 'default'
