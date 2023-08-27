@@ -22,7 +22,7 @@ May be a |function()| reference or defined with |:function|.
 The output of the function will be used as the statusline. See 'statusline'
 for more information on statusline syntax.
 
-The function should accept one argument, which is an object containing the
+The function should accept one argument, which is an dict containing the
 following:
 
   curr    Whether the window is the currently focused window.
@@ -98,7 +98,7 @@ g:crystalline_separators                            *g:crystalline_separators*
 
 The separators to use between sections/tabs.
 
-This is a list of objects containing the following keys:
+This is a list of dicts containing the following keys:
 
   ch        The character to use for the separator.
   alt_ch    The character to use for the separator when two highlight groups
