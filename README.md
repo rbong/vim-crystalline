@@ -119,7 +119,7 @@ set laststatus=2
 
 ```vim
 function! g:CrystallineStatuslineFn(winnr)
-  return crystalline#hi_item('A') . ' %f%h%w%m%r ' . crystalline#hi_item('Mid') . '%='
+  return crystalline#hi_item('A') . ' %f%h%w%m%r ' . crystalline#hi_item('Fill') . '%='
         \ . crystalline#hi_item('A') . ' %{&ft}[%{&fenc!=#""?&fenc:&enc}][%{&ff}] %l/%L %c%V %P '
 endfunction
 let g:crystalline_theme = 'default'
@@ -150,8 +150,8 @@ set laststatus=2
 ```vim
 function! g:CrystallineStatuslineFn(winnr)
   return crystalline#hi_item('A') . ' %f%h%w%m%r '
-        \ . crystalline#sep(0, 'B', 'Mid') . '%='
-        \ . crystalline#sep(1, 'Mid', 'B') . ' %{&ft}[%{&fenc!=#""?&fenc:&enc}][%{&ff}] %l/%L %c%V %P '
+        \ . crystalline#sep(0, 'B', 'Fill') . '%='
+        \ . crystalline#sep(1, 'Fill', 'B') . ' %{&ft}[%{&fenc!=#""?&fenc:&enc}][%{&ff}] %l/%L %c%V %P '
 endfunction
 " Example: default separators
 let g:crystalline_separators = [
@@ -225,12 +225,12 @@ function! g:CrystallineStatuslineFn(winnr)
   endif
   let l:s .= ' %f%h%w%m%r '
   if l:curr
-    let l:s .= crystalline#sep(0, 'B', 'Mid') . ' %{fugitive#Head()}'
+    let l:s .= crystalline#sep(0, 'B', 'Fill') . ' %{fugitive#Head()}'
   endif
 
   let l:s .= '%='
   if l:curr
-    let l:s .= crystalline#sep(1, 'Mid', 'B') . ' %{&paste ?"PASTE ":""}%{&spell?"SPELL ":""}'
+    let l:s .= crystalline#sep(1, 'Fill', 'B') . ' %{&paste ?"PASTE ":""}%{&spell?"SPELL ":""}'
     let l:s .= crystalline#sep(1, 'B', crystalline#mode_group('A'))
   endif
   if winwidth(a:winnr) > 80

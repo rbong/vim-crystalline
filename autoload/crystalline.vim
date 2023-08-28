@@ -255,14 +255,14 @@ function! crystalline#tabs_or_buffers(...) abort
     let l:mode = crystalline#mode_group('')
     let l:tab_group = get(l:opts, 'tab_group', l:mode . 'Tab' . l:group_suffix)
     let l:tab_sel_group = get(l:opts, 'tab_sel_group', l:mode . 'TabSel' . l:group_suffix)
-    let l:tab_mid_group = get(l:opts, 'tab_mid_group', l:mode . 'TabMid' . l:group_suffix)
+    let l:tab_fill_group = get(l:opts, 'tab_fill_group', l:mode . 'TabFill' . l:group_suffix)
   else
     let l:tab_group = get(l:opts, 'tab_group', 'Tab')
     let l:tab_sel_group = get(l:opts, 'tab_sel_group', 'TabSel' . l:group_suffix)
-    let l:tab_mid_group = get(l:opts, 'tab_mid_group', 'TabMid' . l:group_suffix)
+    let l:tab_fill_group = get(l:opts, 'tab_fill_group', 'TabFill' . l:group_suffix)
   endif
-  let l:left_group = get(l:opts, 'left_group', l:dir ==# '<' ? l:tab_mid_group : '')
-  let l:right_group = get(l:opts, 'right_group', l:dir ==# '<' ? '' : l:tab_mid_group)
+  let l:left_group = get(l:opts, 'left_group', l:dir ==# '<' ? l:tab_fill_group : '')
+  let l:right_group = get(l:opts, 'right_group', l:dir ==# '<' ? '' : l:tab_fill_group)
 
   " Init variables
   let l:o = ''
@@ -678,7 +678,7 @@ function! crystalline#set_theme_fallback_attrs(theme, style, group) abort
 
   " get fallback attrs
   " assume this function is called in fallback order unless otherwise noted
-  if a:group ==# 'A' || a:group ==# 'B' || a:group ==# 'Mid'
+  if a:group ==# 'A' || a:group ==# 'B' || a:group ==# 'Fill'
     if a:style is ''
       let l:fallback_attrs = crystalline#get_empty_theme_attrs()
     else
@@ -686,11 +686,11 @@ function! crystalline#set_theme_fallback_attrs(theme, style, group) abort
     endif
   elseif a:group ==# 'Tab'
     " ensure inactive mid is set
-    let [l:fallback_attrs, l:_] = crystalline#set_theme_fallback_attrs(a:theme, 'Inactive', 'Mid')
+    let [l:fallback_attrs, l:_] = crystalline#set_theme_fallback_attrs(a:theme, 'Inactive', 'Fill')
   elseif a:group ==# 'TabSel'
     let l:fallback_attrs = a:theme[a:style . 'A']
-  elseif a:group ==# 'TabMid'
-    let l:fallback_attrs = a:theme[a:style . 'Mid']
+  elseif a:group ==# 'TabFill'
+    let l:fallback_attrs = a:theme[a:style . 'Fill']
   elseif a:group ==# 'TabType'
     let l:fallback_attrs = a:theme[a:style . 'B']
   elseif a:group =~# '\d$'

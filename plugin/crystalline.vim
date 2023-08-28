@@ -155,10 +155,10 @@ endif
 let g:crystalline_theme_groups = [
       \ { 'name': 'A', 'airline_group': ['', 'airline_a'] },
       \ { 'name': 'B', 'airline_group': ['', 'airline_b'] },
-      \ { 'name': 'Mid', 'airline_group': ['', 'airline_c'] },
+      \ { 'name': 'Fill', 'airline_group': ['', 'airline_c'] },
       \ { 'name': 'Tab', 'airline_group': ['inactive', 'airline_c'] },
       \ { 'name': 'TabSel', 'airline_group': ['', 'airline_a'] },
-      \ { 'name': 'TabMid', 'airline_group': ['', 'airline_x'] },
+      \ { 'name': 'TabFill', 'airline_group': ['', 'airline_x'] },
       \ { 'name': 'TabType', 'airline_group': ['', 'airline_b'] },
       \ ]
 

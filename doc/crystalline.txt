@@ -249,7 +249,7 @@ Arguments:
 
     To disable, set to an empty string.
 
-    Defaults to "TabMid" if `sep_index` is left facing.
+    Defaults to "TabFill" if `sep_index` is left facing.
 
   `opts.right_group`
     The group to the right of the tabs/buffers.
@@ -257,7 +257,7 @@ Arguments:
 
     To disable, set to an empty string.
 
-    Defaults to "TabMid" if `sep_index` is right facing.
+    Defaults to "TabFill" if `sep_index` is right facing.
 
 See also |g:CrystallineTabFn|, |g:CrystallineHideBufferFn|.
 See |crystalline-highlight-groups| for more info on groups.
@@ -309,7 +309,7 @@ display the current mode, use the default groups.
 Example of how highlight groups might be used in your statusline/tabline:
 >
     +--------------------------------------------------------+
-    | TabType | Tab | TabSel | Tab |        TabMid           |
+    | TabType | Tab | TabSel | Tab |        TabFill          |
     |--------------------------------------------------------|
     |                                                        |
     |                                                        |
@@ -324,7 +324,7 @@ Example of how highlight groups might be used in your statusline/tabline:
     |                                                        |
     |                                                        |
     |--------------------------------------------------------|
-    | A | B |                Mid                     | B | A |
+    | A | B |                Fill                    | B | A |
     +--------------------------------------------------------+
 <
 
@@ -336,7 +336,7 @@ sections.
 
 Themes may provide more sections such as `CrystallineC`, `CrystallineD`, etc.
 
-CrystallineMid                                                *CrystallineMid*
+CrystallineFill                                              *CrystallineFill*
 
 The middle statusline section.
 
@@ -348,7 +348,7 @@ CrystallineTabSel                                          *CrystallineTabSel*
 
 Default selected tabs in the tabline.
 
-CrystallineTabMid                                          *CrystallineTabMid*
+CrystallineTabFill                                        *CrystallineTabFill*
 
 The middle of the tabline.
 
@@ -408,9 +408,9 @@ Define a new theme by defining an |autoload| function which calls
     " ~/.vim/autoload/theme/my_theme/set_theme.vim
     function! crystalline#theme#my_theme#set_theme() abort
       call crystalline#generate_theme({
-            \ 'A':   [[17,  190], ['#00005f', '#dfff00'], 'bold'],
-            \ 'B':   [[255, 238], ['#ffffff', '#444444'], ''],
-            \ 'Mid': [[85,  234], ['#9cffd3', '#202020'], ''],
+            \ 'A':    [[17,  190], ['#00005f', '#dfff00'], 'bold'],
+            \ 'B':    [[255, 238], ['#ffffff', '#444444'], ''],
+            \ 'Fill': [[85,  234], ['#9cffd3', '#202020'], ''],
             \ })
     endfunction
 <
@@ -420,9 +420,9 @@ Each group is a list containing the following:
 
 Undefined groups/attributes will have the following defaults:
 
-  `*Tab`       `CrystallineInactiveMid` or `CrystallineMid`.
+  `*Tab`       `CrystallineInactiveFill` or `CrystallineFill`.
   `*TabSel`    `*A`
-  `*TabMid`    `*Mid`.
+  `*TabFill`   `*Fill`.
   `*TabType`   `*B`.
 
 Where `*` is `Inactive`, `NormalMode`, `CommandMode`, etc.
@@ -430,7 +430,7 @@ Where `*` is `Inactive`, `NormalMode`, `CommandMode`, etc.
 Variants default to non-default variants.
 Only variants 1-5 are supported.
 
-At a minimum, define all attributes for `A`, `B`, and `Mid`.
+At a minimum, define all attributes for `A`, `B`, and `Fill`.
 
 For a full example of creating a custom theme, see the solarized theme:
 <https://github.com/rbong/vim-crystalline/blob/master/autoload/crystalline/theme/solarized.vim>
@@ -451,12 +451,12 @@ EXAMPLE                                                  *crystalline-example*
       endif
       let l:s .= ' %f%h%w%m%r '
       if l:curr
-        let l:s .= crystalline#sep(0, 'B', 'Mid') . ' %{fugitive#Head()}'
+        let l:s .= crystalline#sep(0, 'B', 'Fill') . ' %{fugitive#Head()}'
       endif
 
       let l:s .= '%='
       if l:curr
-        let l:s .= crystalline#sep(1, 'Mid', 'B') . ' %{&paste ?"PASTE ":""}%{&spell?"SPELL ":""}'
+        let l:s .= crystalline#sep(1, 'Fill', 'B') . ' %{&paste ?"PASTE ":""}%{&spell?"SPELL ":""}'
         let l:s .= crystalline#sep(1, 'B', crystalline#mode_group('A'))
       endif
       if winwidth(a:winnr) > 80
