@@ -953,7 +953,7 @@ function! crystalline#apply_current_theme() abort
 
   try
     call function('crystalline#theme#' . g:crystalline_theme . '#set_theme')()
-  catch /^Vim\%((\a\+)\)\=:E118/
+  catch /^Vim\%((\a\+)\)\=:E118:/
     " theme does not use autoload function
   endtry
 
