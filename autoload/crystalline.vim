@@ -157,7 +157,7 @@ function! crystalline#get_sep(sep_index, left_group, right_group) abort
     let l:next_item = '%#Crystalline' . a:right_group . '#'
   endif
 
-  if !get(g:, 'crystalline_enable_sep', 0)
+  if !get(g:, 'crystalline_enable_sep', 1)
     return l:next_item
   endif
 
