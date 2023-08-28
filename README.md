@@ -221,7 +221,7 @@ function! g:CrystallineStatuslineFn(winnr)
   if l:curr
     let l:s .= crystalline#mode_section(0, 'A', 'B')
   else
-    let l:s .= '%#CrystallineInactive#'
+    let l:s .= crystalline#hi_item('InactiveFill')
   endif
   let l:s .= ' %f%h%w%m%r '
   if l:curr
