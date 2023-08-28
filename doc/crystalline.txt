@@ -107,7 +107,7 @@ This is a list of dicts containing the following keys:
 
 Defaults to:
 
->
+>vim
     let g:crystalline_separators = [
           \ { 'ch': '', 'alt_ch': '', 'dir': '>' },
           \ { 'ch': '', 'alt_ch': '', 'dir': '<' },
@@ -123,8 +123,8 @@ for the current mode with the prefix "Crystalline" omitted.
 
 For example, in normal mode this returns "NormalModeA":
 
->
-    crystalline#mode_group('A')
+>vim
+    let l:group = crystalline#mode_group('A')
 <
 
 See |crystalline-highlight-groups| for the list of mode highlight groups.
@@ -152,8 +152,8 @@ and the next group. Returns a section displaying the current mode.
 
 This is equivalent to:
 
->
-    crystalline#mode_color(a:mode_group)
+>vim
+    let l:section = crystalline#mode_color(a:mode_group)
           \ . crystalline#mode_label() 
           \ . crystalline#sep(a:sep_index, crystalline#mode_group(a:mode_group), a:right_group)
 <
@@ -568,7 +568,7 @@ defining groups without group prefixes.
 
 Example:
 
->
+>vim
     function! crystalline#theme#my_theme#set_theme() abort
       call crystalline#generate_theme({
             \ 'A':   [[17,  190], ['#00005f', '#dfff00'], 'bold'],
@@ -608,7 +608,7 @@ See also |crystalline-highlight-groups|.
 
 EXAMPLE                                                  *crystalline-example*
 
->
+>vim
     function! g:CrystallineStatuslineFn(ctx)
       let l:s = ''
 
