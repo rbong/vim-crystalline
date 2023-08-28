@@ -282,16 +282,16 @@ function! crystalline#tabs_or_buffers(...) abort
 
   " Get group options
   let l:enable_mode = get(l:opts, 'enable_mode', 0)
-  let l:group_variant = get(l:opts, 'group_variant', '')
+  let l:group_suffix = get(l:opts, 'group_suffix', '')
   if l:enable_mode
     let l:mode = crystalline#mode_group('')
-    let l:tab_group = get(l:opts, 'tab_group', l:mode . 'Tab' . l:group_variant)
-    let l:tab_sel_group = get(l:opts, 'tab_sel_group', l:mode . 'TabSel' . l:group_variant)
-    let l:tab_mid_group = get(l:opts, 'tab_mid_group', l:mode . 'TabMid' . l:group_variant)
+    let l:tab_group = get(l:opts, 'tab_group', l:mode . 'Tab' . l:group_suffix)
+    let l:tab_sel_group = get(l:opts, 'tab_sel_group', l:mode . 'TabSel' . l:group_suffix)
+    let l:tab_mid_group = get(l:opts, 'tab_mid_group', l:mode . 'TabMid' . l:group_suffix)
   else
     let l:tab_group = get(l:opts, 'tab_group', 'Tab')
-    let l:tab_sel_group = get(l:opts, 'tab_sel_group', 'TabSel' . l:group_variant)
-    let l:tab_mid_group = get(l:opts, 'tab_mid_group', 'TabMid' . l:group_variant)
+    let l:tab_sel_group = get(l:opts, 'tab_sel_group', 'TabSel' . l:group_suffix)
+    let l:tab_mid_group = get(l:opts, 'tab_mid_group', 'TabMid' . l:group_suffix)
   endif
   let l:left_group = get(l:opts, 'left_group', l:dir ==# '<' ? l:tab_mid_group : '')
   let l:right_group = get(l:opts, 'right_group', l:dir ==# '<' ? '' : l:tab_mid_group)
