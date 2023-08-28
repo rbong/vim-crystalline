@@ -63,6 +63,16 @@ function! crystalline#escape_statusline_string(str) abort
   return substitute(a:str, '%', '%%', 'g')
 endfunction
 
+function! crystalline#profile(loops) abort
+  let l:start = reltime()
+  for _ in range(a:loops)
+    redraw!
+  endfor
+  let l:end = reltime()
+  let l:time = reltimefloat(reltime(l:start, l:end)) / a:loops
+  echo printf('redraw time: %f seconds', l:time)
+endfunction
+
 " }}}
 
 " Status Line Utils {{{
@@ -123,16 +133,6 @@ function! crystalline#init_auto_updates() abort
     au InsertLeave * call crystalline#trigger_mode_update()
     au OptionSet * call crystalline#trigger_mode_update()
   augroup END
-endfunction
-
-function! crystalline#profile(loops) abort
-  let l:start = reltime()
-  for _ in range(a:loops)
-    redraw!
-  endfor
-  let l:end = reltime()
-  let l:time = reltimefloat(reltime(l:start, l:end)) / a:loops
-  echo printf('redraw time: %f seconds', l:time)
 endfunction
 
 function! crystalline#get_sep(sep_index, left_group, right_group) abort
