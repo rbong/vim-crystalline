@@ -795,7 +795,7 @@ function! crystalline#get_airline_attrs(theme_name, style, group) abort
   return [[l:attrs[2], l:attrs[3]], [l:attrs[0], l:attrs[1]], get(l:attrs, 4, '')]
 endfunction
 
-function! crystalline#get_airline_style_attrs(theme_name, airline_style, style, has_tabs) abort
+function! crystalline#get_airline_style_attrs(theme_name, airline_style, style) abort
   let l:is_default_style = a:style ==# ''
   let l:has_tabs = a:style !=# 'Inactive'
   let l:groups = {}
@@ -833,7 +833,7 @@ function! crystalline#port_airline_theme(theme_name) abort
     if empty(l:airline_style)
       continue
     endif
-    call extend(l:groups, crystalline#get_airline_style_attrs(a:theme_name, l:airline_style, l:name, get(l:style, 'has_tabs', 1)))
+    call extend(l:groups, crystalline#get_airline_style_attrs(a:theme_name, l:airline_style, l:name, get(l:style, 'has_tabs')))
   endfor
 
   " get fallbacks and filter duplicate styles
