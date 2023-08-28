@@ -281,9 +281,9 @@ function! crystalline#tabs_or_buffers(...) abort
   let l:max_items = get(l:opts, 'max_items', 80)
 
   " Get group options
-  let l:show_mode = get(l:opts, 'show_mode', 0)
+  let l:enable_mode = get(l:opts, 'enable_mode', 0)
   let l:group_variant = get(l:opts, 'group_variant', '')
-  if l:show_mode
+  if l:enable_mode
     let l:mode = crystalline#mode_group('')
     let l:tab_group = get(l:opts, 'tab_group', l:mode . 'Tab' . l:group_variant)
     let l:tab_sel_group = get(l:opts, 'tab_sel_group', l:mode . 'TabSel' . l:group_variant)
