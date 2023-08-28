@@ -93,10 +93,17 @@ function! crystalline#mode_label() abort
   return g:crystalline_mode_labels[mode()]
 endfunction
 
-function! crystalline#mode_section(sep_index, mode_group, right_group) abort
-  return crystalline#mode_color(a:mode_group)
+function! crystalline#mode_section(sep_index, left_group, right_group) abort
+  let l:dir = get(g:crystalline_separators, a:sep_index, { 'dir': '>' }).dir
+
+  if l:dir ==# '<'
+    return crystalline#sep(a:sep_index, a:left_group, crystalline#mode_group(a:right_group))
+          \ . crystalline#mode_label()
+  endif
+
+  return crystalline#mode_hi_item(a:left_group)
         \ . crystalline#mode_label()
-        \ . crystalline#sep(a:sep_index, crystalline#mode_group(a:mode_group), a:right_group)
+        \ . crystalline#sep(a:sep_index, crystalline#mode_group(a:left_group), a:right_group)
 endfunction
 
 function! crystalline#trigger_mode_update() abort
