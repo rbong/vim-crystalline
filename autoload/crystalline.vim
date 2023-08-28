@@ -106,44 +106,8 @@ function! crystalline#mode_section(sep_index, left_group, right_group) abort
         \ . crystalline#sep(a:sep_index, crystalline#mode_group(a:left_group), a:right_group)
 endfunction
 
-function! crystalline#trigger_mode_update() abort
-  let l:mode = mode()
-  if get(g:, 'crystalline_mode', '') !=# l:mode
-    let g:crystalline_mode = l:mode
-    silent doautocmd <nomodeline> User CrystallineModeUpdate
-  endif
-endfunction
-
-function! crystalline#get_statusline(current, win) abort
-  call crystalline#trigger_mode_update()
-  let l:ctx = {
-        \ 'curr': a:current,
-        \ 'w': winwidth(win_id2win(a:win))
-        \ }
-  try
-    return g:CrystallineStatuslineFn(l:ctx)
-  catch /^Vim\%((\a\+)\)\=:E\%(118\|728\|735\)/
-    echoerr 'vim-crystalline: use of deprecated args detected, see :help g:CrystallineStatuslineFn'
-    throw v:exception
-  endtry
-endfunction
-
-function! crystalline#init_auto_updates() abort
-  augroup CrystallineAutoStatusline
-    au!
-    if exists('g:CrystallineStatuslineFn') || exists('*g:CrystallineStatuslineFn')
-      au BufWinEnter,WinEnter * exec 'setlocal statusline=%!crystalline#get_statusline(v:true,' . win_getid('#') . ')'
-      au WinLeave * exec 'setlocal statusline=%!crystalline#get_statusline(v:false,' . win_getid() . ')'
-      if exists('#CmdlineLeave') && exists('#CmdWinEnter') && exists('#CmdlineEnter')
-        au CmdlineLeave : exec 'setlocal statusline=%!crystalline#get_statusline(v:true,' . win_getid() . ')'
-        au CmdWinEnter : exec 'setlocal statusline=%!crystalline#get_statusline(v:true,0)'
-        au CmdlineEnter : exec 'setlocal statusline=%!crystalline#get_statusline(v:false,' . win_getid() . ')'
-      endif
-    endif
-    au ModeChanged * call crystalline#trigger_mode_update()
-    au InsertLeave * call crystalline#trigger_mode_update()
-    au OptionSet * call crystalline#trigger_mode_update()
-  augroup END
+function! crystalline#update_statusline(winnr) abort
+  call setwinvar(a:winnr, '&statusline', '%!g:CrystallineStatuslineFn(' . a:winnr . ')')
 endfunction
 
 function! crystalline#get_sep(sep_index, left_group, right_group) abort
@@ -215,6 +179,10 @@ endfunction
 " }}}
 
 " Tab Line Utils {{{
+
+function! crystalline#update_tabline() abort
+  set tabline=%!g:CrystallineTablineFn()
+endfunction
 
 function! crystalline#default_tab(buf, max_width, is_sel) abort
   " Return early
@@ -936,32 +904,41 @@ endfunction
 " Setting Management {{{
 
 function! crystalline#init_statusline() abort
-  exec 'set statusline=%!crystalline#get_statusline(1,' . win_getid() . ')'
-  call crystalline#init_auto_updates()
+  augroup CrystallineAutoUpdateStatusline
+    au!
+    au BufWinEnter,WinEnter * call crystalline#update_statusline(winnr())
+    au WinLeave * call crystalline#update_statusline(winnr())
+    if exists('#CmdlineLeave') && exists('#CmdWinEnter') && exists('#CmdlineEnter')
+      au CmdlineLeave : call crystalline#update_statusline(winnr())
+      au CmdWinEnter : call crystalline#update_statusline(winnr())
+      au CmdlineEnter : call crystalline#update_statusline(winnr())
+    endif
+  augroup END
+  call crystalline#update_statusline(winnr())
 endfunction
 
 function! crystalline#clear_statusline() abort
   set statusline=
-  augroup CrystallineAutoStatusline
+  augroup CrystallineAutoUpdateStatusline
     au!
   augroup END
 endfunction
 
 function! crystalline#init_tabline() abort
   if exists('+tabline')
-    set tabline=%!g:CrystallineTablineFn()
-    augroup CrystallineAutoTabline
+    augroup CrystallineAutoUpdateTabline
       au!
-      au User CrystallineModeUpdate set tabline=%!g:CrystallineTablineFn()
+      au ModeChanged * call crystalline#update_tabline()
+      au InsertLeave * call crystalline#update_tabline()
     augroup END
-    call crystalline#init_auto_updates()
+    call crystalline#update_tabline()
   endif
 endfunction
 
 function! crystalline#clear_tabline() abort
   if exists('+tabline')
     set tabline=
-    augroup CrystallineAutoTabline
+    augroup CrystallineAutoUpdateTabline
       au!
     augroup END
   endif
