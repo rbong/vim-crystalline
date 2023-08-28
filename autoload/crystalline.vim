@@ -751,7 +751,7 @@ function! crystalline#generate_sep_hi(left_group, right_group) abort
     return
   endif
 
-  if (a:left_group == 'Fill' || a:right_group == 'Fill') && !get(g:, 'crystalline_did_warn_deprecated_hi_groups')
+  if (a:left_group == '' || a:right_group == '') && !get(g:, 'crystalline_did_warn_deprecated_hi_groups')
     echoerr 'crystalline: use of deprecated highlight groups detected, see :help crystalline-highlight-groups'
     let g:crystalline_did_warn_deprecated_hi_groups = 1
   endif

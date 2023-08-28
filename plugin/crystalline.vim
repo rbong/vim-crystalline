@@ -3,7 +3,7 @@ scriptencoding utf-8
 " Deprecations {{{
 
 if exists('g:crystalline_statusline_fn')
-  echoerr 'g:crystalline_statusline_fn is deprecated, use function! g:CrystallineTablineFn'
+  echoerr 'g:crystalline_statusline_fn is deprecated, use function! g:CrystallineStatuslineFn'
 endif
 
 if exists('g:crystalline_tabline_fn')
