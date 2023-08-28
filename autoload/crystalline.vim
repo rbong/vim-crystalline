@@ -436,9 +436,6 @@ function! crystalline#tabs_or_buffers(...) abort
   " Get tab separator
   if l:enable_sep
     let l:tab_sep = crystalline#sep(l:sep_index, l:tab_group, l:tab_group)
-    if l:enable_mouse
-      let l:tab_sep .= ''
-    endif
   endif
 
   " Add tabs to left of selected
