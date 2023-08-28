@@ -77,6 +77,10 @@ endfunction
 
 " Status Line Utils {{{
 
+function! crystalline#hi_item(group) abort
+  return '%#Crystalline' . a:group . '#'
+endfunction
+
 function! crystalline#mode_group(group) abort
   return g:crystalline_mode_hi_groups[mode()] . a:group
 endfunction
