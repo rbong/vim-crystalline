@@ -85,7 +85,7 @@ function! crystalline#mode_group(group) abort
   return g:crystalline_mode_hi_groups[mode()] . a:group
 endfunction
 
-function! crystalline#mode_color(group) abort
+function! crystalline#mode_hi_item(group) abort
   return '%#Crystalline' . crystalline#mode_group(a:group) . '#'
 endfunction
 
