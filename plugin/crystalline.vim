@@ -104,11 +104,15 @@ if !exists('g:crystalline_tab_min_path_parts')
 endif
 
 if !exists('g:CrystallineTabFn') && !exists('*g:CrystallineTabFn')
-  let g:CrystallineTabFn = function('crystalline#default_tab')
+  function! g:CrystallineTabFn(buf, max_width, is_sel) abort
+    return crystalline#default_tab(a:buf, a:max_width, a:is_sel)
+  endfunction
 endif
 
 if !exists('g:CrystallineHideBufferFn') && !exists('*g:CrystallineHideBufferFn')
-  let g:CrystallineHideBufferFn = function('crystalline#default_hide_buffer')
+  function! g:CrystallineHideBufferFn(buf) abort
+    return crystalline#default_hide_buffer(a:buf)
+  endfunction
 endif
 
 let g:crystalline_sep_hi_groups = {}

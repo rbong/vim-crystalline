@@ -17,7 +17,7 @@ automatically set up the statusline and tabline.
 
 g:CrystallineStatuslineFn                          *g:CrystallineStatuslineFn*
 
-May be a |function()| reference or defined with |:function|.
+Must be defined with |:function|.
 
 The output of the function will be used as the statusline. See 'statusline'
 for more information on statusline syntax.
@@ -33,7 +33,7 @@ changes, instead use ":set statusline=%!MyStatusLine()".
 
 g:CrystallineTablineFn                                *g:CrystallineTablineFn*
 
-May be a |function()| reference or defined with |:function|.
+Must be defined with |:function|.
 
 The output of the function will be used as the tabline. See 'statusline' for
 more information on statusline syntax.
@@ -43,7 +43,7 @@ changes, instead use ":set tabline=%!MyTabLine()".
 
 g:CrystallineTabFn                                        *g:CrystallineTabFn*
 
-May be a |function()| reference or defined with |:function|.
+Must be defined with |:function|.
 
 The output of the function will be used as tabs/buffers for functions such as
 |crystalline#tabs_or_buffers()|.
@@ -64,7 +64,7 @@ Defaults to |crystalline#default_tab()|.
 
 g:CrystallineHideBufferFn                          *g:CrystallineHideBufferFn*
 
-May be a |function()| reference or defined with |:function()|.
+Must be defined with |:function|.
 
 Should accept a single argument, the buffer number.
 
