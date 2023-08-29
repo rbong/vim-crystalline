@@ -1,4 +1,10 @@
+if !has('vim9script')
+  finish
+endif
+
 vim9script
+
+# Tabline Utils {{{
 
 export def TabsOrBuffers(_opts: dict<any>): string
   # Get args
@@ -279,3 +285,7 @@ export def TabsOrBuffers(_opts: dict<any>): string
 
   return o
 enddef
+
+# }}}
+
+# vim:set et sw=2 ts=2 fdm=marker:

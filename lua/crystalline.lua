@@ -79,12 +79,12 @@ end
 
 -- }}}
 
--- Lua Optimized Exports {{{
+-- Tabline Utils {{{
 
-local default_opts = vim.empty_dict()
+local default_tabs_or_buffers_opts = vim.empty_dict()
 function module.TabsOrBuffers(opts)
   -- Get args
-  opts = opts or default_opts
+  opts = opts or default_tabs_or_buffers_opts
 
   -- Get options
   local is_buffers = bool(get_default(opts, "is_buffers", 0))
