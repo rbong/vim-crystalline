@@ -120,140 +120,24 @@ Run `:PackerInstall` after restarting neovim.
 
 ## Examples
 
-All examples belong in `.vimrc` before `vim-crystalline` is loaded.
+More examples are availabe in [vimscript](examples/vimscript_examples.md)
+and [neovim-flavored Lua](examples/neovim_lua_examples.md).
 
-### Create a Basic Vim Statusline
+Fully featured example:
 
 ```vim
+function! g:GroupSuffix()
+  if &paste
+    return '2'
+  endif
+  if &modified
+    return '1'
+  endif
+  return ''
+endfunction
+
 function! g:CrystallineStatuslineFn(winnr)
-  return ' %f%h%w%m%r '
-endfunction
-set laststatus=2
-```
-
-See [`:help 'statusline'`](https://vimhelp.org/options.txt.html#%27statusline%27)
-and [`:help 'laststatus'`](https://vimhelp.org/options.txt.html#%27laststatus%27) for more information.
-
-### Add Mode Colors to the Statusline
-
-```vim
-function! g:CrystallineStatuslineFn(winnr)
-  return crystalline#mode_hi_item('A') . crystalline#mode_label() . '%f%h%w%m%r '
-endfunction
-let g:crystalline_theme = 'default'
-set laststatus=2
-```
-
-### Hide Sections in Inactive Windows
-
-```vim
-function! g:CrystallineStatuslineFn(winnr)
-  return ' %f%h%w%m%r '
-        \ . (a:winnr == winnr() ? '%= %{&ft}[%{&fenc!=#""?&fenc:&enc}][%{&ff}] %l/%L %c%V %P ' : '')
-endfunction
-set laststatus=2
-```
-
-### Use Crystalline Themes
-
-```vim
-function! g:CrystallineStatuslineFn(winnr)
-  return crystalline#hi_item('A') . ' %f%h%w%m%r ' . crystalline#hi_item('Fill') . '%='
-        \ . crystalline#hi_item('A') . ' %{&ft}[%{&fenc!=#""?&fenc:&enc}][%{&ff}] %l/%L %c%V %P '
-endfunction
-let g:crystalline_theme = 'default'
-set laststatus=2
-```
-
-### Add More Statusline Information
-
-```vim
-function! g:CrystallineStatuslineFn(winnr)
-  return ' %f%h%w%m%r %{fugitive#Head()} %{&paste ?"PASTE ":""}%{&spell?"SPELL ":""}'
-endfunction
-set laststatus=2
-```
-
-### Hide Sections Based on Window Width
-
-```vim
-function! g:CrystallineStatuslineFn(winnr)
-  return ' %f%h%w%m%r '
-        \ . (winwidth(a:winnr) > 80 ? '%= %{&ft}[%{&fenc!=#""?&fenc:&enc}][%{&ff}] %l/%L %c%V %P ' : '')
-endfunction
-set laststatus=2
-```
-
-### Add Powerline-Style Separators Between Sections
-
-```vim
-function! g:CrystallineStatuslineFn(winnr)
-  return crystalline#hi_item('A') . ' %f%h%w%m%r '
-        \ . crystalline#sep(0, 'B', 'Fill') . '%='
-        \ . crystalline#sep(1, 'Fill', 'B') . ' %{&ft}[%{&fenc!=#""?&fenc:&enc}][%{&ff}] %l/%L %c%V %P '
-endfunction
-" Example: default separators
-let g:crystalline_separators = [
-      \ { 'ch': '', 'alt_ch': '', 'dir': '>' },
-      \ { 'ch': '', 'alt_ch': '', 'dir': '<' },
-      \ ]
-let g:crystalline_theme = 'default'
-set laststatus=2
-```
-
-### Show More Mode Info
-
-```vim
-function! g:CrystallineStatuslineFn(winnr)
-  return crystalline#mode_section(0, 'A', 'B') . ' %f%h%w%m%r '
-endfunction
-let g:crystalline_theme = 'default'
-set laststatus=2
-```
-
-The mode section will display a colored label for the current mode and a
-separator for the next section.
-
-### Use the Default Tabline
-
-```vim
-function! g:CrystallineTablineFn()
-  return crystalline#default_tabline()
-endfunction
-set showtabline=2
-```
-
-Shows buffers if there is only one tab, otherwise shows tabs.
-For more flexible buffers/tabs, see [`:help crystalline#tabs_or_buffers()`](https://raw.githubusercontent.com/rbong/vim-crystalline/master/doc/crystalline.txt).
-
-### Enabling the Default Tabline in Gvim
-
-```vim
-function! g:CrystallineTablineFn()
-  return crystalline#default_tabline()
-endfunction
-set showtabline=2
-set guioptions-=e
-```
-
-### Adding More Tabline Information
-
-```vim
-function! g:CrystallineTablineFn()
-  let l:vimlabel = has('nvim') ?  ' NVIM ' : ' VIM '
-  return crystalline#default_tabline({
-        \ 'max_items': 80 - 2,
-        \ 'max_width': &columns - strchars(l:vimlabel),
-        \ })
-        \ . '%=' . crystalline#hi_item('TabType') . ' ' . l:vimlabel
-endfunction
-set showtabline=2
-```
-
-### Full Example
-
-```vim
-function! g:CrystallineStatuslineFn(winnr)
+  let g:crystalline_group_suffix = g:GroupSuffix()
   let l:curr = a:winnr == winnr()
   let l:s = ''
 
@@ -269,11 +153,11 @@ function! g:CrystallineStatuslineFn(winnr)
 
   let l:s .= '%='
   if l:curr
-    let l:s .= crystalline#sep(1, 'Fill', 'B') . ' %{&paste ?"PASTE ":""}%{&spell?"SPELL ":""}'
-    let l:s .= crystalline#sep(1, 'B', crystalline#mode_group('A'))
+    let l:s .= crystalline#sep(1, 'Fill', 'B') . &paste ? 'PASTE ' : ' '
+    let l:s .= crystalline#sep(1, 'B', 'A')
   endif
   if winwidth(a:winnr) > 80
-    let l:s .= ' %{&ft}[%{&fenc!=#""?&fenc:&enc}][%{&ff}] %l/%L %c%V %P '
+    let l:s .= ' %{&ft} %l/%L %2v '
   else
     let l:s .= ' '
   endif
@@ -282,20 +166,29 @@ function! g:CrystallineStatuslineFn(winnr)
 endfunction
 
 function! g:CrystallineTablineFn()
-  let l:vimlabel = has('nvim') ?  ' NVIM ' : ' VIM '
-  return crystalline#default_tabline({
-        \ 'enable_sep': 1,
-        \ 'max_items': 80 - 2,
-        \ 'max_width': &columns - strchars(l:vimlabel),
-        \ })
-        \ . '%=' . crystalline#hi_item('TabType') . ' ' . l:vimlabel
-endfunction
+  let g:crystalline_group_suffix = g:GroupSuffix()
+  let l:max_items = 80
+  let l:max_width = &columns
 
-let g:crystalline_theme = 'default'
+  let l:right = '%='
+  let l:max_items -= 1
+
+  let l:right .= crystalline#sep(1, 'TabFill', 'TabType')
+  let l:max_items -= 2
+  let l:max_width -= 1
+
+  let l:vimlabel = has('nvim') ?  ' NVIM ' : ' VIM '
+  let l:max_width -= strchars(l:vimlabel)
+
+  return crystalline#default_tabline({
+        \ 'enable_sep': 1, 'max_items': l:max_items, 'max_width': l:max_width
+        \ }) . l:right
+endfunction
 
 set showtabline=2
 set guioptions-=e
 set laststatus=2
+let g:crystalline_auto_prefix_mode_group = 1
 ```
 
 ## More Info
