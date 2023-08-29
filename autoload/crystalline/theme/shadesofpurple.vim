@@ -1,14 +1,18 @@
 function! crystalline#theme#shadesofpurple#set_theme() abort
   call crystalline#generate_theme({
-        \ 'A':            [[10,  236], ['#00ff00', '#2d2b55'], ''],
-        \ 'B':            [[195, 234], ['#e1efff', '#1e1e3f'], ''],
-        \ 'Fill':         [[140, 235], ['#a599e9', '#1f1f41'], ''],
-        \ 'InactiveA':    [[140, 234], ['#a599e9', '#1e1e3f'], ''],
-        \ 'InactiveB':    [[140, 234], ['#a599e9', '#1e1e3f'], ''],
-        \ 'InactiveFill': [[140, 234], ['#a599e9', '#1e1e3f'], ''],
-        \ 'InsertModeA':  [[195, 236], ['#e1efff', '#2d2b55'], 'bold'],
-        \ 'VisualModeA':  [[195, 236], ['#e1efff', '#2d2b55'], 'bold'],
-        \ 'ReplaceModeA': [[214, 236], ['#ff9d00', '#2d2b55'], ''],
+        \ 'A':               [[140, 234], ['#a599e9', '#1e1e3f'], ''],
+        \ 'B':               [[234, 140], ['#1e1e3f', '#a599e9'], ''],
+        \ 'Fill':            [[140, 236], ['#a599e9', '#2d2b55'], ''],
+        \ 'InactiveB':       [[140, 234], ['#a599e9', '#1e1e3f'], ''],
+        \ 'InactiveFill':    [[140, 234], ['#a599e9', '#1e1e3f'], ''],
+        \ 'InsertModeA':     [[159, 234], ['#9effff', '#1e1e3f'], ''],
+        \ 'InsertModeFill':  [[159, 234], ['#9effff', '#1e1e3f'], ''],
+        \ 'VisualModeA':     [[234, 177], ['#1e1e3f', '#c991ff'], ''],
+        \ 'VisualModeB':     [[234, 213], ['#1e1e3f', '#fb94ff'], ''],
+        \ 'VisualModeFill':  [[140, 234], ['#a599e9', '#1e1e3f'], ''],
+        \ 'ReplaceModeA':    [[234, 204], ['#1e1e3f', '#ff628c'], ''],
+        \ 'ReplaceModeB':    [[234, 211], ['#1e1e3f', '#ff91ae'], ''],
+        \ 'ReplaceModeFill': [[140, 234], ['#a599e9', '#1e1e3f'], ''],
         \ })
 endfunction
 

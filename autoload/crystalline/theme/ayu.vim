@@ -1,4 +1,4 @@
-function! crystalline#theme#au#set_theme() abort
+function! crystalline#theme#ayu#set_theme() abort
   let l:ayucolor = get(g:, 'ayucolor', &background)
 
   if l:ayucolor ==# 'light'

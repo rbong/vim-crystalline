@@ -1,7 +1,7 @@
 function! crystalline#theme#solarized#set_theme() abort
   if &background ==# 'dark'
     call crystalline#generate_theme({
-          \ 'A':                [[15,  14], ['#fdf6e3', '#93a1a1'], 'bold'],
+          \ 'A':                [[15,  14], ['#fdf6e3', '#93a1a1'], 'cterm=bold gui=bold'],
           \ 'B':                [[7,  11],  ['#eee8d5', '#657b83'], ''],
           \ 'Fill':             [[10,  0],  ['#586e75', '#073642'], ''],
           \ 'Fill1':            [[14,  0],  ['#93a1a1', '#073642'], ''],
@@ -13,10 +13,10 @@ function! crystalline#theme#solarized#set_theme() abort
           \ 'NormalModeFill1':  [[14,  0],  ['#93a1a1', '#073642'], ''],
           \ 'NormalModeTab1':   [[7,  11],  ['#eee8d5', '#657b83'], ''],
           \ 'CommandModeTab1':  [[7,  11],  ['#eee8d5', '#657b83'], ''],
-          \ 'InsertModeA':      [[15,  3],  ['#fdf6e3', '#b58900'], 'bold'],
+          \ 'InsertModeA':      [[15,  3],  ['#fdf6e3', '#b58900'], 'cterm=bold gui=bold'],
           \ 'InsertModeFill1':  [[14,  0],  ['#93a1a1', '#073642'], ''],
           \ 'InsertModeTab1':   [[7,  11],  ['#eee8d5', '#657b83'], ''],
-          \ 'VisualModeA':      [[15,  5],  ['#fdf6e3', '#d33682'], 'bold'],
+          \ 'VisualModeA':      [[15,  5],  ['#fdf6e3', '#d33682'], 'cterm=bold gui=bold'],
           \ 'VisualModeFill1':  [[14,  0],  ['#93a1a1', '#073642'], ''],
           \ 'VisualModeTab1':   [[7,  11],  ['#eee8d5', '#657b83'], ''],
           \ 'ReplaceModeA':     [[15,  1],  ['#fdf6e3', '#dc322f'], ''],
@@ -26,7 +26,7 @@ function! crystalline#theme#solarized#set_theme() abort
           \ })
   else
     call crystalline#generate_theme({
-          \ 'A':                [[7,  11], ['#eee8d5', '#657b83'], 'bold'],
+          \ 'A':                [[7,  11], ['#eee8d5', '#657b83'], 'cterm=bold gui=bold'],
           \ 'B':                [[7,  14], ['#eee8d5', '#93a1a1'], ''],
           \ 'Fill':             [[14,  7], ['#93a1a1', '#eee8d5'], ''],
           \ 'Fill1':            [[10,  7], ['#586e75', '#eee8d5'], ''],
@@ -38,10 +38,10 @@ function! crystalline#theme#solarized#set_theme() abort
           \ 'NormalModeFill1':  [[10,  7], ['#586e75', '#eee8d5'], ''],
           \ 'NormalModeTab1':   [[0,  12], ['#073642', '#839496'], ''],
           \ 'CommandModeTab1':  [[0,  12], ['#073642', '#839496'], ''],
-          \ 'InsertModeA':      [[7,  3],  ['#eee8d5', '#b58900'], 'bold'],
+          \ 'InsertModeA':      [[7,  3],  ['#eee8d5', '#b58900'], 'cterm=bold gui=bold'],
           \ 'InsertModeFill1':  [[10,  7], ['#586e75', '#eee8d5'], ''],
           \ 'InsertModeTab1':   [[0,  12], ['#073642', '#839496'], ''],
-          \ 'VisualModeA':      [[7,  5],  ['#eee8d5', '#d33682'], 'bold'],
+          \ 'VisualModeA':      [[7,  5],  ['#eee8d5', '#d33682'], 'cterm=bold gui=bold'],
           \ 'VisualModeFill1':  [[10,  7], ['#586e75', '#eee8d5'], ''],
           \ 'VisualModeTab1':   [[0,  12], ['#073642', '#839496'], ''],
           \ 'ReplaceModeA':     [[7,  1],  ['#eee8d5', '#dc322f'], ''],
