@@ -462,7 +462,7 @@ Undefined groups/attributes will have the following defaults:
 Where `*` is `Inactive`, `NormalMode`, `CommandMode`, etc.
 
 Variants default to non-default variants.
-Only variants 1-5 are supported.
+Only variants 1-2 are supported by default.
 
 At a minimum, define all attributes for `A`, `B`, and `Fill`.
 

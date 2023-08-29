@@ -181,7 +181,7 @@ let g:crystalline_theme_attrs = [
       \ [1, 1, 'guibg'],
       \ ]
 
-let g:crystalline_max_theme_variants = 5
+let g:crystalline_max_theme_variants = 2
 
 " }}}
 
