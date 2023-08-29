@@ -75,7 +75,7 @@ endfunction
 
 " }}}
 
-" Status Line Utils {{{
+" Statusline Utils {{{
 
 function! crystalline#group(group) abort
   if g:crystalline_auto_prefix_mode_group
@@ -208,7 +208,7 @@ endfunction
 
 " }}}
 
-" Tab Line Utils {{{
+" Tabline Utils {{{
 
 function! crystalline#update_tabline() abort
   set tabline=%!g:CrystallineTablineFn()
