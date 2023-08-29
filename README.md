@@ -93,7 +93,7 @@ and [verbose](https://github.com/rbong/vim-crystalline/wiki/Configuration-Compar
 
 **Making your own theme**
 
-To make your own theme, see `:help crystalline-creating-themes`.
+To make your own theme, see [`:help crystalline-creating-themes`](https://raw.githubusercontent.com/rbong/vim-crystalline/master/doc/crystalline.txt).
 If you'd like to port an airline theme, see [Porting Airline Themes](https://github.com/rbong/vim-crystalline/wiki/Porting-Airline-Themes) on the wiki.
 
 ## Installation
@@ -121,7 +121,8 @@ endfunction
 set laststatus=2
 ```
 
-See `:help 'statusline'` and `:help 'laststatus'` for more information.
+See [`:help 'statusline'`](https://vimhelp.org/options.txt.html#%27statusline%27)
+and [`:help 'laststatus'`](https://vimhelp.org/options.txt.html#%27laststatus%27) for more information.
 
 ### Add Mode Colors to the Statusline
 
@@ -213,7 +214,7 @@ set showtabline=2
 ```
 
 Shows buffers if there is only one tab, otherwise shows tabs.
-For more flexible buffers/tabs, see `:help crystalline#tabs_or_buffers()`.
+For more flexible buffers/tabs, see [`:help crystalline#tabs_or_buffers()`](https://raw.githubusercontent.com/rbong/vim-crystalline/master/doc/crystalline.txt).
 
 ### Enabling the Default Tabline in Gvim
 
@@ -289,7 +290,7 @@ set laststatus=2
 
 ## More Info
 
-See `:help crystalline` for more information.
+See [`:help crystalline`](https://raw.githubusercontent.com/rbong/vim-crystalline/master/doc/crystalline.txt) for more information.
 
 Don't hesitate to [post an issue](https://github.com/rbong/vim-crystalline/issues/new) if you have any questions, suggestions, or bugs.
 
