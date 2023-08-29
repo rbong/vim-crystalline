@@ -52,6 +52,24 @@ function! crystalline#escape_statusline_string(str) abort
   return substitute(a:str, '%', '%%', 'g')
 endfunction
 
+function! crystalline#left_pad(s, ...) abort
+  if empty(a:s)
+    return ''
+  endif
+  let l:amount = a:0 >= 1 ? a:1 : 1
+  let l:char = a:0 >= 2 ? a:2 : ' '
+  return repeat(l:char, l:amount) . a:s
+endfunction
+
+function! crystalline#right_pad(s, ...) abort
+  if empty(a:s)
+    return ''
+  endif
+  let l:amount = a:0 >= 1 ? a:1 : 1
+  let l:char = a:0 >= 2 ? a:2 : ' '
+  return a:s . repeat(l:char, l:amount)
+endfunction
+
 function! crystalline#profile(loops) abort
   let l:start = reltime()
   for _ in range(a:loops)
@@ -902,28 +920,6 @@ function! crystalline#port_airline_theme(theme_name) abort
   let l:o .= "\n      \\ })"
 
   return l:o
-endfunction
-
-" }}}
-
-" Padding Utils {{{
-
-function! crystalline#left_pad(s, ...) abort
-  if empty(a:s)
-    return ''
-  endif
-  let l:amount = a:0 >= 1 ? a:1 : 1
-  let l:char = a:0 >= 2 ? a:2 : ' '
-  return repeat(l:char, l:amount) . a:s
-endfunction
-
-function! crystalline#right_pad(s, ...) abort
-  if empty(a:s)
-    return ''
-  endif
-  let l:amount = a:0 >= 1 ? a:1 : 1
-  let l:char = a:0 >= 2 ? a:2 : ' '
-  return a:s . repeat(l:char, l:amount)
 endfunction
 
 " }}}
