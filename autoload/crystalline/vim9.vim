@@ -2,7 +2,7 @@ vim9script
 
 export def TabsOrBuffers(_opts: dict<any>): string
   # Get args
-  var opts = empty(_opts) ? _opts : {}
+  var opts = empty(_opts) ? {} : _opts
 
   # Get options
   var is_buffers = get(opts, 'is_buffers', 0)
