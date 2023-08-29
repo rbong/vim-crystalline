@@ -111,6 +111,13 @@ Default:
 
 FUNCTIONS                                              *crystalline-functions*
 
+Documentation uses vimscript, but all functions can be called from Lua with:
+>lua
+    local crystalline = require("crystalline")
+    crystalline.fn()
+<
+
+                                                       *crystalline.hi_item()*
 crystalline#hi_item(group)                             *crystalline#hi_item()*
 
 Create a statusline highlight group item.
@@ -122,6 +129,7 @@ Example:
 
 See also |crystalline-highlight-groups|.
 
+                                                    *crystalline.mode_group()*
 crystalline#mode_group(group)                       *crystalline#mode_group()*
 
 Prepend the current mode to the group.
@@ -136,6 +144,7 @@ is defined.
 
 See also |crystalline-highlight-groups|.
 
+                                                  *crystalline.mode_hi_item()*
 crystalline#mode_hi_item(group)                   *crystalline#mode_hi_item()*
 
 Create a statusline highlight group item with the current mode and the group.
@@ -147,10 +156,12 @@ Example:
 
 See also |crystalline-highlight-groups|.
 
+                                                    *crystalline.mode_label()*
 crystalline#mode_label()                            *crystalline#mode_label()*
 
 Get the current mode label. See also |g:crystalline_mode_labels|.
 
+                                                  *crystalline.mode_section()*
                                                   *crystalline#mode_section()*
 crystalline#mode_section(sep_index, left_group, right_group)
 
@@ -180,6 +191,7 @@ Equivalent to:
 
 See also |crystalline-highlight-groups|.
 
+                                                           *crystalline.sep()*
 crystalline#sep(sep_index, left_group, right_group)        *crystalline#sep()*
 
 Create a separator between sections.
@@ -196,12 +208,14 @@ Highlight groups must omit the "Crystalline" prefix.
 
 See also |crystalline-highlight-groups|.
 
+                                                   *crystalline.default_tab()*
 crystalline#default_tab(buf, max_width, is_sel)    *crystalline#default_tab()*
 
 The default tab/buffer.
 
 See also |g:CrystallineTabFn|.
 
+                                               *crystalline.tabs_or_buffers()*
 crystalline#tabs_or_buffers(...)               *crystalline#tabs_or_buffers()*
 
 Create a section with tabs or buffers.
@@ -276,18 +290,21 @@ Arguments:
 See also |g:CrystallineTabFn|, |g:CrystallineHideBufferFn|.
 See |crystalline-highlight-groups| for more info on groups.
 
+                                                          *crystalline.tabs()*
 crystalline#tabs(...)                                     *crystalline#tabs()*
 
 Create a section with tabs.
 
 See also |crystalline#tabs_or_buffers()|.
 
+                                                       *crystalline.buffers()*
 crystalline#buffers(...)                               *crystalline#buffers()*
 
 Create a section with buffers.
 
 See also |crystalline#tabs_or_buffers()|.
 
+                                               *crystalline.default_tabline()*
 crystalline#default_tabline(...)               *crystalline#default_tabline()*
 
 Create a tabline with tabs or buffers.
@@ -296,11 +313,13 @@ Buffers are shown if only one tab is present. Otherwise, tabs are shown.
 See also |crystalline#default_tabline_is_buffers()|,
 |crystalline#tab_type_label()|, |crystalline#tabs_or_buffers()|.
 
+                                    *crystalline.default_tabline_is_buffers()*
                                     *crystalline#default_tabline_is_buffers()*
 crystalline#default_tabline_is_buffers()
 
 Returns true when |crystalline#default_tabline()| shows buffers.
 
+                                                *crystalline.tab_type_label()*
 crystalline#tab_type_label(...)                 *crystalline#tab_type_label()*
 
 Returns a string indicating if buffers or tabs are being shown.
@@ -414,6 +433,7 @@ CrystallineTerminalModeA, CrystallineTerminalModeA1, etc.
 Statusline and tabline groups in terminal mode.
 
 CREATING THEMES                                  *crystalline-creating-themes*
+                                                *crystalline.generate_theme()*
                                                 *crystalline#generate_theme()*
 
 Define a new theme by defining an |autoload| function which calls
