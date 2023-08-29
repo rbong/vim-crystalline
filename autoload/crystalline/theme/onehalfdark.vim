@@ -1,5 +1,5 @@
-function! crystalline#theme#onehalfdark#set_theme() abort
-  call crystalline#generate_theme({
+function! crystalline#theme#onehalfdark#SetTheme() abort
+  call crystalline#GenerateTheme({
         \ 'A':                   [[236, 114], ['#282c34', '#98c379'], ''],
         \ 'B':                   [[255, 243], ['#dcdfe4', '#5d677a'], ''],
         \ 'Fill':                [[114, 238], ['#98c379', '#313640'], ''],

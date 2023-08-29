@@ -1,8 +1,8 @@
-function! crystalline#theme#ayu#set_theme() abort
+function! crystalline#theme#ayu#SetTheme() abort
   let l:ayucolor = get(g:, 'ayucolor', &background)
 
   if l:ayucolor ==# 'light'
-    call crystalline#generate_theme({
+    call crystalline#GenerateTheme({
           \ 'A':                [[7,  4],  ['#fafafa', '#36a3d9'], ''],
           \ 'B':                [[14, 10], ['#ef7e46', '#fafafa'], ''],
           \ 'Fill':             [[4,  8],  ['#36a3d9', '#fafafa'], ''],
@@ -30,7 +30,7 @@ function! crystalline#theme#ayu#set_theme() abort
           \ 'TerminalModeTab1': [[13, 0],  ['#f07178', '#eaeaea'], ''],
           \ })
   else
-    call crystalline#generate_theme({
+    call crystalline#GenerateTheme({
           \ 'A':                [[7,  4],  ['#3f4e5a', '#36a3d9'], ''],
           \ 'B':                [[14, 10], ['#384550', '#232b32'], ''],
           \ 'Fill':             [[4,  8],  ['#36a3d9', '#1c2328'], ''],

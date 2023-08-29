@@ -1,5 +1,5 @@
-function! crystalline#theme#molokai#set_theme() abort
-  call crystalline#generate_theme({
+function! crystalline#theme#molokai#SetTheme() abort
+  call crystalline#GenerateTheme({
         \ 'A':                [[232, 144], ['#080808', '#e6db74'], ''],
         \ 'B':                [[253, 16],  ['#f8f8f0', '#232526'], ''],
         \ 'Fill':             [[253, 67],  ['#f8f8f0', '#465457'], ''],

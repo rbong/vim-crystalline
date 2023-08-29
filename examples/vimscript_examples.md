@@ -33,7 +33,7 @@ See [`:help 'statusline'`](https://vimhelp.org/options.txt.html#%27statusline%27
 
 ```vim
 function! g:CrystallineTablineFn(winnr)
-  return crystalline#default_tabline()
+  return crystalline#DefaultTabline()
 endfunction
 
 " Always show the tabline
@@ -51,7 +51,7 @@ function! g:CrystallineStatuslineFn(winnr)
   let l:s = ''
 
   " Start highlighting section A
-  let l:s .= crystalline#hi_item('A')
+  let l:s .= crystalline#HiItem('A')
 
   let l:s .= ' %f%h%w%m%r '
 
@@ -75,17 +75,17 @@ for the full list of themes.
 function! g:CrystallineStatuslineFn(winnr)
   let l:s = ''
 
-  let l:s .= crystalline#hi_item('A')
+  let l:s .= crystalline#HiItem('A')
 
   let l:s .= ' %f%h%w%m%r '
 
   " Add separator 0 between section A and the statusline fill section
-  let l:s .= crystalline#sep(0, 'A', 'Fill')
+  let l:s .= crystalline#Sep(0, 'A', 'Fill')
 
   let l:s .= '%='
 
   " Add separator 1 between the fill section and section A
-  let l:s .= crystalline#sep(1, 'Fill', 'A')
+  let l:s .= crystalline#Sep(1, 'Fill', 'A')
 
   let l:s .= '%{&ft} %l/%L %2v '
 
@@ -94,7 +94,7 @@ endfunction
 
 function! g:CrystallineTablineFn(winnr)
   " Add separators to the tabline
-  return crystalline#default_tabline({ 'enable_sep': 1 })
+  return crystalline#DefaultTabline({ 'enable_sep': 1 })
 endfunction
 
 set laststatus=2
@@ -116,19 +116,19 @@ function! g:CrystallineStatuslineFn(winnr)
   let l:s = ''
 
   " Start highlighting section A with mode colors
-  let l:s .= crystalline#mode_hi_item('A')
+  let l:s .= crystalline#ModeHiItem('A')
 
   let l:s .= ' %f%h%w%m%r '
 
   " Generate a separator with mode colors
-  let l:s .= crystalline#sep(0, crystalline#mode_group('A'), crystalline#mode_group('Fill'))
+  let l:s .= crystalline#Sep(0, crystalline#ModeGroup('A'), crystalline#ModeGroup('Fill'))
 
   return l:s
 endfunction
 
 function! g:CrystallineTablineFn(winnr)
   " auto_prefix_mode_group automatically uses mode colors
-  return crystalline#default_tabline({ 'auto_prefix_mode_group': 1 })
+  return crystalline#DefaultTabline({ 'auto_prefix_mode_group': 1 })
 endfunction
 
 set laststatus=2
@@ -143,19 +143,19 @@ function! g:CrystallineStatuslineFn(winnr)
   let l:s = ''
 
   " The mode colors for section A will automatically be added
-  let l:s .= crystalline#hi_item('A')
+  let l:s .= crystalline#HiItem('A')
 
   let l:s .= ' %f%h%w%m%r '
 
   " A separator with mode colors for both groups will automatically be generated
-  let l:s .= crystalline#sep(0, 'A', 'Fill')
+  let l:s .= crystalline#Sep(0, 'A', 'Fill')
 
   return l:s
 endfunction
 
 function! g:CrystallineTablineFn(winnr)
   " auto_prefix_mode_group will default to true
-  return crystalline#default_tabline()
+  return crystalline#DefaultTabline()
 endfunction
 
 set laststatus=2
@@ -173,12 +173,12 @@ function! g:CrystallineStatuslineFn(winnr)
   let l:s = ''
 
   " Automatically create a mode highlight group, mode label, and separator
-  " Same arguments as crystalline#sep()
-  let l:s .= crystalline#mode_section(0, 'A', 'B')
+  " Same arguments as crystalline#Sep()
+  let l:s .= crystalline#ModeSection(0, 'A', 'B')
 
   let l:s .= ' %f%h%w%m%r '
 
-  let l:s .= crystalline#sep(0, 'B', 'Fill')
+  let l:s .= crystalline#Sep(0, 'B', 'Fill')
 
   return l:s
 endfunction
@@ -210,7 +210,7 @@ function! g:CrystallineStatuslineFn(winnr)
   let l:v = g:GroupSuffix()
 
   " Add the variant onto the end of the highlight item
-  let l:s .= crystalline#hi_item('A') . l:v
+  let l:s .= crystalline#HiItem('A') . l:v
 
   let l:s .= ' %f%h%w%m%r '
 
@@ -219,7 +219,7 @@ endfunction
 
 function! g:CrystallineTablineFn(winnr)
   " Add the variant onto the end of all tabline groups
-  return crystalline#default_tabline({ 'group_suffix': g:GroupSuffix() })
+  return crystalline#DefaultTabline({ 'group_suffix': g:GroupSuffix() })
 endfunction
 
 set laststatus=2
@@ -247,7 +247,7 @@ function! g:CrystallineStatuslineFn(winnr)
   " Works with all functions
   let g:crystalline_group_suffix = g:GroupSuffix()
 
-  let l:s .= crystalline#hi_item('A')
+  let l:s .= crystalline#HiItem('A')
 
   let l:s .= ' %f%h%w%m%r '
 
@@ -257,7 +257,7 @@ endfunction
 function! g:CrystallineTablineFn(winnr)
   " group_suffix will default to g:crystalline_group_suffix
   let g:crystalline_group_suffix = g:GroupSuffix()
-  return crystalline#default_tabline()
+  return crystalline#DefaultTabline()
 endfunction
 
 set laststatus=2
@@ -328,7 +328,7 @@ function! g:CrystallineTablineFn()
 
   " Add a separator
   " Reuse the TabType group for the right section
-  let l:right .= crystalline#sep(1, 'TabFill', 'TabType')
+  let l:right .= crystalline#Sep(1, 'TabFill', 'TabType')
   " One item for the separator group, one item to start the TabType group
   let l:max_items -= 2
   " Subtract the width of the separator
@@ -339,7 +339,7 @@ function! g:CrystallineTablineFn()
   " Use strchars() to get the real visible width
   let l:max_width -= strchars(l:vimlabel)
 
-  return crystalline#default_tabline({ 'max_items': l:max_items, 'max_width': l:max_width }) . l:right
+  return crystalline#DefaultTabline({ 'max_items': l:max_items, 'max_width': l:max_width }) . l:right
 endfunction
 
 set showtabline=2
@@ -365,19 +365,19 @@ function! g:CrystallineStatuslineFn(winnr)
   let l:s = ''
 
   if l:curr
-    let l:s .= crystalline#mode_section(0, 'A', 'B')
+    let l:s .= crystalline#ModeSection(0, 'A', 'B')
   else
-    let l:s .= crystalline#hi_item('InactiveFill')
+    let l:s .= crystalline#HiItem('InactiveFill')
   endif
   let l:s .= ' %f%h%w%m%r '
   if l:curr
-    let l:s .= crystalline#sep(0, 'B', 'Fill') . ' %{fugitive#Head()}'
+    let l:s .= crystalline#Sep(0, 'B', 'Fill') . ' %{fugitive#Head()}'
   endif
 
   let l:s .= '%='
   if l:curr
-    let l:s .= crystalline#sep(1, 'Fill', 'B') . &paste ? 'PASTE ' : ' '
-    let l:s .= crystalline#sep(1, 'B', 'A')
+    let l:s .= crystalline#Sep(1, 'Fill', 'B') . &paste ? 'PASTE ' : ' '
+    let l:s .= crystalline#Sep(1, 'B', 'A')
   endif
   if winwidth(a:winnr) > 80
     let l:s .= ' %{&ft} %l/%L %2v '
@@ -396,14 +396,14 @@ function! g:CrystallineTablineFn()
   let l:right = '%='
   let l:max_items -= 1
 
-  let l:right .= crystalline#sep(1, 'TabFill', 'TabType')
+  let l:right .= crystalline#Sep(1, 'TabFill', 'TabType')
   let l:max_items -= 2
   let l:max_width -= 1
 
   let l:vimlabel = has('nvim') ?  ' NVIM ' : ' VIM '
   let l:max_width -= strchars(l:vimlabel)
 
-  return crystalline#default_tabline({
+  return crystalline#DefaultTabline({
         \ 'enable_sep': 1, 'max_items': l:max_items, 'max_width': l:max_width
         \ }) . l:right
 endfunction

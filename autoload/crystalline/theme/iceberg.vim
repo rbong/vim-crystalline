@@ -1,6 +1,6 @@
-function! crystalline#theme#iceberg#set_theme() abort
+function! crystalline#theme#iceberg#SetTheme() abort
   if &background ==# 'dark'
-    call crystalline#generate_theme({
+    call crystalline#GenerateTheme({
           \ 'A':             [[234, 245], ['#17171b', '#818596'], ''],
           \ 'B':             [[242, 236], ['#6b7089', '#2e313f'], ''],
           \ 'Fill':          [[238, 233], ['#3e445e', '#0f1117'], ''],
@@ -12,7 +12,7 @@ function! crystalline#theme#iceberg#set_theme() abort
           \ 'TerminalModeA': [[234, 110], ['#161821', '#84a0c6'], ''],
           \ })
   else
-    call crystalline#generate_theme({
+    call crystalline#GenerateTheme({
           \ 'A':             [[252, 243], ['#e8e9ec', '#757ca3'], ''],
           \ 'B':             [[252, 247], ['#e8e9ec', '#9fa6c0'], ''],
           \ 'Fill':          [[244, 251], ['#8b98b6', '#cad0de'], ''],

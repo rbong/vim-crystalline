@@ -1,5 +1,5 @@
-function! crystalline#theme#hybrid#set_theme() abort
-  call crystalline#generate_theme({
+function! crystalline#theme#hybrid#SetTheme() abort
+  call crystalline#GenerateTheme({
         \ 'A':              [[22,  10],  ['#005f00', '#b5bd68'], ''],
         \ 'B':              [[15,  8],   ['#c5c8c6', '#373b41'], ''],
         \ 'Fill':           [[255, 0],   ['#ffffff', '#282a2e'], ''],

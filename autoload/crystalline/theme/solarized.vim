@@ -1,6 +1,6 @@
-function! crystalline#theme#solarized#set_theme() abort
+function! crystalline#theme#solarized#SetTheme() abort
   if &background ==# 'dark'
-    call crystalline#generate_theme({
+    call crystalline#GenerateTheme({
           \ 'A':                [[15,  14], ['#fdf6e3', '#93a1a1'], 'cterm=bold gui=bold'],
           \ 'B':                [[7,  11],  ['#eee8d5', '#657b83'], ''],
           \ 'Fill':             [[10,  0],  ['#586e75', '#073642'], ''],
@@ -25,7 +25,7 @@ function! crystalline#theme#solarized#set_theme() abort
           \ 'TerminalModeTab1': [[7,  11],  ['#eee8d5', '#657b83'], ''],
           \ })
   else
-    call crystalline#generate_theme({
+    call crystalline#GenerateTheme({
           \ 'A':                [[7,  11], ['#eee8d5', '#657b83'], 'cterm=bold gui=bold'],
           \ 'B':                [[7,  14], ['#eee8d5', '#93a1a1'], ''],
           \ 'Fill':             [[14,  7], ['#93a1a1', '#eee8d5'], ''],

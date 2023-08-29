@@ -1,58 +1,58 @@
 " Deprecated Functions {{{
 
 function! crystalline#mode(...) abort
-  throw 'crystalline: crystalline#mode() is deprecated, use crystalline#mode_section()'
+  throw 'crystalline: crystalline#mode() is deprecated, use crystalline#ModeSection()'
 endfunction
 
 function! crystalline#mode_hi(...) abort
-  throw 'crystalline: crystalline#mode_hi() is deprecated, use crystalline#mode_group()'
+  throw 'crystalline: crystalline#mode_hi() is deprecated, use crystalline#ModeGroup()'
 endfunction
 
 function! crystalline#mode_sep(...) abort
-  throw 'crystalline: crystalline#mode_sep() is deprecated, use crystalline#sep() with crystalline#mode_group()'
+  throw 'crystalline: crystalline#mode_sep() is deprecated, use crystalline#Sep() with crystalline#ModeGroup()'
 endfunction
 
 function! crystalline#right_sep(...) abort
-  throw 'crystalline: crystalline#right_sep() is deprecated, use crystalline#sep()'
+  throw 'crystalline: crystalline#RightSep() is deprecated, use crystalline#Sep()'
 endfunction
 
 function! crystalline#left_sep(...) abort
-  throw 'crystalline: crystalline#left_sep() is deprecated, use crystalline#sep()'
+  throw 'crystalline: crystalline#LeftSep() is deprecated, use crystalline#Sep()'
 endfunction
 
 function! crystalline#right_mode_sep(...) abort
-  throw 'crystalline: crystalline#right_mode_sep() is deprecated, use crystalline#sep() with crystalline#mode_group()'
+  throw 'crystalline: crystalline#right_mode_sep() is deprecated, use crystalline#Sep() with crystalline#ModeGroup()'
 endfunction
 
 function! crystalline#left_mode_sep(...) abort
-  throw 'crystalline: crystalline#left_mode_sep() is deprecated, use crystalline#sep() with crystalline#mode_group()'
+  throw 'crystalline: crystalline#left_mode_sep() is deprecated, use crystalline#Sep() with crystalline#ModeGroup()'
 endfunction
 
 function! crystalline#bufferline(...) abort
-  throw 'crystalline: crystalline#bufferline() is deprecated, use crystalline#default_tabline()'
+  throw 'crystalline: crystalline#bufferline() is deprecated, use crystalline#DefaultTabline()'
 endfunction
 
 function! crystalline#hide_buf_tab(...) abort
-  throw 'crystalline: crystalline#hide_buf_tab() is deprecated, use crystalline#default_hide_buffer()'
+  throw 'crystalline: crystalline#hide_buf_tab() is deprecated, use crystalline#DefaultHideBuffer()'
 endfunction
 
 function! crystalline#default_tablabel_parts(...) abort
-  throw 'crystalline: crystalline#default_tablabel_parts() is deprecated, use crystalline#default_tab()'
+  throw 'crystalline: crystalline#default_tablabel_parts() is deprecated, use crystalline#DefaultTab()'
 endfunction
 
 function! crystalline#default_tabwidth(...) abort
-  throw 'crystalline: crystalline#default_tabwidth() is deprecated, use crystalline#default_tab()'
+  throw 'crystalline: crystalline#default_tabwidth() is deprecated, use crystalline#DefaultTab()'
 endfunction
 
 " }}}
 
 " General Utils {{{
 
-function! crystalline#escape_statusline_string(str) abort
+function! crystalline#EscapeStatuslineString(str) abort
   return substitute(a:str, '%', '%%', 'g')
 endfunction
 
-function! crystalline#left_pad(s, ...) abort
+function! crystalline#LeftPad(s, ...) abort
   if empty(a:s)
     return ''
   endif
@@ -61,7 +61,7 @@ function! crystalline#left_pad(s, ...) abort
   return repeat(l:char, l:amount) . a:s
 endfunction
 
-function! crystalline#right_pad(s, ...) abort
+function! crystalline#RightPad(s, ...) abort
   if empty(a:s)
     return ''
   endif
@@ -70,7 +70,7 @@ function! crystalline#right_pad(s, ...) abort
   return a:s . repeat(l:char, l:amount)
 endfunction
 
-function! crystalline#profile(loops) abort
+function! crystalline#Profile(loops) abort
   let l:start = reltime()
   for _ in range(a:loops)
     redraw!
@@ -84,54 +84,54 @@ endfunction
 
 " Statusline Utils {{{
 
-function! crystalline#group(group) abort
+function! crystalline#Group(group) abort
   if g:crystalline_auto_prefix_mode_group
     return g:crystalline_mode_hi_groups[mode()] . a:group . g:crystalline_group_suffix
   endif
   return a:group . g:crystalline_group_suffix
 endfunction
 
-function! crystalline#mode_group(group) abort
+function! crystalline#ModeGroup(group) abort
   return g:crystalline_mode_hi_groups[mode()] . a:group . g:crystalline_group_suffix
 endfunction
 
-function! crystalline#mode_sep_group(group) abort
+function! crystalline#ModeSepGroup(group) abort
   if g:crystalline_auto_prefix_mode_group
     return a:group
   endif
   return g:crystalline_mode_hi_groups[mode()] . a:group
 endfunction
 
-function! crystalline#hi_item(group) abort
-  return '%#Crystalline' . crystalline#group(a:group) . '#'
+function! crystalline#HiItem(group) abort
+  return '%#Crystalline' . crystalline#Group(a:group) . '#'
 endfunction
 
-function! crystalline#mode_hi_item(group) abort
-  return '%#Crystalline' . crystalline#mode_group(a:group) . '#'
+function! crystalline#ModeHiItem(group) abort
+  return '%#Crystalline' . crystalline#ModeGroup(a:group) . '#'
 endfunction
 
-function! crystalline#mode_label() abort
+function! crystalline#ModeLabel() abort
   return g:crystalline_mode_labels[mode()]
 endfunction
 
-function! crystalline#mode_section(sep_index, left_group, right_group) abort
+function! crystalline#ModeSection(sep_index, left_group, right_group) abort
   let l:dir = get(g:crystalline_separators, a:sep_index, { 'dir': '>' }).dir
 
   if l:dir ==# '<'
-    return crystalline#sep(a:sep_index, a:left_group, crystalline#mode_sep_group(a:right_group))
-          \ . crystalline#mode_label()
+    return crystalline#Sep(a:sep_index, a:left_group, crystalline#ModeSepGroup(a:right_group))
+          \ . crystalline#ModeLabel()
   endif
 
-  return crystalline#mode_hi_item(a:left_group)
-        \ . crystalline#mode_label()
-        \ . crystalline#sep(a:sep_index, crystalline#mode_sep_group(a:left_group), a:right_group)
+  return crystalline#ModeHiItem(a:left_group)
+        \ . crystalline#ModeLabel()
+        \ . crystalline#Sep(a:sep_index, crystalline#ModeSepGroup(a:left_group), a:right_group)
 endfunction
 
-function! crystalline#update_statusline(winnr) abort
+function! crystalline#UpdateStatusline(winnr) abort
   call setwinvar(a:winnr, '&statusline', '%!g:CrystallineStatuslineFn(' . a:winnr . ')')
 endfunction
 
-function! crystalline#get_sep(sep_index, left_group, right_group) abort
+function! crystalline#GetSep(sep_index, left_group, right_group) abort
   if a:left_group == v:null || a:right_group == v:null
     return ''
   endif
@@ -169,7 +169,7 @@ function! crystalline#get_sep(sep_index, left_group, right_group) abort
 
     " Create separator highlight group if it doesn't exist
     if !has_key(g:crystalline_sep_hi_groups, l:sep_group)
-      call crystalline#generate_sep_hi(l:from_group, l:to_group)
+      call crystalline#GenerateSepHi(l:from_group, l:to_group)
       let g:crystalline_sep_hi_groups[l:sep_group] = [l:from_group, l:to_group]
     endif
 
@@ -189,15 +189,15 @@ function! crystalline#get_sep(sep_index, left_group, right_group) abort
   return l:sep_item . l:next_item
 endfunction
 
-function! crystalline#plain_sep(sep_index, left_group, right_group) abort
+function! crystalline#PlainSep(sep_index, left_group, right_group) abort
   let l:key = a:sep_index . a:left_group . a:right_group
   if !has_key(g:crystalline_sep_cache, l:key)
-    let g:crystalline_sep_cache[l:key] = crystalline#get_sep(a:sep_index, a:left_group, a:right_group)
+    let g:crystalline_sep_cache[l:key] = crystalline#GetSep(a:sep_index, a:left_group, a:right_group)
   endif
   return g:crystalline_sep_cache[l:key]
 endfunction
 
-function! crystalline#sep(sep_index, left_group, right_group) abort
+function! crystalline#Sep(sep_index, left_group, right_group) abort
   if g:crystalline_auto_prefix_mode_group
     let l:mode = g:crystalline_mode_hi_groups[mode()]
     let l:left_group = l:mode . a:left_group . g:crystalline_group_suffix
@@ -208,7 +208,7 @@ function! crystalline#sep(sep_index, left_group, right_group) abort
   endif
   let l:key = a:sep_index . l:left_group . l:right_group
   if !has_key(g:crystalline_sep_cache, l:key)
-    let g:crystalline_sep_cache[l:key] = crystalline#get_sep(a:sep_index, l:left_group, l:right_group)
+    let g:crystalline_sep_cache[l:key] = crystalline#GetSep(a:sep_index, l:left_group, l:right_group)
   endif
   return g:crystalline_sep_cache[l:key]
 endfunction
@@ -217,11 +217,11 @@ endfunction
 
 " Tabline Utils {{{
 
-function! crystalline#update_tabline() abort
+function! crystalline#UpdateTabline() abort
   set tabline=%!g:CrystallineTablineFn()
 endfunction
 
-function! crystalline#default_tab(buf, max_width, is_sel) abort
+function! crystalline#DefaultTab(buf, max_width, is_sel) abort
   " Return early
   if a:max_width <= 0
     return ''
@@ -259,23 +259,23 @@ function! crystalline#default_tab(buf, max_width, is_sel) abort
     let l:tabwidth = l:lr_width + min([l:name_width, l:max_name_width])
   endif
 
-  return [crystalline#escape_statusline_string(l:tab), l:tabwidth, 0]
+  return [crystalline#EscapeStatuslineString(l:tab), l:tabwidth, 0]
 endfunction
 
-function! crystalline#default_hide_buffer(buf) abort
+function! crystalline#DefaultHideBuffer(buf) abort
   return (!buflisted(a:buf) && bufnr('%') != a:buf) || getbufvar(a:buf, '&ft') ==# 'qf'
 endfunction
 
 if has('nvim')
-  function! crystalline#tabs_or_buffers(...) abort
-    return v:lua.require('crystalline').tabs_or_buffers(get(a:, 1, {}))
+  function! crystalline#TabsOrBuffers(...) abort
+    return v:lua.require('crystalline').TabsOrBuffers(get(a:, 1, {}))
   endfunction
 elseif has('vim9script')
-  function! crystalline#tabs_or_buffers(...) abort
+  function! crystalline#TabsOrBuffers(...) abort
     return crystalline#vim9#TabsOrBuffers(get(a:, 1, {}))
   endfunction
 else
-  function! crystalline#tabs_or_buffers(...) abort
+  function! crystalline#TabsOrBuffers(...) abort
     " Get args
     let l:opts = get(a:, 1, {})
 
@@ -431,7 +431,7 @@ else
     if l:add_left_tabs
       let [l:tab, l:tabwidth, l:tabitems] = g:CrystallineTabFn(l:tabbufs[l:tabselidx - 1], l:max_tab_width, v:false)
       if l:enable_sep
-        let l:tab .= crystalline#plain_sep(l:sep_index, l:tab_group, l:first_group)
+        let l:tab .= crystalline#PlainSep(l:sep_index, l:tab_group, l:first_group)
         let l:tabwidth += l:sep_width
         let l:tabitems += 2
       elseif l:first_group ==# l:tab_sel_group
@@ -461,7 +461,7 @@ else
         let l:tab = '%' . (l:tabselidx + 2) . 'T' . l:tab
       endif
       if l:enable_sep
-        let l:sep = crystalline#plain_sep(l:sep_index, l:first_group, l:tab_group)
+        let l:sep = crystalline#PlainSep(l:sep_index, l:first_group, l:tab_group)
         let l:tab = l:sep . l:tab
         let l:tabwidth += l:sep_width
         let l:tabitems += 2
@@ -481,7 +481,7 @@ else
 
     " Get tab separator
     if l:enable_sep
-      let l:tab_sep = crystalline#plain_sep(l:sep_index, l:tab_group, l:tab_group)
+      let l:tab_sep = crystalline#PlainSep(l:sep_index, l:tab_group, l:tab_group)
     endif
 
     " Add tabs to left of selected
@@ -530,7 +530,7 @@ else
 
     if l:enable_left_sep
       " Draw left separator
-      let l:o = crystalline#plain_sep(l:sep_index, l:left_group, l:first_group) . l:o
+      let l:o = crystalline#PlainSep(l:sep_index, l:left_group, l:first_group) . l:o
     else
       " Draw first group
       let l:o = '%#Crystalline' . l:first_group . '#' . l:o
@@ -538,7 +538,7 @@ else
 
     if l:enable_right_sep
       " Draw right separator
-      let l:o .= crystalline#plain_sep(l:sep_index, l:last_group, l:right_group)
+      let l:o .= crystalline#PlainSep(l:sep_index, l:last_group, l:right_group)
     elseif l:right_group !=# ''
       " Draw right group
       let l:o .= '%#Crystalline' . l:right_group . '#'
@@ -553,46 +553,46 @@ else
   endfunction
 endif
 
-function! crystalline#tabs(...) abort
+function! crystalline#Tabs(...) abort
   if has_key(a:, 1)
     let l:opts = copy(a:1)
   else
     let l:opts = {}
   endif
   let l:opts.is_buffers = 0
-  return crystalline#tabs_or_buffers(l:opts)
+  return crystalline#TabsOrBuffers(l:opts)
 endfunction
 
-function! crystalline#buffers(...) abort
+function! crystalline#Buffers(...) abort
   if has_key(a:, 1)
     let l:opts = copy(a:1)
   else
     let l:opts = {}
   endif
   let l:opts.is_buffers = 1
-  return crystalline#tabs_or_buffers(l:opts)
+  return crystalline#TabsOrBuffers(l:opts)
 endfunction
 
-function! crystalline#tab_type_label(...) abort
+function! crystalline#TabTypeLabel(...) abort
   if get(a:, 1, 0)
     return g:crystalline_buffers_tab_type_label
   endif
   return g:crystalline_tabs_tab_type_label
 endfunction
 
-function! crystalline#default_tabline_is_buffers() abort
+function! crystalline#DefaultTablineIsBuffers() abort
   return tabpagenr('$') == 1
 endfunction
 
-function! crystalline#default_tabline(...) abort
+function! crystalline#DefaultTabline(...) abort
   if has_key(a:, 1)
     let l:opts = copy(a:1)
   else
     let l:opts = {}
   endif
 
-  let l:is_buffers = crystalline#default_tabline_is_buffers()
-  let l:tab_type = crystalline#tab_type_label(l:is_buffers)
+  let l:is_buffers = crystalline#DefaultTablineIsBuffers()
+  let l:tab_type = crystalline#TabTypeLabel(l:is_buffers)
   let l:opts.is_buffers = l:is_buffers
   let l:opts.left_group = 'TabType'
   let l:opts.max_items = min([get(l:opts, 'max_items', 80), 80]) - 1
@@ -600,7 +600,7 @@ function! crystalline#default_tabline(...) abort
 
   return '%#CrystallineTabType#'
         \ . l:tab_type
-        \ . crystalline#tabs_or_buffers(l:opts)
+        \ . crystalline#TabsOrBuffers(l:opts)
 endfunction
 
 " }}}
@@ -609,7 +609,7 @@ endfunction
 
 " Returns a dictionary with attributes of a highlight group.
 " Returns an empty dictionary if the highlight group doesn't exist.
-function! crystalline#synIDattrs(hlgroup) abort
+function! crystalline#SynIDattrs(hlgroup) abort
   let l:id = synIDtrans(hlID(a:hlgroup))
   if !l:id
     return {}
@@ -645,10 +645,10 @@ function! crystalline#synIDattrs(hlgroup) abort
   return l:result
 endfunction
 
-" Translates crystalline#synIDattrs() into the format
-" crystalline#generate_hi() understands.
-function! crystalline#get_hl_attrs(group) abort
-  let l:attrs = crystalline#synIDattrs('Crystalline' . a:group)
+" Translates crystalline#SynIDattrs() into the format
+" crystalline#GenerateHi() understands.
+function! crystalline#GetHlAttrs(group) abort
+  let l:attrs = crystalline#SynIDattrs('Crystalline' . a:group)
   if l:attrs == {}
     return []
   endif
@@ -667,7 +667,7 @@ function! crystalline#get_hl_attrs(group) abort
   return l:retval
 endfunction
 
-function! crystalline#generate_hi(group, attrs) abort
+function! crystalline#GenerateHi(group, attrs) abort
   let l:has_attrs = 0
 
   let l:hi = 'hi Crystalline' . a:group
@@ -693,16 +693,16 @@ function! crystalline#generate_hi(group, attrs) abort
   return l:hi
 endfunction
 
-function! crystalline#get_empty_theme_attrs() abort
+function! crystalline#GetEmptyThemeAttrs() abort
   return [['', ''], ['', ''], '']
 endfunction
 
-function! crystalline#set_theme_fallback_attrs(theme, style, group) abort
+function! crystalline#SetThemeFallbackAttrs(theme, style, group) abort
   let l:full_group = a:style . a:group
 
   if !has_key(a:theme, l:full_group)
     " set default attrs
-    let l:attrs = crystalline#get_empty_theme_attrs()
+    let l:attrs = crystalline#GetEmptyThemeAttrs()
     let a:theme[l:full_group] = l:attrs
   else
     let l:attrs = a:theme[l:full_group]
@@ -720,13 +720,13 @@ function! crystalline#set_theme_fallback_attrs(theme, style, group) abort
   " assume this function is called in fallback order unless otherwise noted
   if a:group ==# 'A' || a:group ==# 'B' || a:group ==# 'Fill'
     if a:style is ''
-      let l:fallback_attrs = crystalline#get_empty_theme_attrs()
+      let l:fallback_attrs = crystalline#GetEmptyThemeAttrs()
     else
-      let l:fallback_attrs = get(a:theme, a:group, crystalline#get_empty_theme_attrs())
+      let l:fallback_attrs = get(a:theme, a:group, crystalline#GetEmptyThemeAttrs())
     endif
   elseif a:group ==# 'Tab'
     " ensure inactive mid is set
-    let [l:fallback_attrs, l:_] = crystalline#set_theme_fallback_attrs(a:theme, 'Inactive', 'Fill')
+    let [l:fallback_attrs, l:_] = crystalline#SetThemeFallbackAttrs(a:theme, 'Inactive', 'Fill')
   elseif a:group ==# 'TabSel'
     let l:fallback_attrs = a:theme[a:style . 'A']
   elseif a:group ==# 'TabFill'
@@ -737,7 +737,7 @@ function! crystalline#set_theme_fallback_attrs(theme, style, group) abort
     " variant
     let l:fallback_attrs = a:theme[substitute(l:full_group, '\d\+$', '', '')]
   else
-    let l:fallback_attrs = crystalline#get_empty_theme_attrs()
+    let l:fallback_attrs = crystalline#GetEmptyThemeAttrs()
   endif
 
   " set default attributes
@@ -758,23 +758,23 @@ function! crystalline#set_theme_fallback_attrs(theme, style, group) abort
   return [l:attrs, l:fallback_attrs]
 endfunction
 
-function! crystalline#generate_theme(theme) abort
+function! crystalline#GenerateTheme(theme) abort
   let l:theme = deepcopy(a:theme)
   let l:his = []
 
   " set fallback attributes
   for l:style in g:crystalline_theme_styles
     for l:group in g:crystalline_theme_groups
-      call crystalline#set_theme_fallback_attrs(l:theme, l:style.name, l:group.name)
+      call crystalline#SetThemeFallbackAttrs(l:theme, l:style.name, l:group.name)
       for l:variant in range(1, g:crystalline_max_theme_variants)
-        call crystalline#set_theme_fallback_attrs(l:theme, l:style.name, l:group.name . l:variant)
+        call crystalline#SetThemeFallbackAttrs(l:theme, l:style.name, l:group.name . l:variant)
       endfor
     endfor
   endfor
 
   " generate highlight groups
   for [l:group, l:attr] in items(l:theme)
-    let l:hi = crystalline#generate_hi(l:group, l:attr)
+    let l:hi = crystalline#GenerateHi(l:group, l:attr)
     if !empty(l:hi)
       let l:his += [l:hi]
     endif
@@ -786,7 +786,7 @@ function! crystalline#generate_theme(theme) abort
   endif
 endfunction
 
-function! crystalline#generate_sep_hi(from_group, to_group) abort
+function! crystalline#GenerateSepHi(from_group, to_group) abort
   if get(g:, 'crystalline_no_generate_sep_hi')
     return
   endif
@@ -798,8 +798,8 @@ function! crystalline#generate_sep_hi(from_group, to_group) abort
 
   let l:sep_group = a:from_group . 'To' . a:to_group
 
-  let l:attr_a = crystalline#get_hl_attrs(a:from_group)
-  let l:attr_b = crystalline#get_hl_attrs(a:to_group)
+  let l:attr_a = crystalline#GetHlAttrs(a:from_group)
+  let l:attr_b = crystalline#GetHlAttrs(a:to_group)
 
   if empty(l:attr_a) || empty(l:attr_b)
     return
@@ -819,14 +819,14 @@ function! crystalline#generate_sep_hi(from_group, to_group) abort
     let l:sep_attr += [l:attr_a[2]]
   endif
 
-  exec crystalline#generate_hi(l:sep_group, l:sep_attr)
+  exec crystalline#GenerateHi(l:sep_group, l:sep_attr)
 endfunction
 
-function! crystalline#get_airline_attrs(theme_name, style, group) abort
+function! crystalline#GetAirlineAttrs(theme_name, style, group) abort
   let l:pal = g:['airline#themes#' . a:theme_name . '#palette']
 
   if !has_key(get(l:pal, a:style, {}), a:group)
-    return crystalline#get_empty_theme_attrs()
+    return crystalline#GetEmptyThemeAttrs()
   endif
 
   let l:attrs = l:pal[a:style][a:group]
@@ -840,7 +840,7 @@ function! crystalline#get_airline_attrs(theme_name, style, group) abort
   return [[l:attrs[2], l:attrs[3]], [l:attrs[0], l:attrs[1]], l:extra]
 endfunction
 
-function! crystalline#get_airline_style_attrs(theme_name, airline_style, style) abort
+function! crystalline#GetAirlineStyleAttrs(theme_name, airline_style, style) abort
   let l:is_default_style = a:style ==# ''
   let l:has_tabs = a:style !=# 'Inactive'
   let l:groups = {}
@@ -859,17 +859,17 @@ function! crystalline#get_airline_style_attrs(theme_name, airline_style, style) 
     let l:airline_style = empty(l:airline_group[0]) ? a:airline_style : l:airline_group[0]
     let l:airline_group = l:airline_group[1]
 
-    let l:groups[a:style . l:name] = crystalline#get_airline_attrs(a:theme_name, l:airline_style, l:airline_group)
+    let l:groups[a:style . l:name] = crystalline#GetAirlineAttrs(a:theme_name, l:airline_style, l:airline_group)
 
     for [l:variant, l:suffix] in [[1, '_modified'], [2, '_paste']]
-      let l:groups[a:style . l:name . l:variant] = crystalline#get_airline_attrs(a:theme_name, l:airline_style . l:suffix, l:airline_group)
+      let l:groups[a:style . l:name . l:variant] = crystalline#GetAirlineAttrs(a:theme_name, l:airline_style . l:suffix, l:airline_group)
     endfor
   endfor
 
   return l:groups
 endfunction
 
-function! crystalline#port_airline_theme(theme_name) abort
+function! crystalline#PortAirlineTheme(theme_name) abort
   " get all style attributes
   let l:groups = {}
   for l:style in g:crystalline_theme_styles
@@ -878,7 +878,7 @@ function! crystalline#port_airline_theme(theme_name) abort
     if empty(l:airline_style)
       continue
     endif
-    call extend(l:groups, crystalline#get_airline_style_attrs(a:theme_name, l:airline_style, l:name))
+    call extend(l:groups, crystalline#GetAirlineStyleAttrs(a:theme_name, l:airline_style, l:name))
   endfor
 
   " get fallbacks and filter duplicate styles
@@ -886,7 +886,7 @@ function! crystalline#port_airline_theme(theme_name) abort
   for l:style in g:crystalline_theme_styles
     for l:group in g:crystalline_theme_groups
       for l:variant in ['', '0', '1']
-        let [l:attrs, l:fallback_attrs] = crystalline#set_theme_fallback_attrs(l:groups, l:style.name, l:group.name . l:variant)
+        let [l:attrs, l:fallback_attrs] = crystalline#SetThemeFallbackAttrs(l:groups, l:style.name, l:group.name . l:variant)
         let l:str_attrs = string(l:attrs)
         if l:str_attrs !=# string(l:fallback_attrs)
           let l:unique_groups[l:style.name . l:group.name . l:variant] = l:str_attrs
@@ -905,7 +905,7 @@ function! crystalline#port_airline_theme(theme_name) abort
   endfor
 
   " build output
-  let l:o = 'call crystalline#generate_theme({'
+  let l:o = 'call crystalline#GenerateTheme({'
   for l:style in g:crystalline_theme_styles
     for l:group in g:crystalline_theme_groups
       for l:variant in ['', '0', '1']
@@ -926,39 +926,39 @@ endfunction
 
 " Setting Management {{{
 
-function! crystalline#init_statusline() abort
+function! crystalline#InitStatusline() abort
   augroup CrystallineAutoUpdateStatusline
     au!
-    au BufWinEnter,WinEnter * call crystalline#update_statusline(winnr())
-    au WinLeave * call crystalline#update_statusline(winnr())
+    au BufWinEnter,WinEnter * call crystalline#UpdateStatusline(winnr())
+    au WinLeave * call crystalline#UpdateStatusline(winnr())
     if exists('#CmdlineLeave') && exists('#CmdWinEnter') && exists('#CmdlineEnter')
-      au CmdlineLeave : call crystalline#update_statusline(winnr())
-      au CmdWinEnter : call crystalline#update_statusline(winnr())
-      au CmdlineEnter : call crystalline#update_statusline(winnr())
+      au CmdlineLeave : call crystalline#UpdateStatusline(winnr())
+      au CmdWinEnter : call crystalline#UpdateStatusline(winnr())
+      au CmdlineEnter : call crystalline#UpdateStatusline(winnr())
     endif
   augroup END
-  call crystalline#update_statusline(winnr())
+  call crystalline#UpdateStatusline(winnr())
 endfunction
 
-function! crystalline#clear_statusline() abort
+function! crystalline#ClearStatusline() abort
   set statusline=
   augroup CrystallineAutoUpdateStatusline
     au!
   augroup END
 endfunction
 
-function! crystalline#init_tabline() abort
+function! crystalline#InitTabline() abort
   if exists('+tabline')
     augroup CrystallineAutoUpdateTabline
       au!
-      au ModeChanged * call crystalline#update_tabline()
-      au InsertLeave * call crystalline#update_tabline()
+      au ModeChanged * call crystalline#UpdateTabline()
+      au InsertLeave * call crystalline#UpdateTabline()
     augroup END
-    call crystalline#update_tabline()
+    call crystalline#UpdateTabline()
   endif
 endfunction
 
-function! crystalline#clear_tabline() abort
+function! crystalline#ClearTabline() abort
   if exists('+tabline')
     set tabline=
     augroup CrystallineAutoUpdateTabline
@@ -967,7 +967,7 @@ function! crystalline#clear_tabline() abort
   endif
 endfunction
 
-function! crystalline#apply_current_theme() abort
+function! crystalline#ApplyCurrentTheme() abort
   let g:crystalline_mode = ''
   let g:crystalline_sep_hi_groups = {}
   let g:crystalline_skip_sep_groups = {}
@@ -975,7 +975,7 @@ function! crystalline#apply_current_theme() abort
   let g:crystalline_sep_cache = {}
 
   try
-    call function('crystalline#theme#' . g:crystalline_theme . '#set_theme')()
+    call function('crystalline#theme#' . g:crystalline_theme . '#SetTheme')()
   catch /^Vim\%((\a\+)\)\=:E118:/
     " theme does not use autoload function
   endtry
@@ -983,12 +983,12 @@ function! crystalline#apply_current_theme() abort
   silent doautocmd <nomodeline> User CrystallineSetTheme
 endfunction
 
-function! crystalline#set_theme(theme) abort
+function! crystalline#SetTheme(theme) abort
   let g:crystalline_theme = a:theme
-  call crystalline#apply_current_theme()
+  call crystalline#ApplyCurrentTheme()
 endfunction
 
-function! crystalline#clear_theme() abort
+function! crystalline#ClearTheme() abort
   augroup CrystallineTheme
     au!
   augroup END

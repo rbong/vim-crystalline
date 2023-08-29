@@ -1,5 +1,5 @@
-function! crystalline#theme#onehalflight#set_theme() abort
-  call crystalline#generate_theme({
+function! crystalline#theme#onehalflight#SetTheme() abort
+  call crystalline#GenerateTheme({
         \ 'A':                  [[231, 71],  ['#fafafa', '#50a14f'], ''],
         \ 'B':                  [[245, 255], ['#969696', '#f0f0f0'], ''],
         \ 'Mid':                [[71,  231], ['#50a14f', '#fafafa'], ''],

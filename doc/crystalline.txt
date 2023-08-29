@@ -1,4 +1,4 @@
-*crystalline.txt* Functions to help you make your own statusline/tabline
+      *crystalline.Txt* Functions to help you make your own statusline/tabline
 
 Author:  Roger Bongers <https://github.com/rbong>
 License: Same as Vim (see |license|)
@@ -24,7 +24,7 @@ Sets the tabline.
 
 g:CrystallineTabFn                                        *g:CrystallineTabFn*
 
-Custom tabs/buffers for |crystalline#tabs_or_buffers()|.
+Custom tabs/buffers for |crystalline#TabsOrBuffers()|.
 
 Arguments:
   `bufnr`
@@ -37,11 +37,11 @@ Arguments:
 Return a list containing the tab content, the visible width of the tab, and
 the number of |'statusline'| items used in the tab.
 
-Defaults to |crystalline#default_tab()|.
+Defaults to |crystalline#DefaultTab()|.
 
 g:CrystallineHideBufferFn                          *g:CrystallineHideBufferFn*
 
-Hide buffers with |crystalline#tabs_or_buffers()|.
+Hide buffers with |crystalline#TabsOrBuffers()|.
 
 Arguments:
   `bufnr`
@@ -49,7 +49,7 @@ Arguments:
 
 Returns a boolean (whether the buffer is hidden).
 
-Defaults to |crystalline#default_hide_buffer()|.
+Defaults to |crystalline#DefaultHideBuffer()|.
 
 g:crystalline_auto_prefix_mode_group    *g:crystalline_auto_prefix_mode_group*
 
@@ -91,7 +91,7 @@ Default:
 
 g:crystalline_separators                            *g:crystalline_separators*
 
-Separators to use with |crystalline#sep()|.
+Separators to use with |crystalline#Sep()|.
 
 This is a list of objects containing:
   `ch`
@@ -117,26 +117,26 @@ Documentation uses vimscript, but all functions can be called from Lua with:
     crystalline.fn()
 <
 
-                                                       *crystalline.hi_item()*
-crystalline#hi_item(group)                             *crystalline#hi_item()*
+                                                        *crystalline.HiItem()*
+crystalline#HiItem(group)                               *crystalline#HiItem()*
 
 Create a statusline highlight group item.
 Example:
 >vim
     " Returns '%#CrystallineA#'
-    let l:group = crystalline#hi_item('A')
+    let l:group = crystalline#HiItem('A')
 <
 
 See also |crystalline-highlight-groups|.
 
-                                                    *crystalline.mode_group()*
-crystalline#mode_group(group)                       *crystalline#mode_group()*
+                                                     *crystalline.ModeGroup()*
+crystalline#ModeGroup(group)                         *crystalline#ModeGroup()*
 
 Prepend the current mode to the group.
 Example:
 >vim
     " Returns 'NormalModeA'
-    let l:group = crystalline#mode_group('A')
+    let l:group = crystalline#ModeGroup('A')
 <
 
 You do not need to use this function if |g:crystalline_auto_prefix_mode_group|
@@ -144,26 +144,26 @@ is defined.
 
 See also |crystalline-highlight-groups|.
 
-                                                  *crystalline.mode_hi_item()*
-crystalline#mode_hi_item(group)                   *crystalline#mode_hi_item()*
+                                                    *crystalline.ModeHiItem()*
+crystalline#ModeHiItem(group)                       *crystalline#ModeHiItem()*
 
 Create a statusline highlight group item with the current mode and the group.
 Example:
 >vim
     " Returns '%#CrystallineNormalModeA#'
-    let l:group = crystalline#mode_hi_item('A')
+    let l:group = crystalline#ModeHiItem('A')
 <
 
 See also |crystalline-highlight-groups|.
 
-                                                    *crystalline.mode_label()*
-crystalline#mode_label()                            *crystalline#mode_label()*
+                                                     *crystalline.ModeLabel()*
+crystalline#ModeLabel()                              *crystalline#ModeLabel()*
 
 Get the current mode label. See also |g:crystalline_mode_labels|.
 
-                                                  *crystalline.mode_section()*
-                                                  *crystalline#mode_section()*
-crystalline#mode_section(sep_index, left_group, right_group)
+                                                   *crystalline.ModeSection()*
+                                                   *crystalline#ModeSection()*
+crystalline#ModeSection(sep_index, left_group, right_group)
 
 Create a statusline section containing the current mode and a separator.
 
@@ -180,19 +180,19 @@ Arguments:
 Equivalent to:
 >vim
     " Right facing separator
-    let l:section = crystalline#mode_hi_item(a:left_group)
-          \ . crystalline#mode_label()
-          \ . crystalline#sep(a:sep_index, crystalline#mode_sep_group(a:left_group), a:right_group)
+    let l:section = crystalline#ModeHiItem(a:left_group)
+          \ . crystalline#ModeLabel()
+          \ . crystalline#Sep(a:sep_index, crystalline#ModeSepGroup(a:left_group), a:right_group)
     " Left facing separator
-    let l:section = crystalline#mode_hi_item(a:mode_group)
-          \ . crystalline#mode_label()
-          \ . crystalline#sep(a:sep_index, a:left_group, crystalline#mode_sep_group(a:right_group))
+    let l:section = crystalline#ModeHiItem(a:mode_group)
+          \ . crystalline#ModeLabel()
+          \ . crystalline#Sep(a:sep_index, a:left_group, crystalline#ModeSepGroup(a:right_group))
 <
 
 See also |crystalline-highlight-groups|.
 
-                                                           *crystalline.sep()*
-crystalline#sep(sep_index, left_group, right_group)        *crystalline#sep()*
+                                                           *crystalline.Sep()*
+crystalline#Sep(sep_index, left_group, right_group)        *crystalline#Sep()*
 
 Create a separator between sections.
 
@@ -208,15 +208,15 @@ Highlight groups must omit the "Crystalline" prefix.
 
 See also |crystalline-highlight-groups|.
 
-                                                   *crystalline.default_tab()*
-crystalline#default_tab(buf, max_width, is_sel)    *crystalline#default_tab()*
+                                                    *crystalline.DefaultTab()*
+crystalline#DefaultTab(buf, max_width, is_sel)      *crystalline#DefaultTab()*
 
 The default tab/buffer.
 
 See also |g:CrystallineTabFn|.
 
-                                               *crystalline.tabs_or_buffers()*
-crystalline#tabs_or_buffers(...)               *crystalline#tabs_or_buffers()*
+                                                 *crystalline.TabsOrBuffers()*
+crystalline#TabsOrBuffers(...)                   *crystalline#TabsOrBuffers()*
 
 Create a section with tabs or buffers.
 
@@ -290,37 +290,37 @@ Arguments:
 See also |g:CrystallineTabFn|, |g:CrystallineHideBufferFn|.
 See |crystalline-highlight-groups| for more info on groups.
 
-                                                          *crystalline.tabs()*
-crystalline#tabs(...)                                     *crystalline#tabs()*
+                                                          *crystalline.Tabs()*
+crystalline#Tabs(...)                                     *crystalline#Tabs()*
 
 Create a section with tabs.
 
-See also |crystalline#tabs_or_buffers()|.
+See also |crystalline#TabsOrBuffers()|.
 
-                                                       *crystalline.buffers()*
-crystalline#buffers(...)                               *crystalline#buffers()*
+                                                       *crystalline.Buffers()*
+crystalline#Buffers(...)                               *crystalline#Buffers()*
 
 Create a section with buffers.
 
-See also |crystalline#tabs_or_buffers()|.
+See also |crystalline#TabsOrBuffers()|.
 
-                                               *crystalline.default_tabline()*
-crystalline#default_tabline(...)               *crystalline#default_tabline()*
+                                                *crystalline.DefaultTabline()*
+crystalline#DefaultTabline(...)                 *crystalline#DefaultTabline()*
 
 Create a tabline with tabs or buffers.
 Buffers are shown if only one tab is present. Otherwise, tabs are shown.
 
-See also |crystalline#default_tabline_is_buffers()|,
-|crystalline#tab_type_label()|, |crystalline#tabs_or_buffers()|.
+See also |crystalline#DefaultTablineIsBuffers()|,
+|crystalline#TabTypeLabel()|, |crystalline#TabsOrBuffers()|.
 
-                                    *crystalline.default_tabline_is_buffers()*
-                                    *crystalline#default_tabline_is_buffers()*
-crystalline#default_tabline_is_buffers()
+                                       *crystalline.DefaultTablineIsBuffers()*
+                                       *crystalline#DefaultTablineIsBuffers()*
+crystalline#DefaultTablineIsBuffers()
 
-Returns true when |crystalline#default_tabline()| shows buffers.
+Returns true when |crystalline#DefaultTabline()| shows buffers.
 
-                                                *crystalline.tab_type_label()*
-crystalline#tab_type_label(...)                 *crystalline#tab_type_label()*
+                                                  *crystalline.TabTypeLabel()*
+crystalline#TabTypeLabel(...)                     *crystalline#TabTypeLabel()*
 
 Returns a string indicating if buffers or tabs are being shown.
 
@@ -427,21 +427,21 @@ CrystallineReplaceModeA, CrystallineReplaceModeA1, etc.
 
 Statusline and tabline groups in replace mode.
 
-                                              *crystalline-terminal-mode-groups*
+                                            *crystalline-terminal-mode-groups*
 CrystallineTerminalModeA, CrystallineTerminalModeA1, etc.
 
 Statusline and tabline groups in terminal mode.
 
 CREATING THEMES                                  *crystalline-creating-themes*
-                                                *crystalline.generate_theme()*
-                                                *crystalline#generate_theme()*
+                                                 *crystalline.GenerateTheme()*
+                                                 *crystalline#GenerateTheme()*
 
 Define a new theme by defining an |autoload| function which calls
-`crystalline#generate_theme()`. Example:
+`crystalline#GenerateTheme()`. Example:
 >vim
     " ~/.vim/autoload/theme/my_theme.vim
-    function! crystalline#theme#my_theme#set_theme() abort
-      call crystalline#generate_theme({
+    function! crystalline#theme#my_theme#SetTheme() abort
+      call crystalline#GenerateTheme({
             \ 'A':    [[17,  190], ['#00005f', '#dfff00'], 'cterm=bold gui=bold'],
             \ 'B':    [[255, 238], ['#ffffff', '#444444'], ''],
             \ 'Fill': [[85,  234], ['#9cffd3', '#202020'], ''],
@@ -495,19 +495,19 @@ Fully featured example:
       let l:s = ''
 
       if l:curr
-        let l:s .= crystalline#mode_section(0, 'A', 'B')
+        let l:s .= crystalline#ModeSection(0, 'A', 'B')
       else
-        let l:s .= crystalline#hi_item('InactiveFill')
+        let l:s .= crystalline#HiItem('InactiveFill')
       endif
       let l:s .= ' %f%h%w%m%r '
       if l:curr
-        let l:s .= crystalline#sep(0, 'B', 'Fill') . ' %{fugitive#Head()}'
+        let l:s .= crystalline#Sep(0, 'B', 'Fill') . ' %{fugitive#Head()}'
       endif
 
       let l:s .= '%='
       if l:curr
-        let l:s .= crystalline#sep(1, 'Fill', 'B') . &paste ? 'PASTE ' : ' '
-        let l:s .= crystalline#sep(1, 'B', 'A')
+        let l:s .= crystalline#Sep(1, 'Fill', 'B') . &paste ? 'PASTE ' : ' '
+        let l:s .= crystalline#Sep(1, 'B', 'A')
       endif
       if winwidth(a:winnr) > 80
         let l:s .= ' %{&ft} %l/%L %2v '
@@ -526,14 +526,14 @@ Fully featured example:
       let l:right = '%='
       let l:max_items -= 1
 
-      let l:right .= crystalline#sep(1, 'TabFill', 'TabType')
+      let l:right .= crystalline#Sep(1, 'TabFill', 'TabType')
       let l:max_items -= 2
       let l:max_width -= 1
 
       let l:vimlabel = has('nvim') ?  ' NVIM ' : ' VIM '
       let l:max_width -= strchars(l:vimlabel)
 
-      return crystalline#default_tabline({
+      return crystalline#DefaultTabline({
             \ 'enable_sep': 1, 'max_items': l:max_items, 'max_width': l:max_width
             \ }) . l:right
     endfunction

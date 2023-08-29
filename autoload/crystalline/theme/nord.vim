@@ -1,5 +1,5 @@
-function! crystalline#theme#nord#set_theme() abort
-  call crystalline#generate_theme({
+function! crystalline#theme#nord#SetTheme() abort
+  call crystalline#GenerateTheme({
         \ 'A':            [[0, 6],  ['#3b4252', '#88C0D0'], ''],
         \ 'B':            [[0, 4],  ['#3b4252', '#81A1C1'], ''],
         \ 'Fill':         [[7, 8],  ['#e5e9f0', '#4C566A'], ''],

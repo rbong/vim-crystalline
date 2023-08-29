@@ -1,6 +1,6 @@
-function! crystalline#theme#gruvbox#set_theme() abort
+function! crystalline#theme#gruvbox#SetTheme() abort
   if &background ==# 'dark'
-    call crystalline#generate_theme({
+    call crystalline#GenerateTheme({
           \ 'A':                [[235, 246], ['#282828', '#a89984'], ''],
           \ 'B':                [[246, 239], ['#a89984', '#504945'], ''],
           \ 'Fill':             [[246, 237], ['#a89984', '#3c3836'], ''],
@@ -30,7 +30,7 @@ function! crystalline#theme#gruvbox#set_theme() abort
           \ 'TerminalModeTab1': [[109, 237], ['#83a598', '#3c3836'], ''],
           \ })
   else
-    call crystalline#generate_theme({
+    call crystalline#GenerateTheme({
           \ 'A':                [[229, 243], ['#fbf1c7', '#7c6f64'], ''],
           \ 'B':                [[243, 250], ['#7c6f64', '#d5c4a1'], ''],
           \ 'Fill':             [[243, 223], ['#7c6f64', '#ebdbb2'], ''],

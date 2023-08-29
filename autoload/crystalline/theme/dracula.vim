@@ -1,5 +1,5 @@
-function! crystalline#theme#dracula#set_theme() abort
-  call crystalline#generate_theme({
+function! crystalline#theme#dracula#SetTheme() abort
+  call crystalline#GenerateTheme({
         \ 'A':                   [[236, 141], ['#282a36', '#BD93F9'], ''],
         \ 'B':                   [[253, 61],  ['#f8f8f2', '#6272A4'], ''],
         \ 'Fill':                [[253, 239], ['#f8f8f2', '#44475A'], ''],

@@ -1,5 +1,5 @@
-function! crystalline#theme#badwolf#set_theme() abort
-  call crystalline#generate_theme({
+function! crystalline#theme#badwolf#SetTheme() abort
+  call crystalline#GenerateTheme({
         \ 'A':                  [[232, 154], ['#141413', '#aeee00'], ''],
         \ 'B':                  [[222, 238], ['#f4cf86', '#45413b'], ''],
         \ 'B1':                 [[222, 241], ['#f4cf86', '#666462'], ''],

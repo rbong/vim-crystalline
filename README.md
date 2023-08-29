@@ -142,19 +142,19 @@ function! g:CrystallineStatuslineFn(winnr)
   let l:s = ''
 
   if l:curr
-    let l:s .= crystalline#mode_section(0, 'A', 'B')
+    let l:s .= crystalline#ModeSection(0, 'A', 'B')
   else
-    let l:s .= crystalline#hi_item('InactiveFill')
+    let l:s .= crystalline#HiItem('InactiveFill')
   endif
   let l:s .= ' %f%h%w%m%r '
   if l:curr
-    let l:s .= crystalline#sep(0, 'B', 'Fill') . ' %{fugitive#Head()}'
+    let l:s .= crystalline#Sep(0, 'B', 'Fill') . ' %{fugitive#Head()}'
   endif
 
   let l:s .= '%='
   if l:curr
-    let l:s .= crystalline#sep(1, 'Fill', 'B') . &paste ? 'PASTE ' : ' '
-    let l:s .= crystalline#sep(1, 'B', 'A')
+    let l:s .= crystalline#Sep(1, 'Fill', 'B') . &paste ? 'PASTE ' : ' '
+    let l:s .= crystalline#Sep(1, 'B', 'A')
   endif
   if winwidth(a:winnr) > 80
     let l:s .= ' %{&ft} %l/%L %2v '
@@ -173,14 +173,14 @@ function! g:CrystallineTablineFn()
   let l:right = '%='
   let l:max_items -= 1
 
-  let l:right .= crystalline#sep(1, 'TabFill', 'TabType')
+  let l:right .= crystalline#Sep(1, 'TabFill', 'TabType')
   let l:max_items -= 2
   let l:max_width -= 1
 
   let l:vimlabel = has('nvim') ?  ' NVIM ' : ' VIM '
   let l:max_width -= strchars(l:vimlabel)
 
-  return crystalline#default_tabline({
+  return crystalline#DefaultTabline({
         \ 'enable_sep': 1, 'max_items': l:max_items, 'max_width': l:max_width
         \ }) . l:right
 endfunction

@@ -1,5 +1,5 @@
-function! crystalline#theme#papercolor#set_theme() abort
-  call crystalline#generate_theme({
+function! crystalline#theme#papercolor#SetTheme() abort
+  call crystalline#GenerateTheme({
         \ 'A':                [[240, 254], ['#585858', '#e4e4e4'], ''],
         \ 'B':                [[254, 31],  ['#e4e4e4', '#0087af'], ''],
         \ 'Fill':             [[255, 24],  ['#eeeeee', '#005f87'], ''],

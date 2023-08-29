@@ -34,7 +34,7 @@ See [`:help 'statusline'`](https://vimhelp.org/options.txt.html#%27statusline%27
 ```lua
 function vim.g.CrystallineTablineFn(winnr)
   local cl = require("crystalline")
-  return cl.default_tabline()
+  return cl.DefaultTabline()
 end
 
 -- Always show the tabline
@@ -51,7 +51,7 @@ function vim.g.CrystallineStatuslineFn(winnr)
   local s = ""
 
   -- Start highlighting section A
-  s = s .. cl.hi_item("A")
+  s = s .. cl.HiItem("A")
 
   s = s .. " %f%h%w%m%r "
 
@@ -76,17 +76,17 @@ function vim.g.CrystallineStatuslineFn(winnr)
   local cl = require("crystalline")
   local s = ""
 
-  s = s .. cl.hi_item("A")
+  s = s .. cl.HiItem("A")
 
   s = s .. " %f%h%w%m%r "
 
   -- Add separator 0 between section A and the statusline fill section
-  s = s .. cl.sep(0, "A", "Fill")
+  s = s .. cl.Sep(0, "A", "Fill")
 
   s = s .. "%="
 
   -- Add separator 1 between the fill section and section A
-  s = s .. cl.sep(1, "Fill", "A")
+  s = s .. cl.Sep(1, "Fill", "A")
 
   s = s .. "%{&ft} %l/%L %2v "
 
@@ -96,7 +96,7 @@ end
 function vim.g.CrystallineTablineFn(winnr)
   local cl = require("crystalline")
   -- Add separators to the tabline
-  return cl.default_tabline({ enable_sep = true })
+  return cl.DefaultTabline({ enable_sep = true })
 end
 
 vim.o.laststatus = 2
@@ -118,12 +118,12 @@ function vim.g.CrystallineStatuslineFn(winnr)
   local s = ""
 
   -- Start highlighting section A with mode colors
-  s = s .. cl.mode_hi_item("A")
+  s = s .. cl.ModeHiItem("A")
 
   s = s .. " %f%h%w%m%r "
 
   -- Generate a separator with mode colors
-  s = s .. cl.sep(0, cl.mode_group("A"), cl.mode_group("Fill"))
+  s = s .. cl.Sep(0, cl.ModeGroup("A"), cl.ModeGroup("Fill"))
 
   return s
 end
@@ -131,7 +131,7 @@ end
 function vim.g.CrystallineTablineFn(winnr)
   local cl = require("crystalline")
   -- auto_prefix_mode_group automatically uses mode colors
-  return cl.default_tabline({ auto_prefix_mode_group = true })
+  return cl.DefaultTabline({ auto_prefix_mode_group = true })
 end
 
 vim.o.laststatus = 2
@@ -146,12 +146,12 @@ function vim.g.CrystallineStatuslineFn(winnr)
   local s = ""
 
   -- The mode colors for section A will automatically be added
-  s = s .. cl.hi_item("A")
+  s = s .. cl.HiItem("A")
 
   s = s .. " %f%h%w%m%r "
 
   -- A separator with mode colors for both groups will automatically be generated
-  s = s .. cl.sep(0, "A", "Fill")
+  s = s .. cl.Sep(0, "A", "Fill")
 
   return s
 end
@@ -159,7 +159,7 @@ end
 function vim.g.CrystallineTablineFn(winnr)
   local cl = require("crystalline")
   -- auto_prefix_mode_group will default to true
-  return cl.default_tabline()
+  return cl.DefaultTabline()
 end
 
 vim.o.laststatus = 2
@@ -178,11 +178,11 @@ function vim.g.CrystallineStatuslineFn(winnr)
 
   -- Automatically create a mode highlight group, mode label, and separator
   -- Same arguments as crystalline.sep()
-  s = s .. cl.mode_section(0, "A", "B")
+  s = s .. cl.ModeSection(0, "A", "B")
 
   s = s .. " %f%h%w%m%r "
 
-  s = s .. cl.sep(0, "B", "Fill")
+  s = s .. cl.Sep(0, "B", "Fill")
 
   return s
 end
@@ -215,7 +215,7 @@ function vim.g.CrystallineStatuslineFn(winnr)
   local v = GroupSuffix()
 
   -- Add the variant onto the end of the highlight item
-  s = s .. cl.hi_item("A") .. v
+  s = s .. cl.HiItem("A") .. v
 
   s = s .. " %f%h%w%m%r "
 
@@ -225,7 +225,7 @@ end
 function vim.g.CrystallineTablineFn(winnr)
   local cl = require("crystalline")
   -- Add the variant onto the end of all tabline groups
-  return cl.default_tabline({ group_suffix = GroupSuffix() })
+  return cl.DefaultTabline({ group_suffix = GroupSuffix() })
 end
 
 vim.o.laststatus = 2
@@ -253,7 +253,7 @@ function vim.g.CrystallineStatuslineFn(winnr)
   -- Works with all functions
   vim.g.crystalline_group_suffix = GroupSuffix()
 
-  s = s .. cl.hi_item("A")
+  s = s .. cl.HiItem("A")
 
   s = s .. " %f%h%w%m%r "
 
@@ -264,7 +264,7 @@ function vim.g.CrystallineTablineFn(winnr)
   local cl = require("crystalline")
   -- group_suffix will default to vim.g.crystalline_group_suffix
   vim.g.crystalline_group_suffix = GroupSuffix()
-  return cl.default_tabline()
+  return cl.DefaultTabline()
 end
 
 vim.o.laststatus = 2
@@ -335,7 +335,7 @@ function vim.g.CrystallineTablineFn()
 
   -- Add a separator
   -- Reuse the TabType group for the right section
-  right = right .. cl.sep(1, "TabFill", "TabType")
+  right = right .. cl.Sep(1, "TabFill", "TabType")
   -- One item for the separator group, one item to start the TabType group
   local max_items -= 2
   -- Subtract the width of the separator
@@ -346,7 +346,7 @@ function vim.g.CrystallineTablineFn()
   -- Use strchars() to get the real visible width
   local max_width -= strchars(vimlabel)
 
-  return cl.default_tabline({ max_items = max_items, max_width = max_width }) .. right
+  return cl.DefaultTabline({ max_items = max_items, max_width = max_width }) .. right
 end
 
 vim.o.showtabline = 2
@@ -372,19 +372,19 @@ function vim.g.CrystallineStatuslineFn(winnr)
   local s = ""
 
   if curr then
-    s = s .. cl.mode_section(0, "A", "B")
+    s = s .. cl.ModeSection(0, "A", "B")
   else
-    s = s .. cl.hi_item("InactiveFill")
+    s = s .. cl.HiItem("InactiveFill")
   end
   s = s .. " %f%h%w%m%r "
   if curr then
-    s = s .. cl.sep(0, "B", "Fill") .. " %{fugitive#Head()}"
+    s = s .. cl.Sep(0, "B", "Fill") .. " %{fugitive#Head()}"
   end
 
   s = s .. "%="
   if curr then
-    s = s .. cl.sep(1, "Fill", "B") .. &paste ? "PASTE " : " "
-    s = s .. cl.sep(1, "B", "A")
+    s = s .. cl.Sep(1, "Fill", "B") .. &paste ? "PASTE " : " "
+    s = s .. cl.Sep(1, "B", "A")
   end
   if winwidth(a:winnr) > 80 then
     s = s .. " %{&ft} %l/%L %2v "
@@ -404,14 +404,14 @@ function vim.g.CrystallineTablineFn()
   local right = "%="
   local max_items -= 1
 
-  right = right .. cl.sep(1, "TabFill", "TabType")
+  right = right .. cl.Sep(1, "TabFill", "TabType")
   local max_items -= 2
   local max_width -= 1
 
   local vimlabel = " NVIM "
   local max_width -= strchars(vimlabel)
 
-  return cl.default_tabline({
+  return cl.DefaultTabline({
     enable_sep = true, max_items = max_items, max_width = max_width
   }) .. right
 end

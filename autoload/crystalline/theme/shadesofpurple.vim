@@ -1,5 +1,5 @@
-function! crystalline#theme#shadesofpurple#set_theme() abort
-  call crystalline#generate_theme({
+function! crystalline#theme#shadesofpurple#SetTheme() abort
+  call crystalline#GenerateTheme({
         \ 'A':               [[140, 234], ['#a599e9', '#1e1e3f'], ''],
         \ 'B':               [[234, 140], ['#1e1e3f', '#a599e9'], ''],
         \ 'Fill':            [[140, 236], ['#a599e9', '#2d2b55'], ''],

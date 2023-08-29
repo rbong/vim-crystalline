@@ -29,46 +29,46 @@ end
 -- Vim alias exports
 
 local crystalline_fns = {
-  "escape_statusline_string",
-  "left_pad",
-  "right_pad",
-  "profile",
-  "group",
-  "mode_group",
-  "mode_sep_group",
-  "hi_item",
-  "mode_hi_item",
-  "mode_label",
-  "mode_section",
-  "update_statusline",
-  "get_sep",
-  "plain_sep",
-  "sep",
-  "update_tabline",
-  "default_tab",
-  "default_hide_buffer",
-  "tabs",
-  "buffers",
-  "tab_type_label",
-  "default_tabline_is_buffers",
-  "default_tabline",
-  "synIDattrs",
-  "get_hl_attrs",
-  "generate_hi",
-  "get_empty_theme_attrs",
-  "set_theme_fallback_attrs",
-  "generate_theme",
-  "generate_sep_hi",
-  "get_airline_attrs",
-  "get_airline_style_attrs",
-  "port_airline_theme",
-  "init_statusline",
-  "clear_statusline",
-  "init_tabline",
-  "clear_tabline",
-  "apply_current_theme",
-  "set_theme",
-  "clear_theme"
+  "EscapeStatuslineString",
+  "LeftPad",
+  "RightPad",
+  "Profile",
+  "Group",
+  "ModeGroup",
+  "ModeSepGroup",
+  "HiItem",
+  "ModeHiItem",
+  "ModeLabel",
+  "ModeSection",
+  "UpdateStatusline",
+  "GetSep",
+  "PlainSep",
+  "Sep",
+  "UpdateTabline",
+  "DefaultTab",
+  "DefaultHideBuffer",
+  "Tabs",
+  "Buffers",
+  "TabTypeLabel",
+  "DefaultTablineIsBuffers",
+  "DefaultTabline",
+  "SynIDattrs",
+  "GetHlAttrs",
+  "GenerateHi",
+  "GetEmptyThemeAttrs",
+  "SetThemeFallbackAttrs",
+  "GenerateTheme",
+  "GenerateSepHi",
+  "GetAirlineAttrs",
+  "GetAirlineStyleAttrs",
+  "PortAirlineTheme",
+  "InitStatusline",
+  "ClearStatusline",
+  "InitTabline",
+  "ClearTabline",
+  "ApplyCurrentTheme",
+  "SetTheme",
+  "ClearTheme"
 }
 
 for _, fn in pairs(crystalline_fns) do
@@ -78,7 +78,7 @@ end
 -- Lua optimized exports
 
 local default_opts = vim.empty_dict()
-function module.tabs_or_buffers(opts)
+function module.TabsOrBuffers(opts)
   -- Get args
   opts = opts or default_opts
 
@@ -235,7 +235,7 @@ function module.tabs_or_buffers(opts)
     local tabinfo = vim_fn["g:CrystallineTabFn"](tabbufs[tabselidx - 1], max_tab_width, false)
     local tab, tabwidth, tabitems = tabinfo[1], tabinfo[2], tabinfo[3]
     if enable_sep then
-      tab = tab .. module.plain_sep(sep_index, tab_group, first_group)
+      tab = tab .. module.PlainSep(sep_index, tab_group, first_group)
       tabwidth = tabwidth + sep_width
       tabitems = tabitems + 2
     elseif first_group == tab_sel_group then
@@ -266,7 +266,7 @@ function module.tabs_or_buffers(opts)
       tab = "%" .. (tabselidx + 1) .. "T" .. tab
     end
     if enable_sep then
-      tab = module.plain_sep(sep_index, last_group, tab_group) .. tab
+      tab = module.PlainSep(sep_index, last_group, tab_group) .. tab
       tabwidth = tabwidth + sep_width
       tabitems = tabitems + 2
     elseif last_group == tab_sel_group then
@@ -286,7 +286,7 @@ function module.tabs_or_buffers(opts)
   -- Get tab separator
   local tab_sep
   if enable_sep then
-    tab_sep = module.plain_sep(sep_index, tab_group, tab_group)
+    tab_sep = module.PlainSep(sep_index, tab_group, tab_group)
   end
 
   -- Add tabs to left of selected
@@ -337,7 +337,7 @@ function module.tabs_or_buffers(opts)
 
   if enable_left_sep then
     -- Draw left separator
-    o = module.plain_sep(sep_index, left_group, first_group) .. o
+    o = module.PlainSep(sep_index, left_group, first_group) .. o
   else
     -- Draw first group
     o = "%#Crystalline" .. first_group .. "#" .. o
@@ -345,7 +345,7 @@ function module.tabs_or_buffers(opts)
 
   if enable_right_sep then
     -- Draw right separator
-    o = o .. module.plain_sep(sep_index, last_group, right_group)
+    o = o .. module.PlainSep(sep_index, last_group, right_group)
   elseif right_group ~= "" then
     -- Draw right group
     o = o .. "%#Crystalline" .. right_group .. "#"

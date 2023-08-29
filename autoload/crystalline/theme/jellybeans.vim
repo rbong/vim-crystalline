@@ -1,5 +1,5 @@
-function! crystalline#theme#jellybeans#set_theme() abort
-  call crystalline#generate_theme({
+function! crystalline#theme#jellybeans#SetTheme() abort
+  call crystalline#GenerateTheme({
         \ 'A':                [[189, 25],  ['#d8dee9', '#0d61ac'], ''],
         \ 'B':                [[231, 235], ['#ffffff', '#262626'], ''],
         \ 'Fill':             [[59,  233], ['#4f5b66', '#151515'], ''],

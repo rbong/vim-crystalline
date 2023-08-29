@@ -15,7 +15,7 @@ if exists('g:crystalline_hide_buf_tab')
 endif
 
 if exists('g:crystalline_tab_separator')
-  echoerr 'g:crystalline_tab_separator is deprecated, see :help crystalline#buffers_or_tabs()'
+  echoerr 'g:crystalline_tab_separator is deprecated, see :help crystalline#BuffersOrTabs()'
 endif
 
 " }}}
@@ -117,13 +117,13 @@ endif
 
 if !exists('g:CrystallineTabFn') && !exists('*g:CrystallineTabFn')
   function! g:CrystallineTabFn(buf, max_width, is_sel) abort
-    return crystalline#default_tab(a:buf, a:max_width, a:is_sel)
+    return crystalline#DefaultTab(a:buf, a:max_width, a:is_sel)
   endfunction
 endif
 
 if !exists('g:CrystallineHideBufferFn') && !exists('*g:CrystallineHideBufferFn')
   function! g:CrystallineHideBufferFn(buf) abort
-    return crystalline#default_hide_buffer(a:buf)
+    return crystalline#DefaultHideBuffer(a:buf)
   endfunction
 endif
 
@@ -188,14 +188,14 @@ let g:crystalline_max_theme_variants = 2
 " Load User Settings {{{
 
 if exists('g:CrystallineTablineFn') || exists('*g:CrystallineTablineFn')
-  call crystalline#init_tabline()
+  call crystalline#InitTabline()
 endif
 
 if exists('g:CrystallineStatuslineFn') || exists('*g:CrystallineStatuslineFn')
-  call crystalline#init_statusline()
+  call crystalline#InitStatusline()
 endif
 
-call crystalline#apply_current_theme()
+call crystalline#ApplyCurrentTheme()
 
 " }}}
 
@@ -203,8 +203,8 @@ call crystalline#apply_current_theme()
 
 augroup CrystallineTheme
   au!
-  au ColorScheme * call crystalline#apply_current_theme()
-  au OptionSet background call crystalline#apply_current_theme()
+  au ColorScheme * call crystalline#ApplyCurrentTheme()
+  au OptionSet background call crystalline#ApplyCurrentTheme()
 augroup END
 
 " }}}
