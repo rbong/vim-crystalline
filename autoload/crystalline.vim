@@ -298,10 +298,10 @@ else
     let l:auto_prefix_mode_group = get(l:opts, 'auto_prefix_mode_group', g:crystalline_auto_prefix_mode_group)
     let l:group_suffix = get(l:opts, 'group_suffix', g:crystalline_auto_add_group_suffix)
     if l:auto_prefix_mode_group
-      let l:mode = g:crystalline_mode_hi_groups[mode()]
-      let l:tab_group = get(l:opts, 'tab_group', l:mode . 'Tab' . l:group_suffix)
-      let l:tab_sel_group = get(l:opts, 'tab_sel_group', l:mode . 'TabSel' . l:group_suffix)
-      let l:tab_fill_group = get(l:opts, 'tab_fill_group', l:mode . 'TabFill' . l:group_suffix)
+      let l:m = g:crystalline_mode_hi_groups[mode()]
+      let l:tab_group = get(l:opts, 'tab_group', l:m . 'Tab' . l:group_suffix)
+      let l:tab_sel_group = get(l:opts, 'tab_sel_group', l:m . 'TabSel' . l:group_suffix)
+      let l:tab_fill_group = get(l:opts, 'tab_fill_group', l:m . 'TabFill' . l:group_suffix)
     else
       let l:tab_group = get(l:opts, 'tab_group', 'Tab')
       let l:tab_sel_group = get(l:opts, 'tab_sel_group', 'TabSel' . l:group_suffix)
@@ -359,12 +359,12 @@ else
       let l:bufsel = bufnr()
       if exists('*getbufinfo')
         for l:buf in getbufinfo()
-          let l:bufnr = l:buf.bufnr
-          if !g:CrystallineHideBufferFn(l:bufnr)
-            if l:bufsel == l:bufnr
+          let l:buf_bufnr = l:buf.bufnr
+          if !g:CrystallineHideBufferFn(l:buf_bufnr)
+            if l:bufsel == l:buf_bufnr
               let l:tabselidx = l:ntabs
             endif
-            call add(l:tabbufs, l:bufnr)
+            call add(l:tabbufs, l:buf_bufnr)
             let l:ntabs += 1
           endif
         endfor

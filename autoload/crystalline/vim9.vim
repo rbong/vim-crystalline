@@ -26,10 +26,10 @@ export def TabsOrBuffers(_opts: dict<any>): string
   var tab_sel_group = ''
   var tab_fill_group = ''
   if auto_prefix_mode_group
-    var mode = crystalline#mode_group('')
-    tab_group = get(opts, 'tab_group', mode .. 'Tab' .. group_suffix)
-    tab_sel_group = get(opts, 'tab_sel_group', mode .. 'TabSel' .. group_suffix)
-    tab_fill_group = get(opts, 'tab_fill_group', mode .. 'TabFill' .. group_suffix)
+    var m = g:crystalline_mode_hi_groups[mode()]
+    tab_group = get(opts, 'tab_group', m .. 'Tab' .. group_suffix)
+    tab_sel_group = get(opts, 'tab_sel_group', m .. 'TabSel' .. group_suffix)
+    tab_fill_group = get(opts, 'tab_fill_group', m .. 'TabFill' .. group_suffix)
   else
     tab_group = get(opts, 'tab_group', 'Tab')
     tab_sel_group = get(opts, 'tab_sel_group', 'TabSel' .. group_suffix)
@@ -87,12 +87,12 @@ export def TabsOrBuffers(_opts: dict<any>): string
     var bufsel = bufnr()
     if exists('*getbufinfo')
       for buf in getbufinfo()
-        var bufnr = buf.bufnr
-        if !g:CrystallineHideBufferFn(bufnr)
-          if bufsel == bufnr
+        var buf_bufnr = buf.bufnr
+        if !g:CrystallineHideBufferFn(buf_bufnr)
+          if bufsel == buf_bufnr
             tabselidx = ntabs
           endif
-          add(tabbufs, bufnr)
+          add(tabbufs, buf_bufnr)
           ntabs += 1
         endif
       endfor

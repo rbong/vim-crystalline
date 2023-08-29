@@ -6,6 +6,7 @@ local module = {}
 local vim_g = vim.g
 local vim_o = vim.o
 local vim_fn = vim.fn
+local mode = vim_fn.mode
 local bufnr = vim_fn.bufnr
 local getbufinfo = vim_fn.getbufinfo
 local strchars = vim_fn.strchars
@@ -106,10 +107,10 @@ function module.tabs_or_buffers(opts)
   local tab_sel_group
   local tab_fill_group
   if auto_prefix_mode_group then
-    local mode = module.mode_group("")
-    tab_group = get_default(opts, "tab_group", mode .. "Tab" .. group_suffix)
-    tab_sel_group = get_default(opts, "tab_sel_group", mode .. "TabSel" .. group_suffix)
-    tab_fill_group = get_default(opts, "tab_fill_group", mode .. "TabFill" .. group_suffix)
+    local m = vim_g.crystalline_mode_hi_groups[mode()]
+    tab_group = get_default(opts, "tab_group", m .. "Tab" .. group_suffix)
+    tab_sel_group = get_default(opts, "tab_sel_group", m .. "TabSel" .. group_suffix)
+    tab_fill_group = get_default(opts, "tab_fill_group", m .. "TabFill" .. group_suffix)
   else
     tab_group = get_default(opts, "tab_group", "Tab")
     tab_sel_group = get_default(opts, "tab_sel_group", "TabSel" .. group_suffix)
