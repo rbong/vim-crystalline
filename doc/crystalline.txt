@@ -111,7 +111,7 @@ Default:
 
 FUNCTIONS                                              *crystalline-functions*
 
-crystalline#hi_item                                      *crystalline#hi_item*
+crystalline#hi_item(group)                             *crystalline#hi_item()*
 
 Create a statusline highlight group item.
 Example:
