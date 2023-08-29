@@ -48,17 +48,6 @@ endfunction
 
 " General Utils {{{
 
-function! crystalline#clamp(curitem, items, maxitems) abort
-  if a:curitem <= a:items / 2
-    let l:start = 0
-  elseif a:maxitems - a:items / 2 - 1 <= a:curitem
-    let l:start = a:maxitems - a:items - 1
-  else
-    let l:start = a:curitem - a:items / 2
-  endif
-  return [l:start, l:start + a:items]
-endfunction
-
 function! crystalline#escape_statusline_string(str) abort
   return substitute(a:str, '%', '%%', 'g')
 endfunction
