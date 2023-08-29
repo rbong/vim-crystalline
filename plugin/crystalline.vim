@@ -11,11 +11,11 @@ if exists('g:crystalline_tabline_fn')
 endif
 
 if exists('g:crystalline_hide_buf_tab')
-  echoerr "g:crystalline_hide_buf_tab is deprecated, use function! g:CrystallineHideBufferFn"
+  echoerr 'g:crystalline_hide_buf_tab is deprecated, use function! g:CrystallineHideBufferFn'
 endif
 
 if exists('g:crystalline_tab_separator')
-  echoerr "g:crystalline_tab_separator is deprecated, see :help crystalline#buffers_or_tabs()"
+  echoerr 'g:crystalline_tab_separator is deprecated, see :help crystalline#buffers_or_tabs()'
 endif
 
 " }}}
