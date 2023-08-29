@@ -39,6 +39,8 @@ if !exists('g:crystalline_mode_labels')
         \ 'R': ' REPLACE ',
         \ '': '',
         \ }
+elseif !has_key(g:crystalline_mode_labels, 'c')
+  echoerr 'crystalline: outdated g:crystalline_mode_labels detected, define all of the groups in :help g:crystalline_mode_labels'
 endif
 
 if !exists('g:crystalline_mode_hi_groups')
@@ -58,6 +60,8 @@ if !exists('g:crystalline_mode_hi_groups')
         \ 'R': 'ReplaceMode',
         \ '': '',
         \ }
+elseif !has_key(g:crystalline_mode_hi_groups, 'c')
+  echoerr 'crystalline: outdated g:crystalline_mode_labels detected, define all of the groups in :help g:crystalline_mode_labels'
 endif
 
 if !exists('g:crystalline_auto_prefix_mode_group')
