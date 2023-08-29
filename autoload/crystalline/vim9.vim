@@ -124,7 +124,7 @@ export def TabsOrBuffers(_opts: dict<any>): string
   var remaining_items = min([max_items - items, 80])
   # Calculate max tabs
   var items_per_tab = enable_mouse ? 1 : 0
-  var max_tabs = remaining_items / items_per_tab
+  var max_tabs = items_per_tab <= 0 ? ntabs : remaining_items / items_per_tab
   # Calculate remaining width for tabs
   var remaining_width = max_width - lr_sep_width
   # Calculate max tab width

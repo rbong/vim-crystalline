@@ -359,7 +359,7 @@ else
     let l:remaining_items = min([l:max_items - l:items, 80])
     " Calculate max tabs
     let l:items_per_tab = l:enable_mouse ? 1 : 0
-    let l:max_tabs = l:remaining_items / l:items_per_tab
+    let l:max_tabs = l:items_per_tab <= 0 ? ntabs : l:remaining_items / l:items_per_tab
     " Calculate remaining width for tabs
     let l:remaining_width = l:max_width - l:lr_sep_width
     " Calculate max tab width

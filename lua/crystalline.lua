@@ -129,7 +129,10 @@ function module.tabs_or_buffers(opts)
   local remaining_items = math.min(max_items - items, 80)
   -- Calculate max tabs
   local items_per_tab = enable_mouse and 1 or 0
-  local max_tabs = math.floor(remaining_items / items_per_tab)
+  local max_tabs = ntabs
+  if items_per_tab > 0 then
+    max_tabs = math.floor(remaining_items / items_per_tab)
+  end
   -- Calculate remaining width for tabs
   local remaining_width = max_width - lr_sep_width
   -- Calculate max tab width
