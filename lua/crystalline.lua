@@ -1,5 +1,15 @@
 local module = {}
 
+-- Reduce object lookup time
+local vim_g = vim.g
+local vim_fn = vim.fn
+local bufnr = vim_fn.bufnr
+local getbufinfo = vim_fn.getbufinfo
+local strchars = vim_fn.strchars
+local tabpagenr = vim_fn.tabpagenr
+local tabpagebuflist = vim_fn.tabpagebuflist
+local tabpagewinnr = vim_fn.tabpagewinnr
+
 local function bool(value)
   return (value == true or value == 1) and true or false
 end
@@ -12,36 +22,37 @@ local function get_default(dict, key, default)
   return value
 end
 
+local default_opts = vim.empty_dict()
 function module.tabs_or_buffers(opts)
   -- Get args
-  opts = opts or vim.empty_dict()
+  opts = opts or default_opts
 
   -- Get options
   local is_buffers = bool(get_default(opts, "is_buffers", 0))
   local enable_mouse = not is_buffers and bool(get_default(opts, "enable_mouse", 1))
   local enable_sep = bool(get_default(opts, "enable_sep", 0))
   local sep_index = get_default(opts, "sep_index", 0)
-  local sep = get_default(vim.g.crystalline_separators, sep_index, { ch = "" })
+  local sep = get_default(vim_g.crystalline_separators, sep_index, { ch = "" })
   local dir = get_default(opts, "dir", sep.dir)
   local min_width = get_default(opts, "min_width", 24)
   local max_width = get_default(opts, "max_width", math.max(vim.o.columns, min_width))
   local min_tab_width = get_default(
     opts,
     "min_tab_width",
-    vim.fn.strchars(vim.g.crystalline_tab_left .. vim.g.crystalline_tab_empty)
-      + math.max(vim.fn.strchars(vim.g.crystalline_tab_mod), vim.fn.strchars(vim.g.crystalline_tab_nomod))
+    strchars(vim_g.crystalline_tab_left .. vim_g.crystalline_tab_empty)
+      + math.max(strchars(vim_g.crystalline_tab_mod), strchars(vim_g.crystalline_tab_nomod))
   )
   local min_tab_sel_width = get_default(opts, "min_tab_width", min_tab_width)
   local max_items = get_default(opts, "max_items", 80)
 
   -- Get group options
-  local auto_prefix_mode_group = bool(get_default(opts, "auto_prefix_mode_group", vim.g.crystalline_auto_prefix_mode_group))
-  local group_suffix = get_default(opts, "group_suffix", vim.g.crystalline_auto_add_group_suffix)
+  local auto_prefix_mode_group = bool(get_default(opts, "auto_prefix_mode_group", vim_g.crystalline_auto_prefix_mode_group))
+  local group_suffix = get_default(opts, "group_suffix", vim_g.crystalline_auto_add_group_suffix)
   local tab_group
   local tab_sel_group
   local tab_fill_group
   if auto_prefix_mode_group then
-    local mode = vim.fn["crystalline#mode_group"]("")
+    local mode = vim_fn["crystalline#mode_group"]("")
     tab_group = get_default(opts, "tab_group", mode .. "Tab" .. group_suffix)
     tab_sel_group = get_default(opts, "tab_sel_group", mode .. "TabSel" .. group_suffix)
     tab_fill_group = get_default(opts, "tab_fill_group", mode .. "TabFill" .. group_suffix)
@@ -58,7 +69,7 @@ function module.tabs_or_buffers(opts)
   local tabsln = 0
   local width = 0
   local items = 0
-  local sep_width = enable_sep and vim.fn.strchars(sep.ch) or 0
+  local sep_width = enable_sep and strchars(sep.ch) or 0
   local first_group = tab_group
   local last_group = tab_group
 
@@ -101,22 +112,22 @@ function module.tabs_or_buffers(opts)
   local tabbufs = {}
 
   if bool(is_buffers) then
-    bufsel = vim.fn.bufnr()
-    for _, buf in pairs(vim.fn.getbufinfo()) do
-      local bufnr = buf.bufnr
-      if not bool(vim.fn["g:CrystallineHideBufferFn"](bufnr)) then
+    bufsel = bufnr()
+    for _, buf in pairs(getbufinfo()) do
+      local buf_bufnr = buf.bufnr
+      if not bool(vim_fn["g:CrystallineHideBufferFn"](buf_bufnr)) then
         ntabs = ntabs + 1
-        tabbufs[ntabs] = bufnr
-        if bufsel == bufnr then
+        tabbufs[ntabs] = buf_bufnr
+        if bufsel == buf_bufnr then
           tabselidx = ntabs
         end
       end
     end
   else
-    tabselidx = vim.fn.tabpagenr()
-    ntabs = vim.fn.tabpagenr("$")
+    tabselidx = tabpagenr()
+    ntabs = tabpagenr("$")
     for tabidx = 1, ntabs do
-      tabbufs[tabidx] = vim.fn.tabpagebuflist(tabidx)[vim.fn.tabpagewinnr(tabidx)]
+      tabbufs[tabidx] = tabpagebuflist(tabidx)[tabpagewinnr(tabidx)]
     end
   end
 
@@ -149,7 +160,7 @@ function module.tabs_or_buffers(opts)
 
   -- Add selected tab first to ensure it's always added
   if tabselidx > 0 then
-    local tabinfo = vim.fn["g:CrystallineTabFn"](tabbufs[tabselidx], max_tab_sel_width, true)
+    local tabinfo = vim_fn["g:CrystallineTabFn"](tabbufs[tabselidx], max_tab_sel_width, true)
     local tab, tabwidth, tabitems = tabinfo[1], tabinfo[2], tabinfo[3]
     if enable_mouse then
       tabitems = tabitems + 1
@@ -166,10 +177,10 @@ function module.tabs_or_buffers(opts)
   -- Add at least one tab to left of selected if present and there's space
   local add_left_tabs = tabselidx > 1 and tabsln < max_tabs and width < max_width and items < max_items
   if add_left_tabs then
-    local tabinfo = vim.fn["g:CrystallineTabFn"](tabbufs[tabselidx - 1], max_tab_width, false)
+    local tabinfo = vim_fn["g:CrystallineTabFn"](tabbufs[tabselidx - 1], max_tab_width, false)
     local tab, tabwidth, tabitems = tabinfo[1], tabinfo[2], tabinfo[3]
     if enable_sep then
-      tab = tab .. vim.fn["crystalline#plain_sep"](sep_index, tab_group, first_group)
+      tab = tab .. vim_fn["crystalline#plain_sep"](sep_index, tab_group, first_group)
       tabwidth = tabwidth + sep_width
       tabitems = tabitems + 2
     elseif first_group == tab_sel_group then
@@ -193,14 +204,14 @@ function module.tabs_or_buffers(opts)
   -- Add at least one tab to right of selected if present and there's space
   local add_right_tabs = tabsln < max_tabs and width < max_width and tabselidx > 0 and tabselidx < ntabs
   if add_right_tabs then
-    local tabinfo = vim.fn["g:CrystallineTabFn"](tabbufs[tabselidx + 1], max_tab_width, false)
+    local tabinfo = vim_fn["g:CrystallineTabFn"](tabbufs[tabselidx + 1], max_tab_width, false)
     local tab, tabwidth, tabitems = tabinfo[1], tabinfo[2], tabinfo[3]
     if enable_mouse then
       tabitems = tabitems + 1
       tab = "%" .. (tabselidx + 1) .. "T" .. tab
     end
     if enable_sep then
-      tab = vim.fn["crystalline#plain_sep"](sep_index, last_group, tab_group) .. tab
+      tab = vim_fn["crystalline#plain_sep"](sep_index, last_group, tab_group) .. tab
       tabwidth = tabwidth + sep_width
       tabitems = tabitems + 2
     elseif last_group == tab_sel_group then
@@ -220,13 +231,13 @@ function module.tabs_or_buffers(opts)
   -- Get tab separator
   local tab_sep
   if enable_sep then
-    tab_sep = vim.fn["crystalline#plain_sep"](sep_index, tab_group, tab_group)
+    tab_sep = vim_fn["crystalline#plain_sep"](sep_index, tab_group, tab_group)
   end
 
   -- Add tabs to left of selected
   local tabidx = add_left_tabs and (tabselidx - 2) or -1
   while tabidx > 0 and tabsln < max_tabs and width < max_width do
-    local tabinfo = vim.fn["g:CrystallineTabFn"](tabbufs[tabidx], max_tab_width, false)
+    local tabinfo = vim_fn["g:CrystallineTabFn"](tabbufs[tabidx], max_tab_width, false)
     local tab, tabwidth, tabitems = tabinfo[1], tabinfo[2], tabinfo[3]
     if enable_sep then
       tab = tab .. tab_sep
@@ -249,7 +260,7 @@ function module.tabs_or_buffers(opts)
   -- Add other tabs to right of selected
   tabidx = add_right_tabs and tabselidx + 2 or ntabs + 1
   while tabidx <= ntabs and tabsln < max_tabs and width < max_width do
-    local tabinfo = vim.fn["g:CrystallineTabFn"](tabbufs[tabidx], max_tab_width, false)
+    local tabinfo = vim_fn["g:CrystallineTabFn"](tabbufs[tabidx], max_tab_width, false)
     local tab, tabwidth, tabitems = tabinfo[1], tabinfo[2], tabinfo[3]
     if enable_mouse then
       tabitems = tabitems + 1
@@ -271,7 +282,7 @@ function module.tabs_or_buffers(opts)
 
   if enable_left_sep then
     -- Draw left separator
-    o = vim.fn["crystalline#plain_sep"](sep_index, left_group, first_group) .. o
+    o = vim_fn["crystalline#plain_sep"](sep_index, left_group, first_group) .. o
   else
     -- Draw first group
     o = "%#Crystalline" .. first_group .. "#" .. o
@@ -279,7 +290,7 @@ function module.tabs_or_buffers(opts)
 
   if enable_right_sep then
     -- Draw right separator
-    o = o .. vim.fn["crystalline#plain_sep"](sep_index, last_group, right_group)
+    o = o .. vim_fn["crystalline#plain_sep"](sep_index, last_group, right_group)
   elseif right_group ~= "" then
     -- Draw right group
     o = o .. "%#Crystalline" .. right_group .. "#"
