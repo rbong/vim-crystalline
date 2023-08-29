@@ -1,6 +1,6 @@
 local module = {}
 
--- Internal helpers
+-- Internal Helpers {{{
 
 -- Reduce object lookup time
 local vim_g = vim.g
@@ -26,7 +26,9 @@ local function get_default(dict, key, default)
   return value
 end
 
--- Vim alias exports
+-- }}}
+
+-- Vim Alias Exports {{{
 
 local crystalline_fns = {
   "EscapeStatuslineString",
@@ -75,7 +77,9 @@ for _, fn in pairs(crystalline_fns) do
   module[fn] = vim_fn["crystalline#" .. fn]
 end
 
--- Lua optimized exports
+-- }}}
+
+-- Lua Optimized Exports {{{
 
 local default_opts = vim.empty_dict()
 function module.TabsOrBuffers(opts)
@@ -359,4 +363,8 @@ function module.TabsOrBuffers(opts)
   return o
 end
 
+-- }}}
+
 return module
+
+-- vim:set et sw=2 ts=2 fdm=marker:
