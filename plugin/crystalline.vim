@@ -199,7 +199,7 @@ call crystalline#ApplyCurrentTheme()
 
 " }}}
 
-" Setup autogroups {{{
+" Setup Autogroups {{{
 
 augroup CrystallineTheme
   au!
