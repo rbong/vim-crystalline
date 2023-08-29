@@ -93,8 +93,8 @@ and [verbose](https://github.com/rbong/vim-crystalline/wiki/Configuration-Compar
 
 **Making your own theme**
 
-To make your own theme, see [`:help crystalline-creating-themes`](https://raw.githubusercontent.com/rbong/vim-crystalline/master/doc/crystalline.txt).
-If you'd like to port an airline theme, see [Porting Airline Themes](https://github.com/rbong/vim-crystalline/wiki/Porting-Airline-Themes) on the wiki.
+See also [`:help crystalline-creating-themes`](https://raw.githubusercontent.com/rbong/vim-crystalline/master/doc/crystalline.txt)
+and [Porting Airline Themes](https://github.com/rbong/vim-crystalline/wiki/Porting-Airline-Themes).
 
 ## Installation
 
