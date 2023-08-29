@@ -798,8 +798,13 @@ function! crystalline#get_airline_attrs(theme_name, style, group) abort
 
   let l:attrs = l:pal[a:style][a:group]
 
+  let l:extra = get(l:attrs, 4, '')
+  if l:extra !=# ''
+    let l:extra = 'cterm=' . l:extra . ' gui=' . l:extra
+  endif
+
   " rearrange attributes into crystalline order
-  return [[l:attrs[2], l:attrs[3]], [l:attrs[0], l:attrs[1]], get(l:attrs, 4, '')]
+  return [[l:attrs[2], l:attrs[3]], [l:attrs[0], l:attrs[1]], l:extra]
 endfunction
 
 function! crystalline#get_airline_style_attrs(theme_name, airline_style, style) abort
@@ -814,7 +819,7 @@ function! crystalline#get_airline_style_attrs(theme_name, airline_style, style) 
       continue
     endif
 
-    if !a:has_tabs && l:name =~# '^Tab'
+    if a:style ==# 'Inactive' && l:name =~# '^Tab'
       continue
     endif
 
@@ -840,7 +845,7 @@ function! crystalline#port_airline_theme(theme_name) abort
     if empty(l:airline_style)
       continue
     endif
-    call extend(l:groups, crystalline#get_airline_style_attrs(a:theme_name, l:airline_style, l:name, get(l:style, 'has_tabs')))
+    call extend(l:groups, crystalline#get_airline_style_attrs(a:theme_name, l:airline_style, l:name))
   endfor
 
   " get fallbacks and filter duplicate styles

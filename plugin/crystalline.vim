@@ -142,7 +142,7 @@ endif
 if !exists('g:crystalline_theme_styles')
   let g:crystalline_theme_styles = [
         \ { 'name': '', 'airline_style': 'normal' },
-        \ { 'name': 'Inactive', 'airline_style': 'inactive', 'has_tabs': 0 },
+        \ { 'name': 'Inactive', 'airline_style': 'inactive' },
         \ { 'name': 'NormalMode', 'airline_style': 'normal' },
         \ { 'name': 'CommandMode', 'airline_style': 'commandline' },
         \ { 'name': 'InsertMode', 'airline_style': 'insert' },
