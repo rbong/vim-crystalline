@@ -158,7 +158,7 @@ function! crystalline#get_sep(sep_index, left_group, right_group) abort
   if a:left_group ==# a:right_group
     let l:sep_item = l:sep.alt_ch
   else
-    let l:sep_group = crystalline#get_sep_group(l:from_group, l:to_group)
+    let l:sep_group = l:from_group . 'To' . l:to_group
 
     " Create separator highlight group if it doesn't exist
     if !has_key(g:crystalline_sep_hi_groups, l:sep_group)
@@ -600,10 +600,6 @@ endfunction
 
 " Theme Utils {{{
 
-function! crystalline#get_sep_group(left_group, right_group) abort
-  return a:left_group . 'To' . a:right_group
-endfunction
-
 " Returns a dictionary with attributes of a highlight group.
 " Returns an empty dictionary if the highlight group doesn't exist.
 function! crystalline#synIDattrs(hlgroup) abort
@@ -783,20 +779,20 @@ function! crystalline#generate_theme(theme) abort
   endif
 endfunction
 
-function! crystalline#generate_sep_hi(left_group, right_group) abort
+function! crystalline#generate_sep_hi(from_group, to_group) abort
   if get(g:, 'crystalline_no_generate_sep_hi')
     return
   endif
 
-  if (a:left_group == '' || a:right_group == '') && !get(g:, 'crystalline_did_warn_deprecated_hi_groups')
+  if (a:from_group == '' || a:to_group == '') && !get(g:, 'crystalline_did_warn_deprecated_hi_groups')
     echoerr 'crystalline: use of deprecated highlight groups detected, see :help crystalline-highlight-groups'
     let g:crystalline_did_warn_deprecated_hi_groups = 1
   endif
 
-  let l:sep_group = crystalline#get_sep_group(a:left_group, a:right_group)
+  let l:sep_group = a:from_group . 'To' . a:to_group
 
-  let l:attr_a = crystalline#get_hl_attrs(a:left_group)
-  let l:attr_b = crystalline#get_hl_attrs(a:right_group)
+  let l:attr_a = crystalline#get_hl_attrs(a:from_group)
+  let l:attr_b = crystalline#get_hl_attrs(a:to_group)
 
   if empty(l:attr_a) || empty(l:attr_b)
     return
