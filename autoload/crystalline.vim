@@ -989,9 +989,7 @@ function! crystalline#SetTheme(theme) abort
 endfunction
 
 function! crystalline#ClearTheme() abort
-  augroup CrystallineTheme
-    au!
-  augroup END
+  return crystalline#SetTheme('default')
 endfunction
 
 " }}}
