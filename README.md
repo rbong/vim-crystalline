@@ -15,6 +15,14 @@ and [verbose](https://github.com/rbong/vim-crystalline/wiki/Configuration-Compar
 
 ![img](https://github.com/rbong/vim-crystalline/wiki/screenshots/default.png)
 
+**ayu (dark)**
+
+![img](https://github.com/rbong/vim-crystalline/wiki/screenshots/ayu_dark.png)
+
+**ayu (light)**
+
+![img](https://github.com/rbong/vim-crystalline/wiki/screenshots/ayu_light.png)
+
 **badwolf**
 
 ![img](https://github.com/rbong/vim-crystalline/wiki/screenshots/badwolf.png)
@@ -31,13 +39,17 @@ and [verbose](https://github.com/rbong/vim-crystalline/wiki/Configuration-Compar
 
 ![img](https://github.com/rbong/vim-crystalline/wiki/screenshots/gruvbox_light.png)
 
-**hybrid (dark)**
+**hybrid**
 
-![img](https://github.com/rbong/vim-crystalline/wiki/screenshots/hybrid_dark.png)
+![img](https://github.com/rbong/vim-crystalline/wiki/screenshots/hybrid.png)
 
-**hybrid (light)**
+**iceberg (dark)**
 
-![img](https://github.com/rbong/vim-crystalline/wiki/screenshots/hybrid_light.png)
+![img](https://github.com/rbong/vim-crystalline/wiki/screenshots/iceberg_dark.png)
+
+**iceberg (light)**
+
+![img](https://github.com/rbong/vim-crystalline/wiki/screenshots/iceberg_light.png)
 
 **jellybeans**
 
@@ -47,13 +59,29 @@ and [verbose](https://github.com/rbong/vim-crystalline/wiki/Configuration-Compar
 
 ![img](https://github.com/rbong/vim-crystalline/wiki/screenshots/molokai.png)
 
+**nord**
+
+![img](https://github.com/rbong/vim-crystalline/wiki/screenshots/nord.png)
+
 **onedark**
 
 ![img](https://github.com/rbong/vim-crystalline/wiki/screenshots/onedark.png)
 
+**onehalfdark**
+
+![img](https://github.com/rbong/vim-crystalline/wiki/screenshots/onehalfdark.png)
+
+**onehalflight**
+
+![img](https://github.com/rbong/vim-crystalline/wiki/screenshots/onehalflight.png)
+
 **papercolor**
 
 ![img](https://github.com/rbong/vim-crystalline/wiki/screenshots/papercolor_light.png)
+
+**shadesofpurple**
+
+![img](https://github.com/rbong/vim-crystalline/wiki/screenshots/shadesofpurple.png)
 
 **solarized (dark)**
 
