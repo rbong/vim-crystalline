@@ -2,6 +2,7 @@ local module = {}
 
 -- Reduce object lookup time
 local vim_g = vim.g
+local vim_o = vim.o
 local vim_fn = vim.fn
 local bufnr = vim_fn.bufnr
 local getbufinfo = vim_fn.getbufinfo
@@ -35,7 +36,7 @@ function module.tabs_or_buffers(opts)
   local sep = get_default(vim_g.crystalline_separators, sep_index, { ch = "" })
   local dir = get_default(opts, "dir", sep.dir)
   local min_width = get_default(opts, "min_width", 24)
-  local max_width = get_default(opts, "max_width", math.max(vim.o.columns, min_width))
+  local max_width = get_default(opts, "max_width", math.max(vim_o.columns, min_width))
   local min_tab_width = get_default(
     opts,
     "min_tab_width",
