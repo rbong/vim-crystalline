@@ -102,7 +102,7 @@ function module.tabs_or_buffers(opts)
 
   -- Get group options
   local auto_prefix_mode_group = bool(get_default(opts, "auto_prefix_mode_group", vim_g.crystalline_auto_prefix_mode_group))
-  local group_suffix = get_default(opts, "group_suffix", vim_g.crystalline_auto_add_group_suffix)
+  local group_suffix = get_default(opts, "group_suffix", vim_g.crystalline_group_suffix)
   local tab_group
   local tab_sel_group
   local tab_fill_group

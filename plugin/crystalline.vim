@@ -68,8 +68,8 @@ if !exists('g:crystalline_auto_prefix_mode_group')
   let g:crystalline_auto_prefix_mode_group = v:false
 endif
 
-if !exists('g:crystalline_auto_add_group_suffix')
-  let g:crystalline_auto_add_group_suffix = ''
+if !exists('g:crystalline_group_suffix')
+  let g:crystalline_group_suffix = ''
 endif
 
 if !exists('g:crystalline_separators')

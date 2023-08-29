@@ -56,7 +56,7 @@ g:crystalline_auto_prefix_mode_group    *g:crystalline_auto_prefix_mode_group*
 Whether to automatically prefix all |crystalline-highlight-groups| with the
 current mode when using |crystalline-functions|.
 
-g:crystalline_auto_add_group_suffix      *g:crystalline_auto_add_group_suffix*
+g:crystalline_group_suffix                        *g:crystalline_group_suffix*
 
 A string to add to the end of to all |crystalline-highlight-groups| when using
 |crystalline-functions|.
@@ -181,11 +181,11 @@ Equivalent to:
 >vim
     " Right facing separator
     let l:section = crystalline#mode_hi_item(a:left_group)
-          \ . crystalline#mode_label() 
+          \ . crystalline#mode_label()
           \ . crystalline#sep(a:sep_index, crystalline#mode_sep_group(a:left_group), a:right_group)
     " Left facing separator
     let l:section = crystalline#mode_hi_item(a:mode_group)
-          \ . crystalline#mode_label() 
+          \ . crystalline#mode_label()
           \ . crystalline#sep(a:sep_index, a:left_group, crystalline#mode_sep_group(a:right_group))
 <
 
@@ -269,7 +269,7 @@ Arguments:
 
   `opts.group_suffix`
     A string to append to all group names.
-    Defaults to |g:crystalline_auto_add_group_suffix|.
+    Defaults to |g:crystalline_group_suffix|.
 
   `opts.left_group`
     The group to the left of the tabs/buffers.

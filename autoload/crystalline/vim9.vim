@@ -21,7 +21,7 @@ export def TabsOrBuffers(_opts: dict<any>): string
 
   # Get group options
   var auto_prefix_mode_group = get(opts, 'auto_prefix_mode_group', g:crystalline_auto_prefix_mode_group)
-  var group_suffix = get(opts, 'group_suffix', g:crystalline_auto_add_group_suffix)
+  var group_suffix = get(opts, 'group_suffix', g:crystalline_group_suffix)
   var tab_group = ''
   var tab_sel_group = ''
   var tab_fill_group = ''

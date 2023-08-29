@@ -86,13 +86,13 @@ endfunction
 
 function! crystalline#group(group) abort
   if g:crystalline_auto_prefix_mode_group
-    return g:crystalline_mode_hi_groups[mode()] . a:group . g:crystalline_auto_add_group_suffix
+    return g:crystalline_mode_hi_groups[mode()] . a:group . g:crystalline_group_suffix
   endif
-  return a:group . g:crystalline_auto_add_group_suffix
+  return a:group . g:crystalline_group_suffix
 endfunction
 
 function! crystalline#mode_group(group) abort
-  return g:crystalline_mode_hi_groups[mode()] . a:group . g:crystalline_auto_add_group_suffix
+  return g:crystalline_mode_hi_groups[mode()] . a:group . g:crystalline_group_suffix
 endfunction
 
 function! crystalline#mode_sep_group(group) abort
@@ -200,11 +200,11 @@ endfunction
 function! crystalline#sep(sep_index, left_group, right_group) abort
   if g:crystalline_auto_prefix_mode_group
     let l:mode = g:crystalline_mode_hi_groups[mode()]
-    let l:left_group = l:mode . a:left_group . g:crystalline_auto_add_group_suffix
-    let l:right_group = l:mode . a:right_group . g:crystalline_auto_add_group_suffix
+    let l:left_group = l:mode . a:left_group . g:crystalline_group_suffix
+    let l:right_group = l:mode . a:right_group . g:crystalline_group_suffix
   else
-    let l:left_group = a:left_group . g:crystalline_auto_add_group_suffix
-    let l:right_group = a:right_group . g:crystalline_auto_add_group_suffix
+    let l:left_group = a:left_group . g:crystalline_group_suffix
+    let l:right_group = a:right_group . g:crystalline_group_suffix
   endif
   let l:key = a:sep_index . l:left_group . l:right_group
   if !has_key(g:crystalline_sep_cache, l:key)
@@ -296,7 +296,7 @@ else
 
     " Get group options
     let l:auto_prefix_mode_group = get(l:opts, 'auto_prefix_mode_group', g:crystalline_auto_prefix_mode_group)
-    let l:group_suffix = get(l:opts, 'group_suffix', g:crystalline_auto_add_group_suffix)
+    let l:group_suffix = get(l:opts, 'group_suffix', g:crystalline_group_suffix)
     if l:auto_prefix_mode_group
       let l:m = g:crystalline_mode_hi_groups[mode()]
       let l:tab_group = get(l:opts, 'tab_group', l:m . 'Tab' . l:group_suffix)
