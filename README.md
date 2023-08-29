@@ -98,15 +98,25 @@ and [Porting Airline Themes](https://github.com/rbong/vim-crystalline/wiki/Porti
 
 ## Installation
 
-Using [vim-plug](https://github.com/junegunn/vim-plug), put this in your `.vimrc` between `plug#begin()` and `plug#end()`:
+### Installation with [vim-plug](https://github.com/junegunn/vim-plug)
 
 ```vim
+call plug#begin()
 Plug 'rbong/vim-crystalline'
+call plug#end()
 ```
 
-Then, run `:PlugInstall` after restarting vim.
+Run `:PlugInstall` after restarting vim.
 
-If you don't use `vim-plug` refer to your plugin manager of choice.
+### Installation with [packer.nvim](https://github.com/wbthomason/packer.nvim)
+
+```lua
+require("packer").startup(function(use)
+  use("rbong/vim-crystalline")
+end)
+```
+
+Run `:PackerInstall` after restarting neovim.
 
 ## Examples
 
