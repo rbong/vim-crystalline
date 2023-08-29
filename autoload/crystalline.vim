@@ -77,12 +77,26 @@ endfunction
 
 " Status Line Utils {{{
 
-function! crystalline#hi_item(group) abort
-  return '%#Crystalline' . a:group . '#'
+function! crystalline#group(group) abort
+  if g:crystalline_auto_prefix_mode_group
+    return g:crystalline_mode_hi_groups[mode()] . a:group . g:crystalline_auto_add_group_suffix
+  endif
+  return a:group . g:crystalline_auto_add_group_suffix
 endfunction
 
 function! crystalline#mode_group(group) abort
+  return g:crystalline_mode_hi_groups[mode()] . a:group . g:crystalline_auto_add_group_suffix
+endfunction
+
+function! crystalline#mode_sep_group(group) abort
+  if g:crystalline_auto_prefix_mode_group
+    return a:group
+  endif
   return g:crystalline_mode_hi_groups[mode()] . a:group
+endfunction
+
+function! crystalline#hi_item(group) abort
+  return '%#Crystalline' . crystalline#group(a:group) . '#'
 endfunction
 
 function! crystalline#mode_hi_item(group) abort
@@ -97,13 +111,13 @@ function! crystalline#mode_section(sep_index, left_group, right_group) abort
   let l:dir = get(g:crystalline_separators, a:sep_index, { 'dir': '>' }).dir
 
   if l:dir ==# '<'
-    return crystalline#sep(a:sep_index, a:left_group, crystalline#mode_group(a:right_group))
+    return crystalline#sep(a:sep_index, a:left_group, crystalline#mode_sep_group(a:right_group))
           \ . crystalline#mode_label()
   endif
 
   return crystalline#mode_hi_item(a:left_group)
         \ . crystalline#mode_label()
-        \ . crystalline#sep(a:sep_index, crystalline#mode_group(a:left_group), a:right_group)
+        \ . crystalline#sep(a:sep_index, crystalline#mode_sep_group(a:left_group), a:right_group)
 endfunction
 
 function! crystalline#update_statusline(winnr) abort
@@ -168,10 +182,26 @@ function! crystalline#get_sep(sep_index, left_group, right_group) abort
   return l:sep_item . l:next_item
 endfunction
 
-function! crystalline#sep(sep_index, left_group, right_group) abort
+function! crystalline#plain_sep(sep_index, left_group, right_group) abort
   let l:key = a:sep_index . a:left_group . a:right_group
   if !has_key(g:crystalline_sep_cache, l:key)
     let g:crystalline_sep_cache[l:key] = crystalline#get_sep(a:sep_index, a:left_group, a:right_group)
+  endif
+  return g:crystalline_sep_cache[l:key]
+endfunction
+
+function! crystalline#sep(sep_index, left_group, right_group) abort
+  if g:crystalline_auto_prefix_mode_group
+    let l:mode = g:crystalline_mode_hi_groups[mode()]
+    let l:left_group = l:mode . a:left_group . g:crystalline_auto_add_group_suffix
+    let l:right_group = l:mode . a:right_group . g:crystalline_auto_add_group_suffix
+  else
+    let l:left_group = a:left_group . g:crystalline_auto_add_group_suffix
+    let l:right_group = a:right_group . g:crystalline_auto_add_group_suffix
+  endif
+  let l:key = a:sep_index . l:left_group . l:right_group
+  if !has_key(g:crystalline_sep_cache, l:key)
+    let g:crystalline_sep_cache[l:key] = crystalline#get_sep(a:sep_index, l:left_group, l:right_group)
   endif
   return g:crystalline_sep_cache[l:key]
 endfunction
@@ -258,10 +288,10 @@ else
     let l:max_items = get(l:opts, 'max_items', 80)
 
     " Get group options
-    let l:enable_mode = get(l:opts, 'enable_mode', 0)
-    let l:group_suffix = get(l:opts, 'group_suffix', '')
-    if l:enable_mode
-      let l:mode = crystalline#mode_group('')
+    let l:auto_prefix_mode_group = get(l:opts, 'auto_prefix_mode_group', g:crystalline_auto_prefix_mode_group)
+    let l:group_suffix = get(l:opts, 'group_suffix', g:crystalline_auto_add_group_suffix)
+    if l:auto_prefix_mode_group
+      let l:mode = g:crystalline_mode_hi_groups[mode()]
       let l:tab_group = get(l:opts, 'tab_group', l:mode . 'Tab' . l:group_suffix)
       let l:tab_sel_group = get(l:opts, 'tab_sel_group', l:mode . 'TabSel' . l:group_suffix)
       let l:tab_fill_group = get(l:opts, 'tab_fill_group', l:mode . 'TabFill' . l:group_suffix)
@@ -394,7 +424,7 @@ else
     if l:add_left_tabs
       let [l:tab, l:tabwidth, l:tabitems] = g:CrystallineTabFn(l:tabbufs[l:tabselidx - 1], l:max_tab_width, v:false)
       if l:enable_sep
-        let l:tab .= crystalline#sep(l:sep_index, l:tab_group, l:first_group)
+        let l:tab .= crystalline#plain_sep(l:sep_index, l:tab_group, l:first_group)
         let l:tabwidth += l:sep_width
         let l:tabitems += 2
       elseif l:first_group ==# l:tab_sel_group
@@ -424,7 +454,7 @@ else
         let l:tab = '%' . (l:tabselidx + 2) . 'T' . l:tab
       endif
       if l:enable_sep
-        let l:sep = crystalline#sep(l:sep_index, l:first_group, l:tab_group)
+        let l:sep = crystalline#plain_sep(l:sep_index, l:first_group, l:tab_group)
         let l:tab = l:sep . l:tab
         let l:tabwidth += l:sep_width
         let l:tabitems += 2
@@ -444,7 +474,7 @@ else
 
     " Get tab separator
     if l:enable_sep
-      let l:tab_sep = crystalline#sep(l:sep_index, l:tab_group, l:tab_group)
+      let l:tab_sep = crystalline#plain_sep(l:sep_index, l:tab_group, l:tab_group)
     endif
 
     " Add tabs to left of selected
@@ -493,7 +523,7 @@ else
 
     if l:enable_left_sep
       " Draw left separator
-      let l:o = crystalline#sep(l:sep_index, l:left_group, l:first_group) . l:o
+      let l:o = crystalline#plain_sep(l:sep_index, l:left_group, l:first_group) . l:o
     else
       " Draw first group
       let l:o = '%#Crystalline' . l:first_group . '#' . l:o
@@ -501,7 +531,7 @@ else
 
     if l:enable_right_sep
       " Draw right separator
-      let l:o .= crystalline#sep(l:sep_index, l:last_group, l:right_group)
+      let l:o .= crystalline#plain_sep(l:sep_index, l:last_group, l:right_group)
     elseif l:right_group !=# ''
       " Draw right group
       let l:o .= '%#Crystalline' . l:right_group . '#'

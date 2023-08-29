@@ -20,12 +20,12 @@ export def TabsOrBuffers(_opts: dict<any>): string
   var max_items = get(opts, 'max_items', 80)
 
   # Get group options
-  var enable_mode = get(opts, 'enable_mode', 0)
-  var group_suffix = get(opts, 'group_suffix', '')
+  var auto_prefix_mode_group = get(opts, 'auto_prefix_mode_group', g:crystalline_auto_prefix_mode_group)
+  var group_suffix = get(opts, 'group_suffix', g:crystalline_auto_add_group_suffix)
   var tab_group = ''
   var tab_sel_group = ''
   var tab_fill_group = ''
-  if enable_mode
+  if auto_prefix_mode_group
     var mode = crystalline#mode_group('')
     tab_group = get(opts, 'tab_group', mode .. 'Tab' .. group_suffix)
     tab_sel_group = get(opts, 'tab_sel_group', mode .. 'TabSel' .. group_suffix)
@@ -159,7 +159,7 @@ export def TabsOrBuffers(_opts: dict<any>): string
   if add_left_tabs
     var [tab, tabwidth, tabitems] = g:CrystallineTabFn(tabbufs[tabselidx - 1], max_tab_width, v:false)
     if enable_sep
-      tab ..= crystalline#sep(sep_index, tab_group, first_group)
+      tab ..= crystalline#plain_sep(sep_index, tab_group, first_group)
       tabwidth += sep_width
       tabitems += 2
     elseif first_group ==# tab_sel_group
@@ -189,7 +189,7 @@ export def TabsOrBuffers(_opts: dict<any>): string
       tab = '%' .. (tabselidx + 2) .. 'T' .. tab
     endif
     if enable_sep
-      tab = crystalline#sep(sep_index, first_group, tab_group) .. tab
+      tab = crystalline#plain_sep(sep_index, first_group, tab_group) .. tab
       tabwidth += sep_width
       tabitems += 2
     elseif last_group ==# tab_sel_group
@@ -209,7 +209,7 @@ export def TabsOrBuffers(_opts: dict<any>): string
   # Get tab separator
   var tab_sep = ''
   if enable_sep
-    tab_sep = crystalline#sep(sep_index, tab_group, tab_group)
+    tab_sep = crystalline#plain_sep(sep_index, tab_group, tab_group)
   endif
 
   # Add tabs to left of selected
@@ -258,7 +258,7 @@ export def TabsOrBuffers(_opts: dict<any>): string
 
   if enable_left_sep
     # Draw left separator
-    o = crystalline#sep(sep_index, left_group, first_group) .. o
+    o = crystalline#plain_sep(sep_index, left_group, first_group) .. o
   else
     # Draw first group
     o = '%#Crystalline' .. first_group .. '#' .. o
@@ -266,7 +266,7 @@ export def TabsOrBuffers(_opts: dict<any>): string
 
   if enable_right_sep
     # Draw right separator
-    o ..= crystalline#sep(sep_index, last_group, right_group)
+    o ..= crystalline#plain_sep(sep_index, last_group, right_group)
   elseif right_group !=# ''
     # Draw right group
     o ..= '%#Crystalline' .. right_group .. '#'

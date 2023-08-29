@@ -35,12 +35,12 @@ function module.tabs_or_buffers(opts)
   local max_items = get_default(opts, "max_items", 80)
 
   -- Get group options
-  local enable_mode = bool(get_default(opts, "enable_mode", 0))
-  local group_suffix = get_default(opts, "group_suffix", "")
+  local auto_prefix_mode_group = bool(get_default(opts, "auto_prefix_mode_group", vim.g.crystalline_auto_prefix_mode_group))
+  local group_suffix = get_default(opts, "group_suffix", vim.g.crystalline_auto_add_group_suffix)
   local tab_group
   local tab_sel_group
   local tab_fill_group
-  if enable_mode then
+  if auto_prefix_mode_group then
     local mode = vim.fn["crystalline#mode_group"]("")
     tab_group = get_default(opts, "tab_group", mode .. "Tab" .. group_suffix)
     tab_sel_group = get_default(opts, "tab_sel_group", mode .. "TabSel" .. group_suffix)
@@ -169,7 +169,7 @@ function module.tabs_or_buffers(opts)
     local tabinfo = vim.fn["g:CrystallineTabFn"](tabbufs[tabselidx - 1], max_tab_width, false)
     local tab, tabwidth, tabitems = tabinfo[1], tabinfo[2], tabinfo[3]
     if enable_sep then
-      tab = tab .. vim.fn["crystalline#sep"](sep_index, tab_group, first_group)
+      tab = tab .. vim.fn["crystalline#plain_sep"](sep_index, tab_group, first_group)
       tabwidth = tabwidth + sep_width
       tabitems = tabitems + 2
     elseif first_group == tab_sel_group then
@@ -200,7 +200,7 @@ function module.tabs_or_buffers(opts)
       tab = "%" .. (tabselidx + 1) .. "T" .. tab
     end
     if enable_sep then
-      tab = vim.fn["crystalline#sep"](sep_index, last_group, tab_group) .. tab
+      tab = vim.fn["crystalline#plain_sep"](sep_index, last_group, tab_group) .. tab
       tabwidth = tabwidth + sep_width
       tabitems = tabitems + 2
     elseif last_group == tab_sel_group then
@@ -220,7 +220,7 @@ function module.tabs_or_buffers(opts)
   -- Get tab separator
   local tab_sep
   if enable_sep then
-    tab_sep = vim.fn["crystalline#sep"](sep_index, tab_group, tab_group)
+    tab_sep = vim.fn["crystalline#plain_sep"](sep_index, tab_group, tab_group)
   end
 
   -- Add tabs to left of selected
@@ -271,7 +271,7 @@ function module.tabs_or_buffers(opts)
 
   if enable_left_sep then
     -- Draw left separator
-    o = vim.fn["crystalline#sep"](sep_index, left_group, first_group) .. o
+    o = vim.fn["crystalline#plain_sep"](sep_index, left_group, first_group) .. o
   else
     -- Draw first group
     o = "%#Crystalline" .. first_group .. "#" .. o
@@ -279,7 +279,7 @@ function module.tabs_or_buffers(opts)
 
   if enable_right_sep then
     -- Draw right separator
-    o = o .. vim.fn["crystalline#sep"](sep_index, last_group, right_group)
+    o = o .. vim.fn["crystalline#plain_sep"](sep_index, last_group, right_group)
   elseif right_group ~= "" then
     -- Draw right group
     o = o .. "%#Crystalline" .. right_group .. "#"

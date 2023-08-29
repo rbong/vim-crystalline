@@ -51,6 +51,16 @@ Returns a boolean (whether the buffer is hidden).
 
 Defaults to |crystalline#default_hide_buffer()|.
 
+g:crystalline_auto_prefix_mode_group    *g:crystalline_auto_prefix_mode_group*
+
+Whether to automatically prefix all |crystalline-highlight-groups| with the
+current mode when using |crystalline-functions|.
+
+g:crystalline_auto_add_group_suffix      *g:crystalline_auto_add_group_suffix*
+
+A string to add to the end of to all |crystalline-highlight-groups| when using
+|crystalline-functions|.
+
 g:crystalline_theme                                      *g:crystalline_theme*
 
 Automatically sets the theme.
@@ -121,6 +131,9 @@ Example:
     let l:group = crystalline#mode_group('A')
 <
 
+You do not need to use this function if |g:crystalline_auto_prefix_mode_group|
+is defined.
+
 See also |crystalline-highlight-groups|.
 
 crystalline#mode_hi_item(group)                   *crystalline#mode_hi_item()*
@@ -158,11 +171,11 @@ Equivalent to:
     " Right facing separator
     let l:section = crystalline#mode_hi_item(a:left_group)
           \ . crystalline#mode_label() 
-          \ . crystalline#sep(a:sep_index, crystalline#mode_group(a:left_group), a:right_group)
+          \ . crystalline#sep(a:sep_index, crystalline#mode_sep_group(a:left_group), a:right_group)
     " Left facing separator
     let l:section = crystalline#mode_hi_item(a:mode_group)
           \ . crystalline#mode_label() 
-          \ . crystalline#sep(a:sep_index, crystalline#mode_group(a:mode_group), a:right_group)
+          \ . crystalline#sep(a:sep_index, a:left_group, crystalline#mode_sep_group(a:right_group))
 <
 
 See also |crystalline-highlight-groups|.
@@ -212,9 +225,9 @@ Arguments:
     Enable mouse controls. Not compatible with buffers.
     Defaults to true.
 
-  `opts.enable_mode`
+  `opts.auto_prefix_mode_group
     Whether to prefix the current mode to highlight groups.
-    Defaults to false.
+    Defaults to |g:crystalline_auto_prefix_mode_group|.
 
   `opts.min_width`
     The minium visible width of the tabs/buffers.
@@ -242,6 +255,7 @@ Arguments:
 
   `opts.group_suffix`
     A string to append to all group names.
+    Defaults to |g:crystalline_auto_add_group_suffix|.
 
   `opts.left_group`
     The group to the left of the tabs/buffers.
