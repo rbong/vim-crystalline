@@ -131,8 +131,14 @@ function! crystalline#ModeSection(sep_index, left_group, right_group) abort
         \ . crystalline#Sep(a:sep_index, crystalline#ModeSepGroup(a:left_group), a:right_group)
 endfunction
 
-function! crystalline#UpdateStatusline(winnr) abort
-  call setwinvar(a:winnr, '&statusline', '%!g:CrystallineStatuslineFn(' . a:winnr . ')')
+function! crystalline#GetStatusline(win_id) abort
+  let l:winnr = win_id2win(a:win_id)
+  return g:CrystallineStatuslineFn(l:winnr)
+endfunction
+
+function! crystalline#UpdateStatusline(win_id) abort
+  let l:winnr = win_id2win(a:win_id)
+  call setwinvar(l:winnr, '&statusline', '%!crystalline#GetStatusline(' . a:win_id . ')')
 endfunction
 
 function! crystalline#GetSep(sep_index, left_group, right_group) abort
@@ -577,15 +583,12 @@ endfunction
 function! crystalline#InitStatusline() abort
   augroup CrystallineAutoUpdateStatusline
     au!
-    au BufWinEnter,WinEnter * call crystalline#UpdateStatusline(winnr())
-    au WinLeave * call crystalline#UpdateStatusline(winnr())
-    if exists('#CmdlineLeave') && exists('#CmdWinEnter') && exists('#CmdlineEnter')
-      au CmdlineLeave : call crystalline#UpdateStatusline(winnr())
-      au CmdWinEnter : call crystalline#UpdateStatusline(winnr())
-      au CmdlineEnter : call crystalline#UpdateStatusline(winnr())
+    au BufWinEnter,WinEnter,WinLeave * call crystalline#UpdateStatusline(win_getid())
+    if exists('#CmdWinEnter') && exists('#CmdlineEnter') && exists('#CmdlineLeave')
+      au CmdWinEnter,CmdlineEnter,CmdlineLeave : call crystalline#UpdateStatusline(win_getid())
     endif
   augroup END
-  call crystalline#UpdateStatusline(winnr())
+  call crystalline#UpdateStatusline(win_getid())
 endfunction
 
 function! crystalline#ClearStatusline() abort
