@@ -2,7 +2,80 @@ if has('vim9script') || has('nvim')
   finish
 endif
 
+" Statusline Utils {{{
+
+function! crystalline#PlainSep(sep_index, left_group, right_group) abort
+  let l:key = a:sep_index . a:left_group . a:right_group
+  if !has_key(g:crystalline_sep_cache, l:key)
+    let g:crystalline_sep_cache[l:key] = crystalline#GetSep(a:sep_index, a:left_group, a:right_group)
+  endif
+  return g:crystalline_sep_cache[l:key]
+endfunction
+
+function! crystalline#Sep(sep_index, left_group, right_group) abort
+  if g:crystalline_auto_prefix_mode_group
+    let l:m = g:crystalline_mode_hi_groups[mode()]
+    let l:left_group = l:m . a:left_group . g:crystalline_group_suffix
+    let l:right_group = l:m . a:right_group . g:crystalline_group_suffix
+  else
+    let l:left_group = a:left_group . g:crystalline_group_suffix
+    let l:right_group = a:right_group . g:crystalline_group_suffix
+  endif
+  let l:key = a:sep_index . l:left_group . l:right_group
+  if !has_key(g:crystalline_sep_cache, l:key)
+    let g:crystalline_sep_cache[l:key] = crystalline#GetSep(a:sep_index, l:left_group, l:right_group)
+  endif
+  return g:crystalline_sep_cache[l:key]
+endfunction
+
+" }}}
+
 " Tabline Utils {{{
+
+function! crystalline#DefaultTab(buf, max_width, is_sel) abort
+  " Return early
+  if a:max_width <= 0
+    return ''
+  endif
+
+  " Get left/right components
+  let l:left = g:crystalline_tab_left
+  let l:right = getbufvar(a:buf, '&mod') ? g:crystalline_tab_mod : g:crystalline_tab_nomod
+  let l:lr_width = strchars(l:left) + strchars(l:right)
+  let l:max_name_width = a:max_width - l:lr_width
+
+  " Get name
+  let l:name = bufname(a:buf)
+  if l:name ==# ''
+    let l:name = g:crystalline_tab_empty
+    let l:name_width = strchars(l:name)
+  else
+    let l:name = pathshorten(l:name)
+    let l:name_width = strchars(l:name)
+    if l:name_width > l:max_name_width
+      let l:split_name = split(l:name, '/')
+      if len(l:split_name) > g:crystalline_tab_min_path_parts
+        let l:name = join(l:split_name[-g:crystalline_tab_min_path_parts:], '/')
+        let l:name_width = strchars(l:name)
+      endif
+    endif
+  endif
+
+  " Shorten tab
+  if l:max_name_width <= 0
+    let l:tab = strcharpart(l:name, l:name_width - a:max_width)
+    let l:tabwidth = min([l:name_width, a:max_width])
+  else
+    let l:tab = l:left . strcharpart(l:name, l:name_width - l:max_name_width) . l:right
+    let l:tabwidth = l:lr_width + min([l:name_width, l:max_name_width])
+  endif
+
+  return [crystalline#EscapeStatuslineString(l:tab), l:tabwidth, 0]
+endfunction
+
+function! crystalline#DefaultHideBuffer(buf) abort
+  return (!buflisted(a:buf) && bufnr('%') != a:buf) || getbufvar(a:buf, '&ft') ==# 'qf'
+endfunction
 
 function! crystalline#TabsOrBuffers(...) abort
   " Get args

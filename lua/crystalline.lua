@@ -6,12 +6,19 @@ local module = {}
 local vim_g = vim.g
 local vim_o = vim.o
 local vim_fn = vim.fn
-local mode = vim_fn.mode
+local buflisted = vim_fn.buflisted
+local bufname = vim_fn.bufname
 local bufnr = vim_fn.bufnr
 local getbufinfo = vim_fn.getbufinfo
+local getbufvar = vim_fn.getbufvar
+local mode = vim_fn.mode
+local pathshorten = vim_fn.pathshorten
+local slice = vim.list_slice
+local split = vim_fn.split
+local strcharpart = vim_fn.strcharpart
 local strchars = vim_fn.strchars
-local tabpagenr = vim_fn.tabpagenr
 local tabpagebuflist = vim_fn.tabpagebuflist
+local tabpagenr = vim_fn.tabpagenr
 local tabpagewinnr = vim_fn.tabpagewinnr
 
 local function bool(value)
@@ -44,11 +51,7 @@ local crystalline_fns = {
   "ModeSection",
   "UpdateStatusline",
   "GetSep",
-  "PlainSep",
-  "Sep",
   "UpdateTabline",
-  "DefaultTab",
-  "DefaultHideBuffer",
   "Tabs",
   "Buffers",
   "TabTypeLabel",
@@ -79,7 +82,88 @@ end
 
 -- }}}
 
+-- Statusline Utils {{{
+
+function module.PlainSep(sep_index, left_group, right_group)
+  local cache = vim_g.crystalline_sep_cache
+  local key = sep_index .. left_group .. right_group
+  if cache[key] == nil then
+    cache[key] = module.GetSep(sep_index, left_group, right_group)
+  end
+  return cache[key]
+end
+
+function module.Sep(sep_index, _left_group, _right_group)
+  local cache = vim_g.crystalline_sep_cache
+  local left_group
+  local right_group
+  if bool(vim_g.crystalline_auto_prefix_mode_group) then
+    local m = vim_g.crystalline_mode_hi_groups[mode()]
+    left_group = m .. _left_group .. vim_g.crystalline_group_suffix
+    right_group = m .. _right_group .. vim_g.crystalline_group_suffix
+  else
+    left_group = _left_group .. vim_g.crystalline_group_suffix
+    right_group = _right_group .. vim_g.crystalline_group_suffix
+  end
+  local key = sep_index .. left_group .. right_group
+  if cache[key] == nil then
+    cache[key] = module.GetSep(sep_index, left_group, right_group)
+  end
+  return cache[key]
+end
+
+-- }}}
+
 -- Tabline Utils {{{
+
+function module.DefaultTab(buf, max_width, is_sel)
+  -- Return early
+  if max_width <= 0 then
+    return ''
+  end
+
+  -- Get left/right components
+  local left = vim_g.crystalline_tab_left
+  local right = bool(getbufvar(buf, '&mod')) and vim_g.crystalline_tab_mod or vim_g.crystalline_tab_nomod
+  local lr_width = strchars(left) + strchars(right)
+  local max_name_width = max_width - lr_width
+
+  -- Get name
+  local name = bufname(buf)
+  local name_width
+  if name == '' then
+    name = vim_g.crystalline_tab_empty
+    name_width = strchars(name)
+  else
+    name = pathshorten(name)
+    name_width = strchars(name)
+    if name_width > max_name_width then
+      local split_name = split(name, '/')
+      local split_name_len = #split_name
+      if split_name_len > vim_g.crystalline_tab_min_path_parts then
+        name = table.concat(slice(split_name, 1 + split_name_len - vim_g.crystalline_tab_min_path_parts), '/')
+        name_width = strchars(name)
+      end
+    end
+  end
+
+  -- Shorten tab
+  local tab
+  local tabwidth
+  if max_name_width <= 0 then
+    tab = strcharpart(name, name_width - max_width)
+    tabwidth = math.min(name_width, max_width)
+  else
+    tab = left .. strcharpart(name, name_width - max_name_width) .. right
+    tabwidth = lr_width + math.min(name_width, max_name_width)
+  end
+
+  return {module.EscapeStatuslineString(tab), tabwidth, 0}
+end
+
+function module.DefaultHideBuffer(buf)
+  return ((not buflisted(buf)) and bufnr('%') ~= buf) or getbufvar(buf, '&ft') == 'qf'
+end
 
 local default_tabs_or_buffers_opts = vim.empty_dict()
 function module.TabsOrBuffers(opts)
@@ -174,7 +258,8 @@ function module.TabsOrBuffers(opts)
     bufsel = bufnr()
     for _, buf in pairs(getbufinfo()) do
       local buf_bufnr = buf.bufnr
-      if not bool(vim_fn["g:CrystallineHideBufferFn"](buf_bufnr)) then
+      local HideBuffer = vim_g['CrystallineHideBufferFn'] or vim_fn['g:CrystallineHideBufferFn']
+      if not bool(HideBuffer(buf_bufnr)) then
         ntabs = ntabs + 1
         tabbufs[ntabs] = buf_bufnr
         if bufsel == buf_bufnr then
@@ -218,8 +303,9 @@ function module.TabsOrBuffers(opts)
   end
 
   -- Add selected tab first to ensure it's always added
+  local Tab = vim_g['CrystallineTabFn'] or vim_fn['g:CrystallineTabFn']
   if tabselidx > 0 then
-    local tabinfo = vim_fn["g:CrystallineTabFn"](tabbufs[tabselidx], max_tab_sel_width, true)
+    local tabinfo = Tab(tabbufs[tabselidx], max_tab_sel_width, true)
     local tab, tabwidth, tabitems = tabinfo[1], tabinfo[2], tabinfo[3]
     if enable_mouse then
       tabitems = tabitems + 1
@@ -236,7 +322,7 @@ function module.TabsOrBuffers(opts)
   -- Add at least one tab to left of selected if present and there's space
   local add_left_tabs = tabselidx > 1 and tabsln < max_tabs and width < max_width and items < max_items
   if add_left_tabs then
-    local tabinfo = vim_fn["g:CrystallineTabFn"](tabbufs[tabselidx - 1], max_tab_width, false)
+    local tabinfo = Tab(tabbufs[tabselidx - 1], max_tab_width, false)
     local tab, tabwidth, tabitems = tabinfo[1], tabinfo[2], tabinfo[3]
     if enable_sep then
       tab = tab .. module.PlainSep(sep_index, tab_group, first_group)
@@ -263,7 +349,7 @@ function module.TabsOrBuffers(opts)
   -- Add at least one tab to right of selected if present and there's space
   local add_right_tabs = tabsln < max_tabs and width < max_width and tabselidx > 0 and tabselidx < ntabs
   if add_right_tabs then
-    local tabinfo = vim_fn["g:CrystallineTabFn"](tabbufs[tabselidx + 1], max_tab_width, false)
+    local tabinfo = Tab(tabbufs[tabselidx + 1], max_tab_width, false)
     local tab, tabwidth, tabitems = tabinfo[1], tabinfo[2], tabinfo[3]
     if enable_mouse then
       tabitems = tabitems + 1
@@ -296,7 +382,7 @@ function module.TabsOrBuffers(opts)
   -- Add tabs to left of selected
   local tabidx = add_left_tabs and (tabselidx - 2) or -1
   while tabidx > 0 and tabsln < max_tabs and width < max_width do
-    local tabinfo = vim_fn["g:CrystallineTabFn"](tabbufs[tabidx], max_tab_width, false)
+    local tabinfo = Tab(tabbufs[tabidx], max_tab_width, false)
     local tab, tabwidth, tabitems = tabinfo[1], tabinfo[2], tabinfo[3]
     if enable_sep then
       tab = tab .. tab_sep
@@ -319,7 +405,7 @@ function module.TabsOrBuffers(opts)
   -- Add other tabs to right of selected
   tabidx = add_right_tabs and tabselidx + 2 or ntabs + 1
   while tabidx <= ntabs and tabsln < max_tabs and width < max_width do
-    local tabinfo = vim_fn["g:CrystallineTabFn"](tabbufs[tabidx], max_tab_width, false)
+    local tabinfo = Tab(tabbufs[tabidx], max_tab_width, false)
     local tab, tabwidth, tabitems = tabinfo[1], tabinfo[2], tabinfo[3]
     if enable_mouse then
       tabitems = tabitems + 1

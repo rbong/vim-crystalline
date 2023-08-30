@@ -4,7 +4,85 @@ endif
 
 vim9script
 
+# Statusline Utils {{{
+
+export def PlainSep(sep_index: number, left_group: string, right_group: string): string
+  var key = sep_index .. left_group .. right_group
+  if !has_key(g:crystalline_sep_cache, key)
+    g:crystalline_sep_cache[key] = crystalline#GetSep(sep_index, left_group, right_group)
+  endif
+  return g:crystalline_sep_cache[key]
+enddef
+
+export def Sep(sep_index: number, _left_group: string, _right_group: string): string
+  var left_group: string
+  var right_group: string
+  if g:crystalline_auto_prefix_mode_group
+    var m = g:crystalline_mode_hi_groups[mode()]
+    left_group = m .. _left_group .. g:crystalline_group_suffix
+    right_group = m .. _right_group .. g:crystalline_group_suffix
+  else
+    left_group = _left_group .. g:crystalline_group_suffix
+    right_group = _right_group .. g:crystalline_group_suffix
+  endif
+  var key = sep_index .. left_group .. right_group
+  if !has_key(g:crystalline_sep_cache, key)
+    g:crystalline_sep_cache[key] = crystalline#GetSep(sep_index, left_group, right_group)
+  endif
+  return g:crystalline_sep_cache[key]
+enddef
+
+# }}}
+
 # Tabline Utils {{{
+
+export def DefaultTab(buf: number, max_width: number, is_sel: bool): list<any>
+  # Return early
+  if max_width <= 0
+    return []
+  endif
+
+  # Get left/right components
+  var left = g:crystalline_tab_left
+  var right = getbufvar(buf, '&mod') ? g:crystalline_tab_mod : g:crystalline_tab_nomod
+  var lr_width = strchars(left) + strchars(right)
+  var max_name_width = max_width - lr_width
+
+  # Get name
+  var name = bufname(buf)
+  var name_width: number
+  if name == ''
+    name = g:crystalline_tab_empty
+    name_width = strchars(name)
+  else
+    name = pathshorten(name)
+    name_width = strchars(name)
+    if name_width > max_name_width
+      var split_name = split(name, '/')
+      if len(split_name) > g:crystalline_tab_min_path_parts
+        name = join(split_name[-g:crystalline_tab_min_path_parts : ], '/')
+        name_width = strchars(name)
+      endif
+    endif
+  endif
+
+  # Shorten tab
+  var tab: string
+  var tabwidth: number
+  if max_name_width <= 0
+    tab = strcharpart(name, name_width - max_width)
+    tabwidth = min([name_width, max_width])
+  else
+    tab = left .. strcharpart(name, name_width - max_name_width) .. right
+    tabwidth = lr_width + min([name_width, max_name_width])
+  endif
+
+  return [crystalline#EscapeStatuslineString(tab), tabwidth, 0]
+enddef
+
+export def DefaultHideBuffer(buf: number): bool
+  return (!buflisted(buf) && bufnr('%') != buf) || getbufvar(buf, '&ft') == 'qf'
+enddef
 
 export def TabsOrBuffers(_opts: dict<any>): string
   # Get args
@@ -41,8 +119,8 @@ export def TabsOrBuffers(_opts: dict<any>): string
     tab_sel_group = get(opts, 'tab_sel_group', 'TabSel' .. group_suffix)
     tab_fill_group = get(opts, 'tab_fill_group', 'TabFill' .. group_suffix)
   endif
-  var left_group = get(opts, 'left_group', dir ==# '<' ? tab_fill_group : '')
-  var right_group = get(opts, 'right_group', dir ==# '<' ? '' : tab_fill_group)
+  var left_group = get(opts, 'left_group', dir == '<' ? tab_fill_group : '')
+  var right_group = get(opts, 'right_group', dir == '<' ? '' : tab_fill_group)
 
   # Init variables
   var o = ''
@@ -165,10 +243,10 @@ export def TabsOrBuffers(_opts: dict<any>): string
   if add_left_tabs
     var [tab, tabwidth, tabitems] = g:CrystallineTabFn(tabbufs[tabselidx - 1], max_tab_width, v:false)
     if enable_sep
-      tab ..= crystalline#PlainSep(sep_index, tab_group, first_group)
+      tab ..= PlainSep(sep_index, tab_group, first_group)
       tabwidth += sep_width
       tabitems += 2
-    elseif first_group ==# tab_sel_group
+    elseif first_group == tab_sel_group
       tab ..= '%#Crystalline' .. tab_sel_group .. '#'
       tabitems += 1
     endif
@@ -195,10 +273,10 @@ export def TabsOrBuffers(_opts: dict<any>): string
       tab = '%' .. (tabselidx + 2) .. 'T' .. tab
     endif
     if enable_sep
-      tab = crystalline#PlainSep(sep_index, first_group, tab_group) .. tab
+      tab = PlainSep(sep_index, first_group, tab_group) .. tab
       tabwidth += sep_width
       tabitems += 2
-    elseif last_group ==# tab_sel_group
+    elseif last_group == tab_sel_group
       tab = '%#Crystalline' .. tab_group .. '#' .. tab
       tabitems += 1
     endif
@@ -215,7 +293,7 @@ export def TabsOrBuffers(_opts: dict<any>): string
   # Get tab separator
   var tab_sep = ''
   if enable_sep
-    tab_sep = crystalline#PlainSep(sep_index, tab_group, tab_group)
+    tab_sep = PlainSep(sep_index, tab_group, tab_group)
   endif
 
   # Add tabs to left of selected
@@ -264,7 +342,7 @@ export def TabsOrBuffers(_opts: dict<any>): string
 
   if enable_left_sep
     # Draw left separator
-    o = crystalline#PlainSep(sep_index, left_group, first_group) .. o
+    o = PlainSep(sep_index, left_group, first_group) .. o
   else
     # Draw first group
     o = '%#Crystalline' .. first_group .. '#' .. o
@@ -272,7 +350,7 @@ export def TabsOrBuffers(_opts: dict<any>): string
 
   if enable_right_sep
     # Draw right separator
-    o ..= crystalline#PlainSep(sep_index, last_group, right_group)
+    o ..= PlainSep(sep_index, last_group, right_group)
   elseif right_group !=# ''
     # Draw right group
     o ..= '%#Crystalline' .. right_group .. '#'

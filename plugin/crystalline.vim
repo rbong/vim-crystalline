@@ -116,15 +116,23 @@ if !exists('g:crystalline_tab_min_path_parts')
 endif
 
 if !exists('g:CrystallineTabFn') && !exists('*g:CrystallineTabFn')
-  function! g:CrystallineTabFn(buf, max_width, is_sel) abort
-    return crystalline#DefaultTab(a:buf, a:max_width, a:is_sel)
-  endfunction
+  if has('nvim')
+    lua vim.g.CrystallineTabFn = require('crystalline').DefaultTab
+  else
+    function! g:CrystallineTabFn(buf, max_width, is_sel) abort
+      return crystalline#DefaultTab(a:buf, a:max_width, a:is_sel)
+    endfunction
+  endif
 endif
 
 if !exists('g:CrystallineHideBufferFn') && !exists('*g:CrystallineHideBufferFn')
-  function! g:CrystallineHideBufferFn(buf) abort
-    return crystalline#DefaultHideBuffer(a:buf)
-  endfunction
+  if has('nvim')
+    lua vim.g.CrystallineHideBufferFn = require('crystalline').DefaultHideBuffer
+  else
+    function! g:CrystallineHideBufferFn(buf) abort
+      return crystalline#DefaultHideBuffer(a:buf)
+    endfunction
+  endif
 endif
 
 let g:crystalline_sep_hi_groups = {}
