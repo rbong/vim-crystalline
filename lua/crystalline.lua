@@ -97,10 +97,15 @@ function module.Sep(sep_index, _left_group, _right_group)
   local cache = vim_g.crystalline_sep_cache
   local left_group
   local right_group
-  if bool(vim_g.crystalline_auto_prefix_mode_group) then
-    local m = vim_g.crystalline_mode_hi_groups[mode()]
-    left_group = m .. _left_group .. vim_g.crystalline_group_suffix
-    right_group = m .. _right_group .. vim_g.crystalline_group_suffix
+  if bool(vim_g.crystalline_auto_prefix_groups) then
+    if bool(vim_g.crystalline_inactive) then
+      left_group = 'Inactive' .. _left_group .. vim_g.crystalline_group_suffix
+      right_group = 'Inactive' .. _right_group .. vim_g.crystalline_group_suffix
+    else
+      local m = vim_g.crystalline_mode_hi_groups[mode()]
+      left_group = m .. _left_group .. vim_g.crystalline_group_suffix
+      right_group = m .. _right_group .. vim_g.crystalline_group_suffix
+    end
   else
     left_group = _left_group .. vim_g.crystalline_group_suffix
     right_group = _right_group .. vim_g.crystalline_group_suffix
@@ -189,12 +194,12 @@ function module.TabsOrBuffers(opts)
   local max_items = get_default(opts, "max_items", 80)
 
   -- Get group options
-  local auto_prefix_mode_group = bool(get_default(opts, "auto_prefix_mode_group", vim_g.crystalline_auto_prefix_mode_group))
+  local auto_prefix_groups = bool(get_default(opts, "auto_prefix_groups", vim_g.crystalline_auto_prefix_groups))
   local group_suffix = get_default(opts, "group_suffix", vim_g.crystalline_group_suffix)
   local tab_group
   local tab_sel_group
   local tab_fill_group
-  if auto_prefix_mode_group then
+  if auto_prefix_groups then
     local m = vim_g.crystalline_mode_hi_groups[mode()]
     tab_group = get_default(opts, "tab_group", m .. "Tab" .. group_suffix)
     tab_sel_group = get_default(opts, "tab_sel_group", m .. "TabSel" .. group_suffix)

@@ -44,14 +44,44 @@ set guioptions-=e
 
 See [`:help 'tabline'`](https://vimhelp.org/options.txt.html#%27statusline%27) for more info.
 
+## Hiding Sections
+
+```vim
+function! g:CrystallineStatuslineFn(winnr)
+  let l:s = ''
+
+  let l:s .= ' %f%h%w%m%r '
+
+  let l:s .= '%='
+
+  " Only add this section in active windows
+  if a:winnr == winnr()
+    let l:s .= '%{&ft} '
+  endif
+  " Only add this section in wide enough windows
+  if winwidth(a:winnr) >= 80
+    let l:s .= '%l/%L %2v '
+  endif
+
+  return l:s
+endfunction
+
+set laststatus=2
+```
+
 ## Using Highlight Groups
 
 ```vim
 function! g:CrystallineStatuslineFn(winnr)
   let l:s = ''
 
-  " Start highlighting section A
-  let l:s .= crystalline#HiItem('A')
+  if a:winnr == winnr()
+    " Start highlighting section A
+    let l:s .= crystalline#HiItem('A')
+  else
+    " Start highlighting Fill section for inactive windows
+    let l:s .= crystalline#HiItem('InactiveFill')
+  endif
 
   let l:s .= ' %f%h%w%m%r '
 
@@ -127,8 +157,8 @@ function! g:CrystallineStatuslineFn(winnr)
 endfunction
 
 function! g:CrystallineTablineFn(winnr)
-  " auto_prefix_mode_group automatically uses mode colors
-  return crystalline#DefaultTabline({ 'auto_prefix_mode_group': 1 })
+  " auto_prefix_groups automatically uses mode colors
+  return crystalline#DefaultTabline({ 'auto_prefix_groups': 1 })
 endfunction
 
 set laststatus=2
@@ -154,16 +184,16 @@ function! g:CrystallineStatuslineFn(winnr)
 endfunction
 
 function! g:CrystallineTablineFn(winnr)
-  " auto_prefix_mode_group will default to true
+  " auto_prefix_groups will default to true
   return crystalline#DefaultTabline()
 endfunction
 
 set laststatus=2
 set showtabline=2
 set guioptions-=e
-" This enables auto mode colors
+" This enables auto mode/inactive colors
 " All functions work with this option
-let g:crystalline_auto_prefix_mode_group = 1
+let g:crystalline_auto_prefix_groups = 1
 ```
 
 Add a mode section:
@@ -265,31 +295,6 @@ set showtabline=2
 set guioptions-=e
 ```
 
-## Hiding Sections
-
-```vim
-function! g:CrystallineStatuslineFn(winnr)
-  let l:s = ''
-
-  let l:s .= ' %f%h%w%m%r '
-
-  let l:s .= '%='
-
-  " Only add this section in active windows
-  if a:winnr == winnr()
-    let l:s .= '%{&ft} '
-  endif
-  " Only add this section in wide enough windows
-  if winwidth(a:winnr) >= 80
-    let l:s .= '%l/%L %2v '
-  endif
-
-  return l:s
-endfunction
-
-set laststatus=2
-```
-
 ## Showing More Statusline Information
 
 ```vim
@@ -367,7 +372,7 @@ function! g:CrystallineStatuslineFn(winnr)
   if l:curr
     let l:s .= crystalline#ModeSection(0, 'A', 'B')
   else
-    let l:s .= crystalline#HiItem('InactiveFill')
+    let l:s .= crystalline#HiItem('Fill')
   endif
   let l:s .= ' %f%h%w%m%r '
   if l:curr
@@ -411,5 +416,5 @@ endfunction
 set showtabline=2
 set guioptions-=e
 set laststatus=2
-let g:crystalline_auto_prefix_mode_group = 1
+let g:crystalline_auto_prefix_groups = 1
 ```

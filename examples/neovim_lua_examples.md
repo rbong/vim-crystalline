@@ -43,6 +43,31 @@ vim.o.showtabline = 2
 
 See [`:help 'tabline'`](https://vimhelp.org/options.txt.html#%27statusline%27) for more info.
 
+## Hiding Sections
+
+```lua
+function vim.g.CrystallineStatuslineFn(winnr)
+  local s = ""
+
+  s = s .. " %f%h%w%m%r "
+
+  s = s .. "%="
+
+  -- Only add this section in active windows
+  if winnr == vim.fn.winnr() then
+    s = s .. "%{&ft} "
+  end
+  -- Only add this section in wide enough windows
+  if vim.fn.winwidth(winnr) >= 80 then
+    s = s .. "%l/%L %2v "
+  end
+
+  return s
+end
+
+vim.o.laststatus = 2
+```
+
 ## Using Highlight Groups
 
 ```lua
@@ -50,8 +75,13 @@ function vim.g.CrystallineStatuslineFn(winnr)
   local cl = require("crystalline")
   local s = ""
 
-  -- Start highlighting section A
-  s = s .. cl.HiItem("A")
+  if winnr == vim.fn.winnr() then
+    -- Start highlighting section A
+    s = s .. cl.HiItem("A")
+  else
+    -- Start highlighting Fill section for inactive windows
+    s = s .. cl.HiItem('InactiveFill')
+  end
 
   s = s .. " %f%h%w%m%r "
 
@@ -110,6 +140,8 @@ vim.g.crystalline_separators = {
 
 ## Using Mode Colors
 
+TODO: inactive colors example
+
 Using mode colors manually:
 
 ```lua
@@ -130,8 +162,8 @@ end
 
 function vim.g.CrystallineTablineFn(winnr)
   local cl = require("crystalline")
-  -- auto_prefix_mode_group automatically uses mode colors
-  return cl.DefaultTabline({ auto_prefix_mode_group = true })
+  -- auto_prefix_groups automatically uses mode colors
+  return cl.DefaultTabline({ auto_prefix_groups = true })
 end
 
 vim.o.laststatus = 2
@@ -158,15 +190,15 @@ end
 
 function vim.g.CrystallineTablineFn(winnr)
   local cl = require("crystalline")
-  -- auto_prefix_mode_group will default to true
+  -- auto_prefix_groups will default to true
   return cl.DefaultTabline()
 end
 
 vim.o.laststatus = 2
 vim.o.showtabline = 2
--- This enables auto mode colors
+-- This enables auto mode/inactive colors
 -- All functions work with this option
-vim.g.crystalline_auto_prefix_mode_group = true
+vim.g.crystalline_auto_prefix_groups = true
 ```
 
 Add a mode section:
@@ -271,31 +303,6 @@ vim.o.laststatus = 2
 vim.o.showtabline = 2
 ```
 
-## Hiding Sections
-
-```lua
-function vim.g.CrystallineStatuslineFn(winnr)
-  local s = ""
-
-  s = s .. " %f%h%w%m%r "
-
-  s = s .. "%="
-
-  -- Only add this section in active windows
-  if a:winnr == winnr() then
-    s = s .. "%{&ft} "
-  end
-  -- Only add this section in wide enough windows
-  if winwidth(a:winnr) >= 80 then
-    s = s .. "%l/%L %2v "
-  end
-
-  return s
-end
-
-vim.o.laststatus = 2
-```
-
 ## Showing More Statusline Information
 
 ```lua
@@ -344,7 +351,7 @@ function vim.g.CrystallineTablineFn()
   -- Add a label indicating that neovim is being used
   local vimlabel = " NVIM" 
   -- Use strchars() to get the real visible width
-  local max_width -= strchars(vimlabel)
+  local max_width -= vim.fn.strchars(vimlabel)
 
   return cl.DefaultTabline({ max_items = max_items, max_width = max_width }) .. right
 end
@@ -368,13 +375,13 @@ end
 function vim.g.CrystallineStatuslineFn(winnr)
   local cl = require("crystalline")
   vim.g.crystalline_group_suffix = GroupSuffix()
-  local curr = a:winnr == winnr()
+  local curr = winnr == vim.fn.winnr()
   local s = ""
 
   if curr then
     s = s .. cl.ModeSection(0, "A", "B")
   else
-    s = s .. cl.HiItem("InactiveFill")
+    s = s .. cl.HiItem("Fill")
   end
   s = s .. " %f%h%w%m%r "
   if curr then
@@ -386,7 +393,7 @@ function vim.g.CrystallineStatuslineFn(winnr)
     s = s .. cl.Sep(1, "Fill", "B") .. &paste ? "PASTE " : " "
     s = s .. cl.Sep(1, "B", "A")
   end
-  if winwidth(a:winnr) > 80 then
+  if vim.fn.winwidth(winnr) > 80 then
     s = s .. " %{&ft} %l/%L %2v "
   else
     s = s .. " "
@@ -409,7 +416,7 @@ function vim.g.CrystallineTablineFn()
   local max_width -= 1
 
   local vimlabel = " NVIM "
-  local max_width -= strchars(vimlabel)
+  local max_width -= vim.fn.strchars(vimlabel)
 
   return cl.DefaultTabline({
     enable_sep = true, max_items = max_items, max_width = max_width
@@ -418,5 +425,5 @@ end
 
 vim.o.showtabline = 2
 vim.o.laststatus = 2
-vim.g.crystalline_auto_prefix_mode_group = 1
+vim.g.crystalline_auto_prefix_groups = 1
 ```

@@ -13,10 +13,15 @@ function! crystalline#PlainSep(sep_index, left_group, right_group) abort
 endfunction
 
 function! crystalline#Sep(sep_index, left_group, right_group) abort
-  if g:crystalline_auto_prefix_mode_group
-    let l:m = g:crystalline_mode_hi_groups[mode()]
-    let l:left_group = l:m . a:left_group . g:crystalline_group_suffix
-    let l:right_group = l:m . a:right_group . g:crystalline_group_suffix
+  if g:crystalline_auto_prefix_groups
+    if g:crystalline_inactive
+      let l:left_group = 'Inactive' . a:left_group . g:crystalline_group_suffix
+      let l:right_group = 'Inactive' . a:right_group . g:crystalline_group_suffix
+    else
+      let l:m = g:crystalline_mode_hi_groups[mode()]
+      let l:left_group = l:m . a:left_group . g:crystalline_group_suffix
+      let l:right_group = l:m . a:right_group . g:crystalline_group_suffix
+    endif
   else
     let l:left_group = a:left_group . g:crystalline_group_suffix
     let l:right_group = a:right_group . g:crystalline_group_suffix
@@ -97,9 +102,9 @@ function! crystalline#TabsOrBuffers(...) abort
   let l:max_items = get(l:opts, 'max_items', 80)
 
   " Get group options
-  let l:auto_prefix_mode_group = get(l:opts, 'auto_prefix_mode_group', g:crystalline_auto_prefix_mode_group)
+  let l:auto_prefix_groups = get(l:opts, 'auto_prefix_groups', g:crystalline_auto_prefix_groups)
   let l:group_suffix = get(l:opts, 'group_suffix', g:crystalline_group_suffix)
-  if l:auto_prefix_mode_group
+  if l:auto_prefix_groups
     let l:m = g:crystalline_mode_hi_groups[mode()]
     let l:tab_group = get(l:opts, 'tab_group', l:m . 'Tab' . l:group_suffix)
     let l:tab_sel_group = get(l:opts, 'tab_sel_group', l:m . 'TabSel' . l:group_suffix)

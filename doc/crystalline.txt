@@ -51,10 +51,10 @@ Returns a boolean (whether the buffer is hidden).
 
 Defaults to |crystalline#DefaultHideBuffer()|.
 
-g:crystalline_auto_prefix_mode_group    *g:crystalline_auto_prefix_mode_group*
+g:crystalline_auto_prefix_groups            *g:crystalline_auto_prefix_groups*
 
 Whether to automatically prefix all |crystalline-highlight-groups| with the
-current mode when using |crystalline-functions|.
+current mode or "Inactive" when using |crystalline-functions|.
 
 g:crystalline_group_suffix                        *g:crystalline_group_suffix*
 
@@ -139,8 +139,8 @@ Example:
     let l:group = crystalline#ModeGroup('A')
 <
 
-You do not need to use this function if |g:crystalline_auto_prefix_mode_group|
-is defined.
+You do not need to use this function if |g:crystalline_auto_prefix_groups| is
+defined.
 
 See also |crystalline-highlight-groups|.
 
@@ -239,9 +239,9 @@ Arguments:
     Enable mouse controls. Not compatible with buffers.
     Defaults to true.
 
-  `opts.auto_prefix_mode_group
+  `opts.auto_prefix_groups
     Whether to prefix the current mode to highlight groups.
-    Defaults to |g:crystalline_auto_prefix_mode_group|.
+    Defaults to |g:crystalline_auto_prefix_group|.
 
   `opts.min_width`
     The minium visible width of the tabs/buffers.
@@ -541,7 +541,7 @@ Fully featured example:
     set showtabline=2
     set guioptions-=e
     set laststatus=2
-    let g:crystalline_auto_prefix_mode_group = 1
+    let g:crystalline_auto_prefix_groups = 1
 <
 
  vim:tw=78:ts=8:ft=help

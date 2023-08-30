@@ -64,8 +64,8 @@ elseif !has_key(g:crystalline_mode_hi_groups, 'c')
   echoerr 'crystalline: outdated g:crystalline_mode_labels detected, define all of the groups in :help g:crystalline_mode_labels'
 endif
 
-if !exists('g:crystalline_auto_prefix_mode_group')
-  let g:crystalline_auto_prefix_mode_group = v:false
+if !exists('g:crystalline_auto_prefix_groups')
+  let g:crystalline_auto_prefix_groups = v:false
 endif
 
 if !exists('g:crystalline_group_suffix')
@@ -159,28 +159,67 @@ if !exists('g:crystalline_theme')
   let g:crystalline_theme = 'default'
 endif
 
-if !exists('g:crystalline_theme_styles')
-  let g:crystalline_theme_styles = [
-        \ { 'name': '', 'airline_style': 'normal' },
-        \ { 'name': 'Inactive', 'airline_style': 'inactive' },
-        \ { 'name': 'NormalMode', 'airline_style': 'normal' },
-        \ { 'name': 'CommandMode', 'airline_style': 'commandline' },
-        \ { 'name': 'InsertMode', 'airline_style': 'insert' },
-        \ { 'name': 'VisualMode', 'airline_style': 'visual' },
-        \ { 'name': 'ReplaceMode', 'airline_style': 'replace' },
-        \ { 'name': 'TerminalMode', 'airline_style': 'terminal' },
+if !exists('g:crystalline_theme_airline_styles')
+  let g:crystalline_theme_airline_styles = [
+        \ ['', 'normal'],
+        \ ['Inactive', 'inactive'],
+        \ ['NormalMode', 'normal'],
+        \ ['CommandMode', 'commandline'],
+        \ ['InsertMode', 'insert'],
+        \ ['VisualMode', 'visual'],
+        \ ['ReplaceMode', 'replace'],
+        \ ['TerminalMode', 'terminal'],
         \ ]
 endif
 
-let g:crystalline_theme_groups = [
-      \ { 'name': 'A', 'airline_group': ['', 'airline_a'] },
-      \ { 'name': 'B', 'airline_group': ['', 'airline_b'] },
-      \ { 'name': 'Fill', 'airline_group': ['', 'airline_c'] },
-      \ { 'name': 'Tab', 'airline_group': ['inactive', 'airline_c'] },
-      \ { 'name': 'TabSel', 'airline_group': ['', 'airline_a'] },
-      \ { 'name': 'TabFill', 'airline_group': ['', 'airline_x'] },
-      \ { 'name': 'TabType', 'airline_group': ['', 'airline_b'] },
-      \ ]
+if !exists('g:crystalline_theme_styles')
+  let g:crystalline_theme_styles = [
+        \ '',
+        \ 'Inactive',
+        \ 'NormalMode',
+        \ 'CommandMode',
+        \ 'InsertMode',
+        \ 'VisualMode',
+        \ 'ReplaceMode',
+        \ 'TerminalMode',
+        \ ]
+endif
+
+if !exists('g:crystalline_theme_airline_sections')
+  let g:crystalline_theme_airline_sections = [
+        \ ['A', ['', 'airline_a']],
+        \ ['B', ['', 'airline_b']],
+        \ ['Fill', ['', 'airline_c']],
+        \ ['Tab', ['inactive', 'airline_c']],
+        \ ['TabSel', ['', 'airline_a']],
+        \ ['TabFill', ['', 'airline_x']],
+        \ ['TabType', ['', 'airline_b']],
+        \ ]
+endif
+
+if !exists('g:crystalline_theme_sections')
+  let g:crystalline_theme_sections = [
+        \ 'A',
+        \ 'B',
+        \ 'Fill',
+        \ 'Tab',
+        \ 'TabSel',
+        \ 'TabFill',
+        \ 'TabType',
+        \ ]
+endif
+
+if !exists('g:crystalline_theme_airline_variants')
+  let g:crystalline_theme_airline_variants = [
+        \ ['', ''],
+        \ ['1', '_modified'],
+        \ ['2', '_paste']
+        \ ]
+endif
+
+if !exists('g:crystalline_theme_variants')
+  let g:crystalline_theme_variants = ['', '1', '2']
+endif
 
 let g:crystalline_theme_attrs = [
       \ [0, 0, 'ctermfg'],
@@ -189,7 +228,7 @@ let g:crystalline_theme_attrs = [
       \ [1, 1, 'guibg'],
       \ ]
 
-let g:crystalline_max_theme_variants = 2
+let g:crystalline_inactive = 0
 
 " }}}
 

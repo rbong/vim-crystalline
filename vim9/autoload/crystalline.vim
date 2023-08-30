@@ -17,10 +17,15 @@ enddef
 export def Sep(sep_index: number, _left_group: string, _right_group: string): string
   var left_group: string
   var right_group: string
-  if g:crystalline_auto_prefix_mode_group
-    var m = g:crystalline_mode_hi_groups[mode()]
-    left_group = m .. _left_group .. g:crystalline_group_suffix
-    right_group = m .. _right_group .. g:crystalline_group_suffix
+  if g:crystalline_auto_prefix_groups
+    if g:crystalline_inactive
+      left_group = 'Inactive' .. _left_group .. g:crystalline_group_suffix
+      right_group = 'Inactive' .. _right_group .. g:crystalline_group_suffix
+    else
+      var m = g:crystalline_mode_hi_groups[mode()]
+      left_group = m .. _left_group .. g:crystalline_group_suffix
+      right_group = m .. _right_group .. g:crystalline_group_suffix
+    endif
   else
     left_group = _left_group .. g:crystalline_group_suffix
     right_group = _right_group .. g:crystalline_group_suffix
@@ -104,12 +109,12 @@ export def TabsOrBuffers(_opts: dict<any>): string
   var max_items = get(opts, 'max_items', 80)
 
   # Get group options
-  var auto_prefix_mode_group = get(opts, 'auto_prefix_mode_group', g:crystalline_auto_prefix_mode_group)
+  var auto_prefix_groups = get(opts, 'auto_prefix_groups', g:crystalline_auto_prefix_groups)
   var group_suffix = get(opts, 'group_suffix', g:crystalline_group_suffix)
   var tab_group = ''
   var tab_sel_group = ''
   var tab_fill_group = ''
-  if auto_prefix_mode_group
+  if auto_prefix_groups
     var m = g:crystalline_mode_hi_groups[mode()]
     tab_group = get(opts, 'tab_group', m .. 'Tab' .. group_suffix)
     tab_sel_group = get(opts, 'tab_sel_group', m .. 'TabSel' .. group_suffix)

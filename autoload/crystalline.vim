@@ -89,8 +89,12 @@ endfunction
 " Statusline Utils {{{
 
 function! crystalline#Group(group) abort
-  if g:crystalline_auto_prefix_mode_group
-    return g:crystalline_mode_hi_groups[mode()] . a:group . g:crystalline_group_suffix
+  if g:crystalline_auto_prefix_groups
+    if g:crystalline_inactive
+      return 'Inactive' . a:group . g:crystalline_group_suffix
+    else
+      return g:crystalline_mode_hi_groups[mode()] . a:group . g:crystalline_group_suffix
+    endif
   endif
   return a:group . g:crystalline_group_suffix
 endfunction
@@ -100,7 +104,7 @@ function! crystalline#ModeGroup(group) abort
 endfunction
 
 function! crystalline#ModeSepGroup(group) abort
-  if g:crystalline_auto_prefix_mode_group
+  if g:crystalline_auto_prefix_groups
     return a:group
   endif
   return g:crystalline_mode_hi_groups[mode()] . a:group
@@ -133,6 +137,7 @@ endfunction
 
 function! crystalline#GetStatusline(win_id) abort
   let l:winnr = win_id2win(a:win_id)
+  let g:crystalline_inactive = l:winnr != winnr()
   return g:CrystallineStatuslineFn(l:winnr)
 endfunction
 
@@ -203,8 +208,13 @@ endfunction
 
 " Tabline Utils {{{
 
+function! crystalline#GetTabline() abort
+  let g:crystalline_inactive = 0
+  return g:CrystallineTablineFn()
+endfunction
+
 function! crystalline#UpdateTabline() abort
-  set tabline=%!g:CrystallineTablineFn()
+  set tabline=%!crystalline#GetTabline()
 endfunction
 
 function! crystalline#Tabs(...) abort
@@ -351,8 +361,9 @@ function! crystalline#GetEmptyThemeAttrs() abort
   return [['', ''], ['', ''], '']
 endfunction
 
-function! crystalline#SetThemeFallbackAttrs(theme, style, group) abort
-  let l:full_group = a:style . a:group
+function! crystalline#SetThemeFallbackAttrs(theme, style, section, variant) abort
+  let l:group = a:section . a:variant
+  let l:full_group = a:style . a:section . a:variant
 
   if !has_key(a:theme, l:full_group)
     " set default attrs
@@ -372,24 +383,23 @@ function! crystalline#SetThemeFallbackAttrs(theme, style, group) abort
 
   " get fallback attrs
   " assume this function is called in fallback order unless otherwise noted
-  if a:group ==# 'A' || a:group ==# 'B' || a:group ==# 'Fill'
+  if l:group ==# 'A' || l:group ==# 'B' || l:group ==# 'Fill'
     if a:style is ''
       let l:fallback_attrs = crystalline#GetEmptyThemeAttrs()
     else
-      let l:fallback_attrs = get(a:theme, a:group, crystalline#GetEmptyThemeAttrs())
+      let l:fallback_attrs = get(a:theme, l:group, crystalline#GetEmptyThemeAttrs())
     endif
-  elseif a:group ==# 'Tab'
+  elseif l:group ==# 'Tab'
     " ensure inactive mid is set
-    let [l:fallback_attrs, l:_] = crystalline#SetThemeFallbackAttrs(a:theme, 'Inactive', 'Fill')
-  elseif a:group ==# 'TabSel'
+    let [l:fallback_attrs, l:_] = crystalline#SetThemeFallbackAttrs(a:theme, 'Inactive', 'Fill', '')
+  elseif l:group ==# 'TabSel'
     let l:fallback_attrs = a:theme[a:style . 'A']
-  elseif a:group ==# 'TabFill'
+  elseif l:group ==# 'TabFill'
     let l:fallback_attrs = a:theme[a:style . 'Fill']
-  elseif a:group ==# 'TabType'
+  elseif l:group ==# 'TabType'
     let l:fallback_attrs = a:theme[a:style . 'B']
-  elseif a:group =~# '\d$'
-    " variant
-    let l:fallback_attrs = a:theme[substitute(l:full_group, '\d\+$', '', '')]
+  elseif !empty(a:variant)
+    let l:fallback_attrs = a:theme[a:style . a:section]
   else
     let l:fallback_attrs = crystalline#GetEmptyThemeAttrs()
   endif
@@ -418,10 +428,9 @@ function! crystalline#GenerateTheme(theme) abort
 
   " set fallback attributes
   for l:style in g:crystalline_theme_styles
-    for l:group in g:crystalline_theme_groups
-      call crystalline#SetThemeFallbackAttrs(l:theme, l:style.name, l:group.name)
-      for l:variant in range(1, g:crystalline_max_theme_variants)
-        call crystalline#SetThemeFallbackAttrs(l:theme, l:style.name, l:group.name . l:variant)
+    for l:section in g:crystalline_theme_sections
+      for l:variant in g:crystalline_theme_variants
+        call crystalline#SetThemeFallbackAttrs(l:theme, l:style, l:section, l:variant)
       endfor
     endfor
   endfor
@@ -476,14 +485,14 @@ function! crystalline#GenerateSepHi(from_group, to_group) abort
   exec crystalline#GenerateHi(l:sep_group, l:sep_attr)
 endfunction
 
-function! crystalline#GetAirlineAttrs(theme_name, style, group) abort
+function! crystalline#GetAirlineAttrs(theme_name, style, section) abort
   let l:pal = g:['airline#themes#' . a:theme_name . '#palette']
 
-  if !has_key(get(l:pal, a:style, {}), a:group)
+  if !has_key(get(l:pal, a:style, {}), a:section)
     return crystalline#GetEmptyThemeAttrs()
   endif
 
-  let l:attrs = l:pal[a:style][a:group]
+  let l:attrs = l:pal[a:style][a:section]
 
   let l:extra = get(l:attrs, 4, '')
   if l:extra !=# ''
@@ -494,53 +503,27 @@ function! crystalline#GetAirlineAttrs(theme_name, style, group) abort
   return [[l:attrs[2], l:attrs[3]], [l:attrs[0], l:attrs[1]], l:extra]
 endfunction
 
-function! crystalline#GetAirlineStyleAttrs(theme_name, airline_style, style) abort
-  let l:is_default_style = a:style ==# ''
-  let l:has_tabs = a:style !=# 'Inactive'
-  let l:groups = {}
-
-  for l:group in g:crystalline_theme_groups
-    let l:name = l:group.name
-    let l:airline_group = get(l:group, 'airline_group')
-    if empty(l:airline_group)
-      continue
-    endif
-
-    if a:style ==# 'Inactive' && l:name =~# '^Tab'
-      continue
-    endif
-
-    let l:airline_style = empty(l:airline_group[0]) ? a:airline_style : l:airline_group[0]
-    let l:airline_group = l:airline_group[1]
-
-    let l:groups[a:style . l:name] = crystalline#GetAirlineAttrs(a:theme_name, l:airline_style, l:airline_group)
-
-    for [l:variant, l:suffix] in [[1, '_modified'], [2, '_paste']]
-      let l:groups[a:style . l:name . l:variant] = crystalline#GetAirlineAttrs(a:theme_name, l:airline_style . l:suffix, l:airline_group)
-    endfor
-  endfor
-
-  return l:groups
-endfunction
-
 function! crystalline#PortAirlineTheme(theme_name) abort
   " get all style attributes
   let l:groups = {}
-  for l:style in g:crystalline_theme_styles
-    let l:name = l:style.name
-    let l:airline_style = get(l:style, 'airline_style')
-    if empty(l:airline_style)
-      continue
-    endif
-    call extend(l:groups, crystalline#GetAirlineStyleAttrs(a:theme_name, l:airline_style, l:name))
+  for [l:style, l:airline_style] in g:crystalline_theme_airline_styles
+    for [l:section, l:airline_section] in g:crystalline_theme_airline_sections
+      if l:style ==# 'Inactive' && l:section =~# '^Tab'
+        continue
+      endif
+      for [l:variant, l:airline_variant] in g:crystalline_theme_airline_variants
+        let l:group = l:style . l:section . l:variant
+        let l:groups[l:group] = crystalline#GetAirlineAttrs(a:theme_name, l:airline_style . l:airline_variant, l:airline_section)
+      endfor
+    endfor
   endfor
 
   " get fallbacks and filter duplicate styles
   let l:unique_groups = {}
   for l:style in g:crystalline_theme_styles
     for l:group in g:crystalline_theme_groups
-      for l:variant in ['', '0', '1']
-        let [l:attrs, l:fallback_attrs] = crystalline#SetThemeFallbackAttrs(l:groups, l:style.name, l:group.name . l:variant)
+      for l:variant in g:crystalline_theme_variants
+        let [l:attrs, l:fallback_attrs] = crystalline#SetThemeFallbackAttrs(l:groups, l:style, l:section, l:variant)
         let l:str_attrs = string(l:attrs)
         if l:str_attrs !=# string(l:fallback_attrs)
           let l:unique_groups[l:style.name . l:group.name . l:variant] = l:str_attrs
@@ -561,12 +544,12 @@ function! crystalline#PortAirlineTheme(theme_name) abort
   " build output
   let l:o = 'call crystalline#GenerateTheme({'
   for l:style in g:crystalline_theme_styles
-    for l:group in g:crystalline_theme_groups
-      for l:variant in ['', '0', '1']
-        let l:group_name = l:style.name . l:group.name . l:variant
-        if has_key(l:groups, l:group_name)
-          let l:attrs = l:groups[l:group_name]
-          let l:o .= "\n      \\ '" . l:group_name . "': " . repeat(' ', l:max_group_len - len(l:group_name)) . l:attrs . ','
+    for l:section in g:crystalline_theme_sections
+      for l:variant in g:crystalline_theme_variants
+        let l:group = l:style . l:section . l:variant
+        if has_key(l:groups, l:group)
+          let l:attrs = l:groups[l:group]
+          let l:o .= "\n      \\ '" . l:group . "': " . repeat(' ', l:max_group_len - len(l:group_name)) . l:attrs . ','
         endif
       endfor
     endfor

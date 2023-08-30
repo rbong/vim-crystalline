@@ -144,7 +144,7 @@ function! g:CrystallineStatuslineFn(winnr)
   if l:curr
     let l:s .= crystalline#ModeSection(0, 'A', 'B')
   else
-    let l:s .= crystalline#HiItem('InactiveFill')
+    let l:s .= crystalline#HiItem('Fill')
   endif
   let l:s .= ' %f%h%w%m%r '
   if l:curr
@@ -188,7 +188,7 @@ endfunction
 set showtabline=2
 set guioptions-=e
 set laststatus=2
-let g:crystalline_auto_prefix_mode_group = 1
+let g:crystalline_auto_prefix_groups = 1
 ```
 
 ## More Info
