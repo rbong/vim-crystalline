@@ -338,7 +338,7 @@ function! crystalline#GenerateHi(group, attrs) abort
 
   for [l:i, l:j, l:name] in g:crystalline_theme_attrs
     let l:value = a:attrs[l:i][l:j]
-    if !(l:value is '')
+    if !(l:value is# '')
       let l:hi .= ' ' . l:name . '=' . l:value
       let l:has_attrs = 1
     endif
@@ -384,7 +384,7 @@ function! crystalline#SetThemeFallbackAttrs(theme, style, section, variant) abor
   " get fallback attrs
   " assume this function is called in fallback order unless otherwise noted
   if l:group ==# 'A' || l:group ==# 'B' || l:group ==# 'Fill'
-    if a:style is ''
+    if a:style is# ''
       let l:fallback_attrs = crystalline#GetEmptyThemeAttrs()
     else
       let l:fallback_attrs = get(a:theme, l:group, crystalline#GetEmptyThemeAttrs())
@@ -407,7 +407,7 @@ function! crystalline#SetThemeFallbackAttrs(theme, style, section, variant) abor
   " set default attributes
   let l:has_attrs = 0
   for [l:i, l:j, l:_] in g:crystalline_theme_attrs
-    if l:attrs[l:i][l:j] is ''
+    if l:attrs[l:i][l:j] ==# ''
       let l:attrs[l:i][l:j] = l:fallback_attrs[l:i][l:j]
     else
       let l:has_attrs = 1
@@ -454,7 +454,7 @@ function! crystalline#GenerateSepHi(from_group, to_group) abort
     return
   endif
 
-  if (a:from_group == '' || a:to_group == '') && !get(g:, 'crystalline_did_warn_deprecated_hi_groups')
+  if (a:from_group ==# '' || a:to_group ==# '') && !get(g:, 'crystalline_did_warn_deprecated_hi_groups')
     echoerr 'crystalline: use of deprecated highlight groups detected, see :help crystalline-highlight-groups'
     let g:crystalline_did_warn_deprecated_hi_groups = 1
   endif
@@ -549,7 +549,7 @@ function! crystalline#PortAirlineTheme(theme_name) abort
         let l:group = l:style . l:section . l:variant
         if has_key(l:groups, l:group)
           let l:attrs = l:groups[l:group]
-          let l:o .= "\n      \\ '" . l:group . "': " . repeat(' ', l:max_group_len - len(l:group_name)) . l:attrs . ','
+          let l:o .= "\n      \\ '" . l:group . "': " . repeat(' ', l:max_group_len - len(l:group)) . l:attrs . ','
         endif
       endfor
     endfor
