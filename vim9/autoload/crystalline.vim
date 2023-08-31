@@ -278,7 +278,7 @@ export def TabsOrBuffers(_opts: dict<any>): string
       tab = '%' .. (tabselidx + 2) .. 'T' .. tab
     endif
     if enable_sep
-      tab = PlainSep(sep_index, first_group, tab_group) .. tab
+      tab = PlainSep(sep_index, last_group, tab_group) .. tab
       tabwidth += sep_width
       tabitems += 2
     elseif last_group == tab_sel_group

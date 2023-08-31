@@ -268,7 +268,7 @@ function! crystalline#TabsOrBuffers(...) abort
       let l:tab = '%' . (l:tabselidx + 2) . 'T' . l:tab
     endif
     if l:enable_sep
-      let l:sep = crystalline#PlainSep(l:sep_index, l:first_group, l:tab_group)
+      let l:sep = crystalline#PlainSep(l:sep_index, l:last_group, l:tab_group)
       let l:tab = l:sep . l:tab
       let l:tabwidth += l:sep_width
       let l:tabitems += 2
