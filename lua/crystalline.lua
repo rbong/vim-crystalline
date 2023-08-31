@@ -7,6 +7,7 @@ local vim_g = vim.g
 local vim_o = vim.o
 local vim_fn = vim.fn
 local buflisted = vim_fn.buflisted
+local bufloaded = vim_fn.bufloaded
 local bufname = vim_fn.bufname
 local bufnr = vim_fn.bufnr
 local getbufinfo = vim_fn.getbufinfo
@@ -264,7 +265,7 @@ function module.TabsOrBuffers(opts)
     for _, buf in pairs(getbufinfo()) do
       local buf_bufnr = buf.bufnr
       local HideBuffer = vim_g['CrystallineHideBufferFn'] or vim_fn['g:CrystallineHideBufferFn']
-      if not bool(HideBuffer(buf_bufnr)) then
+      if bool(bufloaded(buf_bufnr)) and not bool(HideBuffer(buf_bufnr)) then
         ntabs = ntabs + 1
         tabbufs[ntabs] = buf_bufnr
         if bufsel == buf_bufnr then
