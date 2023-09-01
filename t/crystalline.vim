@@ -85,7 +85,10 @@ describe 'crystalline'
 
   it 'draws buffers'
     e /tmp/1
-    bd #
+    try
+      bd! #
+    catch /.*/
+    endtry
     e /tmp/2
     e /tmp/3
 
