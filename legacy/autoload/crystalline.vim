@@ -226,7 +226,7 @@ function! crystalline#TabsOrBuffers(...) abort
   endif
 
   " Add at least one tab to right of selected if present and there's space
-  let l:add_right_tabs = l:tabselidx > 0 && l:tabselidx < l:ntabs && l:width < l:max_width && l:tab_count < l:max_tabs
+  let l:add_right_tabs = l:width < l:max_width && l:tabselidx + 1 < l:ntabs && l:tab_count < l:max_tabs
   if l:add_right_tabs
     let [l:tab, l:tabwidth] = g:CrystallineTabFn(l:tabbufs[l:tabselidx + 1], l:max_tab_width, v:false)
     if l:enable_mouse
