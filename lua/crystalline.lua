@@ -276,11 +276,25 @@ function module.TabsOrBuffers(opts)
     end
   end
 
-  -- Calculate remaining items for tabs
-  local remaining_items = math.min(max_items - items, 80)
-  -- Calculate max tabs
-  local items_per_tab = enable_mouse and 3 or 2
-  local max_tabs_est = math.min(ntabs, math.floor(remaining_items / items_per_tab))
+  -- Estimate maximum number of tabs
+  local max_tabs_est = ntabs
+  -- Each tab will use 1 item
+  if enable_mouse and ntabs > 1 then
+    -- Calculate remaining items for non-selected tabs
+    -- 1 item for selected tab mouse controls
+    local remaining_items_est = math.min(max_items - items, 80) - 1
+    -- 4 items for selected tab start and end separators
+    if enable_sep then
+      remaining_items_est = remaining_items_est - 4
+    end
+    -- Calculate final estimate
+    if remaining_items_est <= 0 then
+      max_tabs_est = 1
+    else
+      max_tabs_est = math.floor(remaining_items_est / (ntabs - 1)) + 1
+    end
+  end
+
   -- Calculate remaining width for tabs
   local remaining_width = max_width - lr_sep_width
   -- Calculate max tab width
@@ -313,7 +327,7 @@ function module.TabsOrBuffers(opts)
   end
 
   -- Add at least one tab to left of selected if present and there's space
-  local add_left_tabs = tabselidx > 1 and width < max_width and items < max_items
+  local add_left_tabs = tabselidx > 1 and width < max_width and items <= max_items
   if add_left_tabs then
     local tabinfo = Tab(tabbufs[tabselidx - 1], max_tab_width, false)
     local tab, tabwidth, tabitems = tabinfo[1], tabinfo[2], tabinfo[3]
@@ -340,7 +354,7 @@ function module.TabsOrBuffers(opts)
   end
 
   -- Add at least one tab to right of selected if present and there's space
-  local add_right_tabs = width < max_width and tabselidx > 0 and tabselidx < ntabs
+  local add_right_tabs = tabselidx > 0 and tabselidx < ntabs and width < max_width and items <= max_items
   if add_right_tabs then
     local tabinfo = Tab(tabbufs[tabselidx + 1], max_tab_width, false)
     local tab, tabwidth, tabitems = tabinfo[1], tabinfo[2], tabinfo[3]
@@ -380,7 +394,6 @@ function module.TabsOrBuffers(opts)
     if enable_sep then
       tab = tab .. tab_sep
       tabwidth = tabwidth + sep_width
-      tabitems = tabitems + 2
     end
     if enable_mouse then
       tabitems = tabitems + 1
@@ -408,7 +421,6 @@ function module.TabsOrBuffers(opts)
     if enable_sep then
       tab = tab_sep .. tab
       tabwidth = tabwidth + sep_width
-      tabitems = tabitems + 2
     end
     if width + tabwidth > max_width or items + tabitems > max_items then
       break

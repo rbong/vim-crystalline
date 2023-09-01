@@ -199,11 +199,25 @@ export def TabsOrBuffers(_opts: dict<any>): string
     endfor
   endif
 
-  # Calculate remaining items for tabs
-  var remaining_items = min([max_items - items, 80])
-  # Calculate max tabs
-  var items_per_tab = enable_mouse ? 3 : 2
-  var max_tabs_est = min([ntabs, remaining_items / items_per_tab])
+  # Estimate maximum number of tabs
+  var max_tabs_est = ntabs
+  # Each tab will use 1 item
+  if enable_mouse && ntabs > 1
+    # Calculate remaining items for non-selected tabs
+    # 1 item for selected tab mouse controls
+    var remaining_items_est = min([max_items - items, 80]) - 1
+    # 4 items for selected tab start and end separators
+    if enable_sep
+      remaining_items_est = remaining_items_est - 4
+    endif
+    # Calculate final estimate
+    if remaining_items_est <= 0
+      max_tabs_est = 1
+    else
+      max_tabs_est = remaining_items_est / (ntabs - 1) + 1
+    endif
+  endif
+
   # Calculate remaining width for tabs
   var remaining_width = max_width - lr_sep_width
   # Calculate max tab width
@@ -234,7 +248,7 @@ export def TabsOrBuffers(_opts: dict<any>): string
   endif
 
   # Add at least one tab to left of selected if present and there's space
-  var add_left_tabs = tabselidx >= 1 && width < max_width && items < max_items
+  var add_right_tabs = tabselidx > 0 && tabselidx < ntabs && width < max_width && items <= max_items
   if add_left_tabs
     var [tab, tabwidth, tabitems] = g:CrystallineTabFn(tabbufs[tabselidx - 1], max_tab_width, v:false)
     if enable_sep
@@ -298,7 +312,6 @@ export def TabsOrBuffers(_opts: dict<any>): string
     if enable_sep
       tab ..= tab_sep
       tabwidth += sep_width
-      tabitems += 2
     endif
     if enable_mouse
       tabitems += 1
@@ -325,7 +338,6 @@ export def TabsOrBuffers(_opts: dict<any>): string
     if enable_sep
       tab = tab_sep .. tab
       tabwidth += sep_width
-      tabitems += 2
     endif
     if width + tabwidth > max_width || items + tabitems > max_items
       break

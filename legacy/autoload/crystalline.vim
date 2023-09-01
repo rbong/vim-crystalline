@@ -189,11 +189,25 @@ function! crystalline#TabsOrBuffers(...) abort
     endfor
   endif
 
-  " Calculate remaining items for tabs
-  let l:remaining_items = min([l:max_items - l:items, 80])
-  " Calculate max tabs
-  let l:items_per_tab = l:enable_mouse ? 3 : 2
-  let l:max_tabs_est = min([l:ntabs, l:remaining_items / l:items_per_tab])
+  " Estimate maximum number of tabs
+  let l:max_tabs_est = l:ntabs
+  " Each tab will use 1 item
+  if l:enable_mouse && l:ntabs > 1
+    " Calculate remaining items for non-selected tabs
+    " 1 item for selected tab mouse controls
+    let l:remaining_items_est = min([max_items - items, 80]) - 1
+    " 4 items for selected tab start and end separators
+    if l:enable_sep
+      let l:remaining_items_est = remaining_items_est - 4
+    endif
+    " Calculate final estimate
+    if l:remaining_items_est <= 0
+      let l:max_tabs_est = 1
+    else
+      let l:max_tabs_est = l:remaining_items_est / (l:ntabs - 1) + 1
+    endif
+  endif
+
   " Calculate remaining width for tabs
   let l:remaining_width = l:max_width - l:lr_sep_width
   " Calculate max tab width
@@ -224,7 +238,7 @@ function! crystalline#TabsOrBuffers(...) abort
   endif
 
   " Add at least one tab to left of selected if present and there's space
-  let l:add_left_tabs = l:tabselidx >= 1 && l:width < l:max_width && l:items < l:max_items
+  let l:add_left_tabs = l:tabselidx >= 1 && l:width < l:max_width && l:items <= l:max_items
   if l:add_left_tabs
     let [l:tab, l:tabwidth, l:tabitems] = g:CrystallineTabFn(l:tabbufs[l:tabselidx - 1], l:max_tab_width, v:false)
     if l:enable_sep
@@ -250,7 +264,7 @@ function! crystalline#TabsOrBuffers(...) abort
   endif
 
   " Add at least one tab to right of selected if present and there's space
-  let l:add_right_tabs = l:width < l:max_width && l:tabselidx + 1 < l:ntabs
+  let l:add_right_tabs = l:tabselidx > 0 && l:tabselidx < l:ntabs && l:width < l:max_width && l:items <= l:max_items
   if l:add_right_tabs
     let [l:tab, l:tabwidth, l:tabitems] = g:CrystallineTabFn(l:tabbufs[l:tabselidx + 1], l:max_tab_width, v:false)
     if l:enable_mouse
@@ -288,7 +302,6 @@ function! crystalline#TabsOrBuffers(...) abort
     if l:enable_sep
       let l:tab .= l:tab_sep
       let l:tabwidth += l:sep_width
-      let l:tabitems += 2
     endif
     if l:enable_mouse
       let l:tabitems += 1
@@ -315,7 +328,6 @@ function! crystalline#TabsOrBuffers(...) abort
     if l:enable_sep
       let l:tab = l:tab_sep . l:tab
       let l:tabwidth += l:sep_width
-      let l:tabitems += 2
     endif
     if l:width + l:tabwidth > l:max_width || l:items + l:tabitems > l:max_items
       break

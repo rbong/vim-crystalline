@@ -205,6 +205,7 @@ describe 'crystalline'
     endfor
     normal 3gt
 
+    " 15 items
     let l:five_tabs = '%#CrystallineTabType# TABS %#CrystallineTabTypeToTab#'
           \ . '%#CrystallineTab#%1T /t/1 '
           \ . '%2T /t/2 %#CrystallineTabToTabSel#'
@@ -212,40 +213,40 @@ describe 'crystalline'
           \ . '%#CrystallineTab#%4T /t/4 '
           \ . '%5T /t/5 %#CrystallineTabToTabFill#'
           \ . '%#CrystallineTabFill#%T'
+    " 14 items
     let l:four_tabs = '%#CrystallineTabType# TABS %#CrystallineTabTypeToTab#'
           \ . '%#CrystallineTab#%1T /t/1 '
           \ . '%2T /t/2 %#CrystallineTabToTabSel#'
           \ . '%#CrystallineTabSel#%3T /t/3 %#CrystallineTabSelToTab#'
           \ . '%#CrystallineTab#%4T /t/4 %#CrystallineTabToTabFill#'
           \ . '%#CrystallineTabFill#%T'
-    let l:three_tabs = '%#CrystallineTabType# TABS %#CrystallineTabTypeToTab#'
+    " 13 items
+    let l:three_tabs_a = '%#CrystallineTabType# TABS %#CrystallineTabTypeToTab#'
           \ . '%#CrystallineTab#%2T /t/2 %#CrystallineTabToTabSel#'
           \ . '%#CrystallineTabSel#%3T /t/3 %#CrystallineTabSelToTab#'
           \ . '%#CrystallineTab#%4T /t/4 %#CrystallineTabToTabFill#'
           \ . '%#CrystallineTabFill#%T'
+    " 11 items
+    let l:three_tabs_b = '%#CrystallineTabType# TABS %#CrystallineTabTypeToTab#'
+          \ . '%#CrystallineTab#%1T /t/1 '
+          \ . '%2T /t/2 %#CrystallineTabToTabSel#'
+          \ . '%#CrystallineTabSel#%3T /t/3 %#CrystallineTabSelToTabFill#'
+          \ . '%#CrystallineTabFill#%T'
+    " 10 items
     let l:two_tabs = '%#CrystallineTabType# TABS %#CrystallineTabTypeToTab#'
           \ . '%#CrystallineTab#%2T /t/2 %#CrystallineTabToTabSel#'
           \ . '%#CrystallineTabSel#%3T /t/3 %#CrystallineTabSelToTabFill#'
           \ . '%#CrystallineTabFill#%T'
+    " 7 items
     let l:one_tab = '%#CrystallineTabType# TABS %#CrystallineTabTypeToTabSel#'
           \ . '%#CrystallineTabSel#%3T /t/3 %#CrystallineTabSelToTabFill#'
           \ . '%#CrystallineTabFill#%T'
 
-    " 3 items per tab (2 for separator, 1 for mouse)
-    " 1 extra item on left (first group)
-    " 3 extra items on right (another separator and last mouse item)
-    " Total: 19
-    "
-    " Note that extra items could be knocked off per tab, but we don't have
-    " the real number of seprator items (alt separators don't need items).
-    "
-    " TODO: maximize tabs
-    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_items': 19 }) ==# l:five_tabs
-    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_items': 18 }) ==# l:four_tabs
-    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_items': 16 }) ==# l:four_tabs
-    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_items': 15 }) ==# l:three_tabs
-    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_items': 13 }) ==# l:three_tabs
-    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_items': 12 }) ==# l:two_tabs
+    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_items': 15 }) ==# l:five_tabs
+    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_items': 14 }) ==# l:four_tabs
+    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_items': 13 }) ==# l:three_tabs_a
+    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_items': 12 }) ==# l:three_tabs_b
+    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_items': 11 }) ==# l:three_tabs_b
     Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_items': 10 }) ==# l:two_tabs
     Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_items': 9 }) ==# l:one_tab
     Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_items': 0 }) ==# l:one_tab
