@@ -295,6 +295,8 @@ set showtabline=2
 set guioptions-=e
 ```
 
+There are 2 variants to use in built-in themes.
+
 ## Showing More Statusline Information
 
 ```vim

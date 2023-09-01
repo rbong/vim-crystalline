@@ -303,6 +303,8 @@ vim.o.laststatus = 2
 vim.o.showtabline = 2
 ```
 
+There are 2 variants to use in built-in themes.
+
 ## Showing More Statusline Information
 
 ```lua
