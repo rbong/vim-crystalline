@@ -316,7 +316,7 @@ function module.TabsOrBuffers(opts)
   end
 
   -- Add at least one tab to left of selected if present and there's space
-  local add_left_tabs = tabselidx > 1 and tabsln < max_tabs and width < max_width and items < max_items
+  local add_left_tabs = tabselidx > 1 and width < max_width and items < max_items
   if add_left_tabs then
     local tabinfo = Tab(tabbufs[tabselidx - 1], max_tab_width, false)
     local tab, tabwidth, tabitems = tabinfo[1], tabinfo[2], tabinfo[3]
@@ -343,7 +343,7 @@ function module.TabsOrBuffers(opts)
   end
 
   -- Add at least one tab to right of selected if present and there's space
-  local add_right_tabs = tabsln < max_tabs and width < max_width and tabselidx > 0 and tabselidx < ntabs
+  local add_right_tabs = width < max_width and tabselidx > 0 and tabselidx < ntabs
   if add_right_tabs then
     local tabinfo = Tab(tabbufs[tabselidx + 1], max_tab_width, false)
     local tab, tabwidth, tabitems = tabinfo[1], tabinfo[2], tabinfo[3]
@@ -377,7 +377,7 @@ function module.TabsOrBuffers(opts)
 
   -- Add tabs to left of selected
   local tabidx = add_left_tabs and (tabselidx - 2) or -1
-  while tabidx > 0 and tabsln < max_tabs and width < max_width do
+  while tabidx > 0 and width < max_width do
     local tabinfo = Tab(tabbufs[tabidx], max_tab_width, false)
     local tab, tabwidth, tabitems = tabinfo[1], tabinfo[2], tabinfo[3]
     if enable_sep then
@@ -400,7 +400,7 @@ function module.TabsOrBuffers(opts)
 
   -- Add other tabs to right of selected
   tabidx = add_right_tabs and tabselidx + 2 or ntabs + 1
-  while tabidx <= ntabs and tabsln < max_tabs and width < max_width do
+  while tabidx <= ntabs and width < max_width do
     local tabinfo = Tab(tabbufs[tabidx], max_tab_width, false)
     local tab, tabwidth, tabitems = tabinfo[1], tabinfo[2], tabinfo[3]
     if enable_mouse then

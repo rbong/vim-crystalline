@@ -224,7 +224,7 @@ function! crystalline#TabsOrBuffers(...) abort
   endif
 
   " Add at least one tab to left of selected if present and there's space
-  let l:add_left_tabs = l:tabselidx >= 1 && l:tabsln < l:max_tabs && l:width < l:max_width && l:items < l:max_items
+  let l:add_left_tabs = l:tabselidx >= 1 && l:width < l:max_width && l:items < l:max_items
   if l:add_left_tabs
     let [l:tab, l:tabwidth, l:tabitems] = g:CrystallineTabFn(l:tabbufs[l:tabselidx - 1], l:max_tab_width, v:false)
     if l:enable_sep
@@ -250,7 +250,7 @@ function! crystalline#TabsOrBuffers(...) abort
   endif
 
   " Add at least one tab to right of selected if present and there's space
-  let l:add_right_tabs = l:tabsln < l:max_tabs && l:width < l:max_width && l:tabselidx + 1 < l:ntabs
+  let l:add_right_tabs = l:width < l:max_width && l:tabselidx + 1 < l:ntabs
   if l:add_right_tabs
     let [l:tab, l:tabwidth, l:tabitems] = g:CrystallineTabFn(l:tabbufs[l:tabselidx + 1], l:max_tab_width, v:false)
     if l:enable_mouse
@@ -283,7 +283,7 @@ function! crystalline#TabsOrBuffers(...) abort
 
   " Add tabs to left of selected
   let l:tabidx = l:add_left_tabs ? l:tabselidx - 2 : -1
-  while l:tabidx >= 0 && l:tabsln < l:max_tabs && l:width < l:max_width
+  while l:tabidx >= 0 && l:width < l:max_width
     let [l:tab, l:tabwidth, l:tabitems] = g:CrystallineTabFn(l:tabbufs[l:tabidx], l:max_tab_width, v:false)
     if l:enable_sep
       let l:tab .= l:tab_sep
@@ -305,7 +305,7 @@ function! crystalline#TabsOrBuffers(...) abort
 
   " Add other tabs to right of selected
   let l:tabidx = l:add_right_tabs ? l:tabselidx + 2 : l:ntabs
-  while l:tabidx < l:ntabs && l:tabsln < l:max_tabs && l:width < l:max_width
+  while l:tabidx < l:ntabs && l:width < l:max_width
     let [l:tab, l:tabwidth, l:tabitems] = g:CrystallineTabFn(l:tabbufs[l:tabidx], l:max_tab_width, v:false)
     if l:enable_mouse
       let l:tabitems += 1
