@@ -192,12 +192,12 @@ function! crystalline#TabsOrBuffers(...) abort
   " Calculate remaining items for tabs
   let l:remaining_items = min([l:max_items - l:items, 80])
   " Calculate max tabs
-  let l:items_per_tab = l:enable_mouse ? 1 : 0
-  let l:max_tabs = l:items_per_tab <= 0 ? ntabs : l:remaining_items / l:items_per_tab
+  let l:items_per_tab = l:enable_mouse ? 3 : 2
+  let l:max_tabs_est = min([l:ntabs, l:remaining_items / l:items_per_tab])
   " Calculate remaining width for tabs
   let l:remaining_width = l:max_width - l:lr_sep_width
   " Calculate max tab width
-  let l:max_tab_width = max([l:remaining_width / min([l:ntabs, l:max_tabs]), l:min_tab_width + l:sep_width]) - l:sep_width
+  let l:max_tab_width = max([l:remaining_width / min([l:ntabs, l:max_tabs_est]), l:min_tab_width + l:sep_width]) - l:sep_width
   " Calculate max selected tab width
   let l:max_tab_sel_width = max([l:max_tab_width, l:min_tab_sel_width])
   " Handle different width for selected tabs
@@ -205,7 +205,7 @@ function! crystalline#TabsOrBuffers(...) abort
     " Recalculate remaining width for non-selected tabs
     let l:remaining_width = l:max_width - l:max_tab_sel_width - l:lr_sep_width
     " Recalculate max tab width
-    let l:max_tab_width = max([l:remaining_width / min([l:ntabs - 1, l:max_tabs]), l:min_tab_width + l:sep_width]) - l:sep_width
+    let l:max_tab_width = max([l:remaining_width / min([l:ntabs - 1, l:max_tabs_est]), l:min_tab_width + l:sep_width]) - l:sep_width
   endif
 
   " Add selected tab first to ensure it's always added
@@ -288,6 +288,7 @@ function! crystalline#TabsOrBuffers(...) abort
     if l:enable_sep
       let l:tab .= l:tab_sep
       let l:tabwidth += l:sep_width
+      let l:tabitems += 2
     endif
     if l:enable_mouse
       let l:tabitems += 1
@@ -314,6 +315,7 @@ function! crystalline#TabsOrBuffers(...) abort
     if l:enable_sep
       let l:tab = l:tab_sep . l:tab
       let l:tabwidth += l:sep_width
+      let l:tabitems += 2
     endif
     if l:width + l:tabwidth > l:max_width || l:items + l:tabitems > l:max_items
       break

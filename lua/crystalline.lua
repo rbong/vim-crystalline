@@ -279,15 +279,12 @@ function module.TabsOrBuffers(opts)
   -- Calculate remaining items for tabs
   local remaining_items = math.min(max_items - items, 80)
   -- Calculate max tabs
-  local items_per_tab = enable_mouse and 1 or 0
-  local max_tabs = ntabs
-  if items_per_tab > 0 then
-    max_tabs = math.floor(remaining_items / items_per_tab)
-  end
+  local items_per_tab = enable_mouse and 3 or 2
+  local max_tabs_est = math.min(ntabs, math.floor(remaining_items / items_per_tab))
   -- Calculate remaining width for tabs
   local remaining_width = max_width - lr_sep_width
   -- Calculate max tab width
-  local max_tab_width = math.max(math.floor(remaining_width / math.min(ntabs, max_tabs)), min_tab_width + sep_width) - sep_width
+  local max_tab_width = math.max(math.floor(remaining_width / math.min(ntabs, max_tabs_est)), min_tab_width + sep_width) - sep_width
   -- Calculate max selected tab width
   local max_tab_sel_width = math.max(max_tab_width, min_tab_sel_width)
   -- Handle different width for selected tabs
@@ -295,7 +292,7 @@ function module.TabsOrBuffers(opts)
     -- Recalculate remaining width for non-selected tabs
     remaining_width = max_width - max_tab_sel_width - lr_sep_width
     -- Recalculate max tab width
-    max_tab_width = math.max(math.floor(remaining_width / math.min(ntabs - 1, max_tabs)), min_tab_width + sep_width) - sep_width
+    max_tab_width = math.max(math.floor(remaining_width / math.min(ntabs - 1, max_tabs_est)), min_tab_width + sep_width) - sep_width
   end
 
   -- Add selected tab first to ensure it's always added
@@ -383,6 +380,7 @@ function module.TabsOrBuffers(opts)
     if enable_sep then
       tab = tab .. tab_sep
       tabwidth = tabwidth + sep_width
+      tabitems = tabitems + 2
     end
     if enable_mouse then
       tabitems = tabitems + 1
@@ -410,6 +408,7 @@ function module.TabsOrBuffers(opts)
     if enable_sep then
       tab = tab_sep .. tab
       tabwidth = tabwidth + sep_width
+      tabitems = tabitems + 2
     end
     if width + tabwidth > max_width or items + tabitems > max_items then
       break

@@ -202,12 +202,12 @@ export def TabsOrBuffers(_opts: dict<any>): string
   # Calculate remaining items for tabs
   var remaining_items = min([max_items - items, 80])
   # Calculate max tabs
-  var items_per_tab = enable_mouse ? 1 : 0
-  var max_tabs = items_per_tab <= 0 ? ntabs : remaining_items / items_per_tab
+  var items_per_tab = enable_mouse ? 3 : 2
+  var max_tabs_est = min([ntabs, remaining_items / items_per_tab])
   # Calculate remaining width for tabs
   var remaining_width = max_width - lr_sep_width
   # Calculate max tab width
-  var max_tab_width = max([remaining_width / min([ntabs, max_tabs]), min_tab_width + sep_width]) - sep_width
+  var max_tab_width = max([remaining_width / min([ntabs, max_tabs_est]), min_tab_width + sep_width]) - sep_width
   # Calculate max selected tab width
   var max_tab_sel_width = max([max_tab_width, min_tab_sel_width])
   # Handle different width for selected tabs
@@ -215,7 +215,7 @@ export def TabsOrBuffers(_opts: dict<any>): string
     # Recalculate remaining width for non-selected tabs
     remaining_width = max_width - max_tab_sel_width - lr_sep_width
     # Recalculate max tab width
-    max_tab_width = max([remaining_width / min([ntabs - 1, max_tabs]), min_tab_width + sep_width]) - sep_width
+    max_tab_width = max([remaining_width / min([ntabs - 1, max_tabs_est]), min_tab_width + sep_width]) - sep_width
   endif
 
   # Add selected tab first to ensure it's always added
@@ -298,6 +298,7 @@ export def TabsOrBuffers(_opts: dict<any>): string
     if enable_sep
       tab ..= tab_sep
       tabwidth += sep_width
+      tabitems += 2
     endif
     if enable_mouse
       tabitems += 1
@@ -324,6 +325,7 @@ export def TabsOrBuffers(_opts: dict<any>): string
     if enable_sep
       tab = tab_sep .. tab
       tabwidth += sep_width
+      tabitems += 2
     endif
     if width + tabwidth > max_width || items + tabitems > max_items
       break
