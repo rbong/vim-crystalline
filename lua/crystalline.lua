@@ -125,7 +125,7 @@ end
 function module.DefaultTab(buf, max_width, is_sel)
   -- Return early
   if max_width <= 0 then
-    return {'', 0, 0}
+    return { '', 0 }
   end
 
   -- Get left/right components
@@ -164,7 +164,7 @@ function module.DefaultTab(buf, max_width, is_sel)
     tabwidth = lr_width + math.min(name_width, max_name_width)
   end
 
-  return {module.EscapeStatuslineString(tab), tabwidth, 0}
+  return { module.EscapeStatuslineString(tab), tabwidth }
 end
 
 function module.DefaultHideBuffer(buf)
@@ -192,7 +192,7 @@ function module.TabsOrBuffers(opts)
       + math.max(strchars(vim_g.crystalline_tab_mod), strchars(vim_g.crystalline_tab_nomod))
   )
   local min_tab_sel_width = get_default(opts, "min_tab_width", min_tab_width)
-  local max_items = get_default(opts, "max_items", 80)
+  local max_tabs = math.max(1, get_default(opts, "max_tabs", 26))
 
   -- Get group options
   local auto_prefix_groups = bool(get_default(opts, "auto_prefix_groups", vim_g.crystalline_auto_prefix_groups))
@@ -215,9 +215,8 @@ function module.TabsOrBuffers(opts)
 
   -- Init variables
   local o = ""
-  local tabsln = 0
+  local tab_count = 0
   local width = 0
-  local items = 0
   local sep_width = enable_sep and strchars(sep.ch) or 0
   local first_group = tab_group
   local last_group = tab_group
@@ -229,24 +228,12 @@ function module.TabsOrBuffers(opts)
   if enable_left_sep then
     -- Count left sep
     width = width + sep_width
-    items = items + 2
     lr_sep_width = sep_width
-  else
-    -- Count first group
-    items = items + 1
   end
   if enable_right_sep then
     -- Count right sep
     width = width + sep_width
-    items = items + 2
     lr_sep_width = sep_width
-  elseif right_group ~= "" then
-    -- Count right group
-    items = items + 1
-  end
-  -- Count mouse terminator
-  if enable_mouse then
-    items = items + 1
   end
 
   -- Get tab data
@@ -276,29 +263,10 @@ function module.TabsOrBuffers(opts)
     end
   end
 
-  -- Estimate maximum number of tabs
-  local max_tabs_est = ntabs
-  -- Each tab will use 1 item
-  if enable_mouse and ntabs > 1 then
-    -- Calculate remaining items for non-selected tabs
-    -- 1 item for selected tab mouse controls
-    local remaining_items_est = math.min(max_items - items, 80) - 1
-    -- 4 items for selected tab start and end separators
-    if enable_sep then
-      remaining_items_est = remaining_items_est - 4
-    end
-    -- Calculate final estimate
-    if remaining_items_est <= 0 then
-      max_tabs_est = 1
-    else
-      max_tabs_est = math.floor(remaining_items_est / (ntabs - 1)) + 1
-    end
-  end
-
   -- Calculate remaining width for tabs
   local remaining_width = max_width - lr_sep_width
   -- Calculate max tab width
-  local max_tab_width = math.max(math.floor(remaining_width / math.min(ntabs, max_tabs_est)), min_tab_width + sep_width) - sep_width
+  local max_tab_width = math.max(math.floor(remaining_width / math.min(ntabs, max_tabs)), min_tab_width + sep_width) - sep_width
   -- Calculate max selected tab width
   local max_tab_sel_width = math.max(max_tab_width, min_tab_sel_width)
   -- Handle different width for selected tabs
@@ -306,76 +274,66 @@ function module.TabsOrBuffers(opts)
     -- Recalculate remaining width for non-selected tabs
     remaining_width = max_width - max_tab_sel_width - lr_sep_width
     -- Recalculate max tab width
-    max_tab_width = math.max(math.floor(remaining_width / math.min(ntabs - 1, max_tabs_est)), min_tab_width + sep_width) - sep_width
+    max_tab_width = math.max(math.floor(remaining_width / math.min(ntabs - 1, max_tabs)), min_tab_width + sep_width) - sep_width
   end
 
   -- Add selected tab first to ensure it's always added
   local Tab = vim_g['CrystallineTabFn'] or vim_fn['g:CrystallineTabFn']
   if tabselidx > 0 then
     local tabinfo = Tab(tabbufs[tabselidx], max_tab_sel_width, true)
-    local tab, tabwidth, tabitems = tabinfo[1], tabinfo[2], tabinfo[3]
+    local tab, tabwidth = tabinfo[1], tabinfo[2]
     if enable_mouse then
-      tabitems = tabitems + 1
       tab = "%" .. tabselidx .. "T" .. tab
     end
     o = o .. tab
-    tabsln = tabsln + 1
+    tab_count = tab_count + 1
     width = width + tabwidth
-    items = items + tabitems
     first_group = tab_sel_group
     last_group = tab_sel_group
   end
 
   -- Add at least one tab to left of selected if present and there's space
-  local add_left_tabs = tabselidx > 1 and width < max_width and items <= max_items
+  local add_left_tabs = tabselidx > 1 and width < max_width and tab_count < max_tabs
   if add_left_tabs then
     local tabinfo = Tab(tabbufs[tabselidx - 1], max_tab_width, false)
-    local tab, tabwidth, tabitems = tabinfo[1], tabinfo[2], tabinfo[3]
+    local tab, tabwidth = tabinfo[1], tabinfo[2]
     if enable_sep then
       tab = tab .. module.PlainSep(sep_index, tab_group, first_group)
       tabwidth = tabwidth + sep_width
-      tabitems = tabitems + 2
     elseif first_group == tab_sel_group then
       tab = tab .. "%#Crystalline" .. tab_sel_group .. "#"
-      tabitems = tabitems + 1
     end
     if enable_mouse then
-      tabitems = tabitems + 1
       tab = "%" .. (tabselidx - 1) .. "T" .. tab .. ""
     end
-    add_left_tabs = width + tabwidth <= max_width and items + tabitems <= max_items
+    add_left_tabs = width + tabwidth <= max_width
     if add_left_tabs then
       o = tab .. o
-      tabsln = tabsln + 1
+      tab_count = tab_count + 1
       width = width + tabwidth
-      items = items + tabitems
       first_group = tab_group
     end
   end
 
   -- Add at least one tab to right of selected if present and there's space
-  local add_right_tabs = tabselidx > 0 and tabselidx < ntabs and width < max_width and items <= max_items
+  local add_right_tabs = tabselidx > 0 and tabselidx < ntabs and width < max_width and tab_count < max_tabs
   if add_right_tabs then
     local tabinfo = Tab(tabbufs[tabselidx + 1], max_tab_width, false)
-    local tab, tabwidth, tabitems = tabinfo[1], tabinfo[2], tabinfo[3]
+    local tab, tabwidth = tabinfo[1], tabinfo[2]
     if enable_mouse then
-      tabitems = tabitems + 1
       tab = "%" .. (tabselidx + 1) .. "T" .. tab
     end
     if enable_sep then
       tab = module.PlainSep(sep_index, last_group, tab_group) .. tab
       tabwidth = tabwidth + sep_width
-      tabitems = tabitems + 2
     elseif last_group == tab_sel_group then
       tab = "%#Crystalline" .. tab_group .. "#" .. tab
-      tabitems = tabitems + 1
     end
-    add_right_tabs = width + tabwidth <= max_width and items + tabitems <= max_items
+    add_right_tabs = width + tabwidth <= max_width
     if add_right_tabs then
       o = o .. tab
-      tabsln = tabsln + 1
+      tab_count = tab_count + 1
       width = width + tabwidth
-      items = items + tabitems
       last_group = tab_group
     end
   end
@@ -388,47 +346,43 @@ function module.TabsOrBuffers(opts)
 
   -- Add tabs to left of selected
   local tabidx = add_left_tabs and (tabselidx - 2) or -1
-  while tabidx > 0 and width < max_width do
+  while tabidx > 0 and width < max_width and tab_count < max_tabs do
     local tabinfo = Tab(tabbufs[tabidx], max_tab_width, false)
-    local tab, tabwidth, tabitems = tabinfo[1], tabinfo[2], tabinfo[3]
+    local tab, tabwidth = tabinfo[1], tabinfo[2]
     if enable_sep then
       tab = tab .. tab_sep
       tabwidth = tabwidth + sep_width
     end
     if enable_mouse then
-      tabitems = tabitems + 1
       tab = "%" .. tabidx .. "T" .. tab
     end
-    if width + tabwidth > max_width or items + tabitems > max_items then
+    if width + tabwidth > max_width then
       break
     end
     o = tab .. o
-    tabsln = tabsln + 1
+    tab_count = tab_count + 1
     width = width + tabwidth
-    items = items + tabitems
     tabidx = tabidx - 1
   end
 
   -- Add other tabs to right of selected
   tabidx = add_right_tabs and tabselidx + 2 or ntabs + 1
-  while tabidx <= ntabs and width < max_width do
+  while tabidx <= ntabs and width < max_width and tab_count < max_tabs do
     local tabinfo = Tab(tabbufs[tabidx], max_tab_width, false)
-    local tab, tabwidth, tabitems = tabinfo[1], tabinfo[2], tabinfo[3]
+    local tab, tabwidth = tabinfo[1], tabinfo[2]
     if enable_mouse then
-      tabitems = tabitems + 1
       tab = "%" .. tabidx .. "T" .. tab
     end
     if enable_sep then
       tab = tab_sep .. tab
       tabwidth = tabwidth + sep_width
     end
-    if width + tabwidth > max_width or items + tabitems > max_items then
+    if width + tabwidth > max_width then
       break
     end
     o = o .. tab
-    tabsln = tabsln + 1
+    tab_count = tab_count + 1
     width = width + tabwidth
-    items = items + tabitems
     tabidx = tabidx + 1
   end
 

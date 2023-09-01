@@ -259,8 +259,8 @@ function! crystalline#DefaultTabline(...) abort
   let l:tab_type = crystalline#TabTypeLabel(l:is_buffers)
   let l:opts.is_buffers = l:is_buffers
   let l:opts.left_group = 'TabType'
-  let l:opts.max_items = min([get(l:opts, 'max_items', 80), 80]) - 1
   let l:opts.max_width = get(l:opts, 'max_width', &columns) - strchars(l:tab_type)
+  let l:opts.max_tabs = get(l:opts, 'max_tabs', 25)
 
   return '%#CrystallineTabType#'
         \ . l:tab_type

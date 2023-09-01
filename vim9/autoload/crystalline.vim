@@ -44,7 +44,7 @@ enddef
 export def DefaultTab(buf: number, max_width: number, is_sel: bool): list<any>
   # Return early
   if max_width <= 0
-    return ['', 0, 0]
+    return ['', 0]
   endif
 
   # Get left/right components
@@ -82,7 +82,7 @@ export def DefaultTab(buf: number, max_width: number, is_sel: bool): list<any>
     tabwidth = lr_width + min([name_width, max_name_width])
   endif
 
-  return [crystalline#EscapeStatuslineString(tab), tabwidth, 0]
+  return [crystalline#EscapeStatuslineString(tab), tabwidth]
 enddef
 
 export def DefaultHideBuffer(buf: number): bool
@@ -106,7 +106,7 @@ export def TabsOrBuffers(_opts: dict<any>): string
         strchars(g:crystalline_tab_left .. g:crystalline_tab_empty)
         + max([strchars(g:crystalline_tab_mod), strchars(g:crystalline_tab_nomod)]))
   var min_tab_sel_width = get(opts, 'min_tab_width', min_tab_width)
-  var max_items = get(opts, 'max_items', 80)
+  var max_tabs = max([1, get(opts, 'max_tabs', 26)])
 
   # Get group options
   var auto_prefix_groups = get(opts, 'auto_prefix_groups', g:crystalline_auto_prefix_groups)
@@ -129,9 +129,8 @@ export def TabsOrBuffers(_opts: dict<any>): string
 
   # Init variables
   var o = ''
-  var tabsln = 0
+  var tab_count = 0
   var width = 0
-  var items = 0
   var sep_width = enable_sep ? strchars(sep.ch) : 0
   var first_group = tab_group
   var last_group = tab_group
@@ -143,24 +142,12 @@ export def TabsOrBuffers(_opts: dict<any>): string
   if enable_left_sep
     # Count left sep
     width += sep_width
-    items += 2
     lr_sep_width = sep_width
-  else
-    # Count first group
-    items += 1
   endif
   if enable_right_sep
     # Count right sep
     width += sep_width
-    items += 2
     lr_sep_width = sep_width
-  elseif right_group !=# ''
-    # Count right group
-    items += 1
-  endif
-  # Count mouse terminator
-  if enable_mouse
-    items += 1
   endif
 
   # Get tab data
@@ -199,29 +186,10 @@ export def TabsOrBuffers(_opts: dict<any>): string
     endfor
   endif
 
-  # Estimate maximum number of tabs
-  var max_tabs_est = ntabs
-  # Each tab will use 1 item
-  if enable_mouse && ntabs > 1
-    # Calculate remaining items for non-selected tabs
-    # 1 item for selected tab mouse controls
-    var remaining_items_est = min([max_items - items, 80]) - 1
-    # 4 items for selected tab start and end separators
-    if enable_sep
-      remaining_items_est = remaining_items_est - 4
-    endif
-    # Calculate final estimate
-    if remaining_items_est <= 0
-      max_tabs_est = 1
-    else
-      max_tabs_est = remaining_items_est / (ntabs - 1) + 1
-    endif
-  endif
-
   # Calculate remaining width for tabs
   var remaining_width = max_width - lr_sep_width
   # Calculate max tab width
-  var max_tab_width = max([remaining_width / min([ntabs, max_tabs_est]), min_tab_width + sep_width]) - sep_width
+  var max_tab_width = max([remaining_width / min([ntabs, max_tabs]), min_tab_width + sep_width]) - sep_width
   # Calculate max selected tab width
   var max_tab_sel_width = max([max_tab_width, min_tab_sel_width])
   # Handle different width for selected tabs
@@ -229,72 +197,62 @@ export def TabsOrBuffers(_opts: dict<any>): string
     # Recalculate remaining width for non-selected tabs
     remaining_width = max_width - max_tab_sel_width - lr_sep_width
     # Recalculate max tab width
-    max_tab_width = max([remaining_width / min([ntabs - 1, max_tabs_est]), min_tab_width + sep_width]) - sep_width
+    max_tab_width = max([remaining_width / min([ntabs - 1, max_tabs]), min_tab_width + sep_width]) - sep_width
   endif
 
   # Add selected tab first to ensure it's always added
   if tabselidx >= 0
-    var [tab, tabwidth, tabitems] = g:CrystallineTabFn(tabbufs[tabselidx], max_tab_sel_width, v:true)
+    var [tab, tabwidth] = g:CrystallineTabFn(tabbufs[tabselidx], max_tab_sel_width, v:true)
     if enable_mouse
-      tabitems += 1
       tab = '%' .. (tabselidx + 1) .. 'T' .. tab
     endif
     o ..= tab
-    tabsln += 1
+    tab_count += 1
     width += tabwidth
-    items += tabitems
     first_group = tab_sel_group
     last_group = tab_sel_group
   endif
 
   # Add at least one tab to left of selected if present and there's space
-  var add_right_tabs = tabselidx > 0 && tabselidx < ntabs && width < max_width && items <= max_items
+  var add_left_tabs = tabselidx > 0 && tabselidx < ntabs && width < max_width && tab_count < max_tabs
   if add_left_tabs
-    var [tab, tabwidth, tabitems] = g:CrystallineTabFn(tabbufs[tabselidx - 1], max_tab_width, v:false)
+    var [tab, tabwidth] = g:CrystallineTabFn(tabbufs[tabselidx - 1], max_tab_width, v:false)
     if enable_sep
       tab ..= PlainSep(sep_index, tab_group, first_group)
       tabwidth += sep_width
-      tabitems += 2
     elseif first_group == tab_sel_group
       tab ..= '%#Crystalline' .. tab_sel_group .. '#'
-      tabitems += 1
     endif
     if enable_mouse
-      tabitems += 1
       tab = '%' .. tabselidx .. 'T' .. tab .. ''
     endif
-    add_left_tabs = width + tabwidth <= max_width && items + tabitems <= max_items
+    add_left_tabs = width + tabwidth <= max_width
     if add_left_tabs
       o = tab .. o
-      tabsln += 1
+      tab_count += 1
       width += tabwidth
-      items += tabitems
       first_group = tab_group
     endif
   endif
 
   # Add at least one tab to right of selected if present and there's space
-  var add_right_tabs = width < max_width && tabselidx + 1 < ntabs
+  var add_right_tabs = width < max_width && tabselidx + 1 < ntabs && tab_count < max_tabs
   if add_right_tabs
-    var [tab, tabwidth, tabitems] = g:CrystallineTabFn(tabbufs[tabselidx + 1], max_tab_width, v:false)
+    var [tab, tabwidth] = g:CrystallineTabFn(tabbufs[tabselidx + 1], max_tab_width, v:false)
     if enable_mouse
-      tabitems += 1
       tab = '%' .. (tabselidx + 2) .. 'T' .. tab
     endif
     if enable_sep
       tab = PlainSep(sep_index, last_group, tab_group) .. tab
       tabwidth += sep_width
-      tabitems += 2
     elseif last_group == tab_sel_group
       tab = '%#Crystalline' .. tab_group .. '#' .. tab
-      tabitems += 1
     endif
-    add_right_tabs = width + tabwidth <= max_width && items + tabitems <= max_items
+    add_right_tabs = width + tabwidth <= max_width
     if add_right_tabs
       o ..= tab
-      tabsln += 1
+      tab_count += 1
       width += tabwidth
-      items += tabitems
       last_group = tab_group
     endif
   endif
@@ -307,45 +265,41 @@ export def TabsOrBuffers(_opts: dict<any>): string
 
   # Add tabs to left of selected
   var tabidx = add_left_tabs ? tabselidx - 2 : -1
-  while tabidx >= 0 && width < max_width
-    var [tab, tabwidth, tabitems] = g:CrystallineTabFn(tabbufs[tabidx], max_tab_width, v:false)
+  while tabidx >= 0 && width < max_width && tab_count < max_tabs
+    var [tab, tabwidth] = g:CrystallineTabFn(tabbufs[tabidx], max_tab_width, v:false)
     if enable_sep
       tab ..= tab_sep
       tabwidth += sep_width
     endif
     if enable_mouse
-      tabitems += 1
       tab = '%' .. (tabidx + 1) .. 'T' .. tab
     endif
-    if width + tabwidth > max_width || items + tabitems > max_items
+    if width + tabwidth > max_width
       break
     endif
     o = tab .. o
-    tabsln += 1
+    tab_count += 1
     width += tabwidth
-    items += tabitems
     tabidx -= 1
   endwhile
 
   # Add other tabs to right of selected
   tabidx = add_right_tabs ? tabselidx + 2 : ntabs
-  while tabidx < ntabs && width < max_width
-    var [tab, tabwidth, tabitems] = g:CrystallineTabFn(tabbufs[tabidx], max_tab_width, v:false)
+  while tabidx < ntabs && width < max_width && tab_count < max_tabs
+    var [tab, tabwidth] = g:CrystallineTabFn(tabbufs[tabidx], max_tab_width, v:false)
     if enable_mouse
-      tabitems += 1
       tab = '%' .. (tabidx + 1) .. 'T' .. tab
     endif
     if enable_sep
       tab = tab_sep .. tab
       tabwidth += sep_width
     endif
-    if width + tabwidth > max_width || items + tabitems > max_items
+    if width + tabwidth > max_width
       break
     endif
     o ..= tab
-    tabsln += 1
+    tab_count += 1
     width += tabwidth
-    items += tabitems
     tabidx += 1
   endwhile
 

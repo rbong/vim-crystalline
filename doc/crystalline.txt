@@ -34,8 +34,7 @@ Arguments:
   `is_sel`
     Whether the tab is selected.
 
-Return a list containing the tab content, the visible width of the tab, and
-the number of |'statusline'| items used in the tab.
+Return a list containing the tab content and the visible width of the tab.
 
 Defaults to |crystalline#DefaultTab()|.
 
@@ -261,11 +260,22 @@ Arguments:
     The minimum width of the currently selected tab/buffer.
     Defaults to `opts.min_tab_width`.
 
-  `opts.max_items`
-    The maximum number of |'statusline'| or |'tabline'| items.
-    This option should reflect the number of available items.
+  `opts.max_tabs`
+    The maximum number of tabs.
 
-    Defaults to 80, which is the maximum number of items supported by VIM.
+    This should prevent the max possible statusline items from being exceeded.
+    Statuslines and tablines can have at max 80 items in Vim.
+
+    In the worst case, there are 3 items per tab: the mouse control item and 2
+    items for the separator.
+    There may also be an item used for the right group and an item used to
+    terminate mouse controls.
+
+    You should decrease this number if |g:CrystallineTabFn| adds items to
+    tabs.
+
+    Defaults to (80 - 2) / 3 = 26, which is enough to fit the max items.
+    Increase this amount with caution.
 
   `opts.group_suffix`
     A string to append to all group names.

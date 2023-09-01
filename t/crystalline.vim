@@ -143,7 +143,7 @@ describe 'crystalline'
   it 'allows custom tabs'
     unlet! g:CrystallineTabFn
     function! g:CrystallineTabFn(bufnr, max_width, is_sel) abort
-      return [' tab ', 5, 0]
+      return [' tab ', 5]
     endfunction
 
     e /tmp/1
@@ -152,7 +152,7 @@ describe 'crystalline'
     Expect crystalline#Tabs({ 'enable_mouse': 0 }) ==# '%#CrystallineTab# tab  tab %#CrystallineTabSel# tab %#CrystallineTabFill#'
   end
 
-  it 'does not allow tabs to exceed max width'
+  it 'does not exceed max width'
     e /tmp/1
     for l:i in range(2, 5)
       exec 'tabe /tmp/' . l:i
@@ -198,14 +198,13 @@ describe 'crystalline'
     Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_width': 0 }) ==# l:one_tab
   end
 
-  it 'does not allow tabs to exceed max width'
+  it 'does not exceed max tabs'
     e /tmp/1
     for l:i in range(2, 5)
       exec 'tabe /tmp/' . l:i
     endfor
     normal 3gt
 
-    " 15 items
     let l:five_tabs = '%#CrystallineTabType# TABS %#CrystallineTabTypeToTab#'
           \ . '%#CrystallineTab#%1T /t/1 '
           \ . '%2T /t/2 %#CrystallineTabToTabSel#'
@@ -213,43 +212,32 @@ describe 'crystalline'
           \ . '%#CrystallineTab#%4T /t/4 '
           \ . '%5T /t/5 %#CrystallineTabToTabFill#'
           \ . '%#CrystallineTabFill#%T'
-    " 14 items
     let l:four_tabs = '%#CrystallineTabType# TABS %#CrystallineTabTypeToTab#'
           \ . '%#CrystallineTab#%1T /t/1 '
           \ . '%2T /t/2 %#CrystallineTabToTabSel#'
           \ . '%#CrystallineTabSel#%3T /t/3 %#CrystallineTabSelToTab#'
           \ . '%#CrystallineTab#%4T /t/4 %#CrystallineTabToTabFill#'
           \ . '%#CrystallineTabFill#%T'
-    " 13 items
-    let l:three_tabs_a = '%#CrystallineTabType# TABS %#CrystallineTabTypeToTab#'
+    let l:three_tabs = '%#CrystallineTabType# TABS %#CrystallineTabTypeToTab#'
           \ . '%#CrystallineTab#%2T /t/2 %#CrystallineTabToTabSel#'
           \ . '%#CrystallineTabSel#%3T /t/3 %#CrystallineTabSelToTab#'
           \ . '%#CrystallineTab#%4T /t/4 %#CrystallineTabToTabFill#'
           \ . '%#CrystallineTabFill#%T'
-    " 11 items
-    let l:three_tabs_b = '%#CrystallineTabType# TABS %#CrystallineTabTypeToTab#'
-          \ . '%#CrystallineTab#%1T /t/1 '
-          \ . '%2T /t/2 %#CrystallineTabToTabSel#'
-          \ . '%#CrystallineTabSel#%3T /t/3 %#CrystallineTabSelToTabFill#'
-          \ . '%#CrystallineTabFill#%T'
-    " 10 items
     let l:two_tabs = '%#CrystallineTabType# TABS %#CrystallineTabTypeToTab#'
           \ . '%#CrystallineTab#%2T /t/2 %#CrystallineTabToTabSel#'
           \ . '%#CrystallineTabSel#%3T /t/3 %#CrystallineTabSelToTabFill#'
           \ . '%#CrystallineTabFill#%T'
-    " 7 items
     let l:one_tab = '%#CrystallineTabType# TABS %#CrystallineTabTypeToTabSel#'
           \ . '%#CrystallineTabSel#%3T /t/3 %#CrystallineTabSelToTabFill#'
           \ . '%#CrystallineTabFill#%T'
 
-    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_items': 15 }) ==# l:five_tabs
-    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_items': 14 }) ==# l:four_tabs
-    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_items': 13 }) ==# l:three_tabs_a
-    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_items': 12 }) ==# l:three_tabs_b
-    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_items': 11 }) ==# l:three_tabs_b
-    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_items': 10 }) ==# l:two_tabs
-    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_items': 9 }) ==# l:one_tab
-    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_items': 0 }) ==# l:one_tab
+    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_tabs': 6 }) ==# l:five_tabs
+    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_tabs': 5 }) ==# l:five_tabs
+    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_tabs': 4 }) ==# l:four_tabs
+    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_tabs': 3 }) ==# l:three_tabs
+    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_tabs': 2 }) ==# l:two_tabs
+    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_tabs': 1 }) ==# l:one_tab
+    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_tabs': 0 }) ==# l:one_tab
   end
 
   it 'does not modify groups by default'
