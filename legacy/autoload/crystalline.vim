@@ -40,7 +40,7 @@ endfunction
 function! crystalline#DefaultTab(buf, max_width, is_sel) abort
   " Return early
   if a:max_width <= 0
-    return ''
+    return ['', 0, 0]
   endif
 
   " Get left/right components

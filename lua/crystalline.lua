@@ -125,7 +125,7 @@ end
 function module.DefaultTab(buf, max_width, is_sel)
   -- Return early
   if max_width <= 0 then
-    return ''
+    return {'', 0, 0}
   end
 
   -- Get left/right components

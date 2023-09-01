@@ -44,7 +44,7 @@ enddef
 export def DefaultTab(buf: number, max_width: number, is_sel: bool): list<any>
   # Return early
   if max_width <= 0
-    return []
+    return ['', 0, 0]
   endif
 
   # Get left/right components
