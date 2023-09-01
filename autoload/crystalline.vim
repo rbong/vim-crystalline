@@ -585,7 +585,9 @@ function! crystalline#InitTabline() abort
   if exists('+tabline')
     augroup CrystallineAutoUpdateTabline
       au!
-      au ModeChanged * call crystalline#UpdateTabline()
+      if exists('#ModeChanged')
+        au ModeChanged * call crystalline#UpdateTabline()
+      endif
       au InsertLeave * call crystalline#UpdateTabline()
     augroup END
     call crystalline#UpdateTabline()
