@@ -3,8 +3,8 @@
 [![test status](https://github.com/rbong/vim-crystalline/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/rbong/vim-crystalline/actions/workflows/test.yml)
 
 Want a nice statusline in Vim?
-Other statuslines too [slow](https://github.com/rbong/vim-crystalline/wiki/Performance-Comparison)
-and [verbose](https://github.com/rbong/vim-crystalline/wiki/Configuration-Comparison)?
+Other statusline plugins too [slow](https://github.com/rbong/vim-crystalline/wiki/Performance-Comparison)
+and [uncustomizable](https://github.com/rbong/vim-crystalline/wiki/Configuration-Comparison)?
 `vim-crystalline` is for you.
 
 `vim-crystalline` lets you build your own statusline and tabline in a vanilla Vim style.
