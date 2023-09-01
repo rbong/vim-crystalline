@@ -158,7 +158,7 @@ function! crystalline#TabsOrBuffers(...) abort
   let l:ntabs = 0
   let l:tabbufs = []
   if l:is_buffers
-    let l:bufsel = bufnr()
+    let l:bufsel = bufnr('%')
     if exists('*getbufinfo')
       for l:buf in getbufinfo()
         let l:buf_bufnr = l:buf.bufnr
