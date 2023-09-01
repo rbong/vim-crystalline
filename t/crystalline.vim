@@ -1,387 +1,311 @@
 scriptencoding utf-8
 
-function! DefaultLine(...)
-  return '__DEFAULT__ %f'
-endfunction
+runtime plugin/crystalline.vim
 
-function! CurrentStatusLine(current)
-  return '__CURRENT__ ' . a:current
-endfunction
-
-function! WidthStatusLine(current, width)
-  return '__WIDTH__ ' . a:width
-endfunction
-
-function! LoadCrystalline()
-endfunction
-
-function! CleanCrystalline()
-  unlet! g:CrystallineStatuslineFn
-  unlet! g:CrystallineTablineFn
-  unlet! g:crystalline_theme
-  unlet! g:crystalline_enable_sep
-  unlet! g:crystalline_mode
-  unlet! g:crystalline_separators
-  unlet! g:crystalline_tab_separator
-  unlet! g:crystalline_mode_labels
-  call crystalline#clear_statusline()
-  call crystalline#clear_tabline()
-  call crystalline#clear_theme()
-  hi clear
-endfunction
-
-describe 'g:CrystallineStatuslineFn'
-  before
-    let g:CrystallineStatuslineFn = 'DefaultLine'
-    source plugin/crystalline.vim
+describe 'crystalline'
+  after
+    " Unload files
+    %bd
+    " Clear statusline/tabline
+    call crystalline#ClearStatusline()
+    call crystalline#ClearTabline()
+    " Clear options
+    delfunction! g:CrystallineStatuslineFn
+    unlet! g:CrystallineStatuslineFn
+    delfunction! g:CrystallineTablineFn
+    unlet! g:CrystallineTablineFn
+    delfunction! g:CrystallineTabFn
+    unlet! g:CrystallineTabFn
+    delfunction! g:CrystallineHideBufferFn
+    unlet! g:CrystallineHideBufferFn
+    unlet! g:crystalline_separators
+    unlet! g:crystalline_auto_prefix_groups
+    unlet! g:crystalline_group_suffix
+    " Reset settings
+    runtime plugin/crystalline.vim
   end
 
-  after
-    call CleanCrystalline()
+  it 'does not overwrite settings by default'
+    Expect &statusline ==# ''
+    Expect &tabline ==# ''
   end
 
   it 'sets the statusline'
-    Expect &statusline ==# '%!crystalline#get_statusline(1,' . win_getid() . ')'
-  end
-
-  it 'defines an autogroup'
-    Expect exists('#CrystallineAutoStatusline') == 1
-  end
-end
-
-describe 'g:CrystallineTablineFn'
-  before
-    let g:CrystallineTablineFn = 'DefaultLine'
+    function! g:CrystallineStatuslineFn(winnr)
+      return '__STATUSLINE__:' . a:winnr
+    endfunction
     source plugin/crystalline.vim
-  end
-
-  after
-    call CleanCrystalline()
+    Expect &statusline ==# '%!crystalline#GetStatusline(1000)'
+    Expect crystalline#GetStatusline(1000) ==# '__STATUSLINE__:1'
   end
 
   it 'sets the tabline'
-    Expect &tabline ==# '%!crystalline#get_tabline()'
-  end
-
-  it 'defines an autogroup'
-    Expect exists('#CrystallineAutoTabline') == 1
-  end
-end
-
-describe 'g:crystalline_theme'
-  before
+    function! g:CrystallineTablineFn()
+      return '__TABLINE__'
+    endfunction
     source plugin/crystalline.vim
+    Expect &tabline ==# '%!crystalline#GetTabline()'
+    Expect crystalline#GetTabline() ==# '__TABLINE__'
   end
 
-  after
-    call CleanCrystalline()
+  it 'draws default separators'
+    Expect crystalline#Sep(0, 'A', 'B') ==# '%#CrystallineAToB#%#CrystallineB#'
+    Expect crystalline#Sep(0, 'A', 'A') ==# ''
+    Expect crystalline#Sep(1, 'A', 'B') ==# '%#CrystallineBToA#%#CrystallineB#'
+    Expect crystalline#Sep(1, 'A', 'A') ==# ''
   end
 
-  it 'loads the "default" theme by default'
-    Expect g:crystalline_theme ==# 'default'
+  it 'draws custom separators'
+    let g:crystalline_separators = [
+          \ { 'ch': '>', 'alt_ch': ')', 'dir': '>' },
+          \ { 'ch': '<', 'alt_ch': '(', 'dir': '<' }
+          \ ]
+    Expect crystalline#Sep(0, 'A', 'B') ==# '%#CrystallineAToB#>%#CrystallineB#'
+    Expect crystalline#Sep(0, 'A', 'A') ==# ')'
+    Expect crystalline#Sep(1, 'A', 'B') ==# '%#CrystallineBToA#<%#CrystallineB#'
+    Expect crystalline#Sep(1, 'A', 'A') ==# '('
   end
 
-  it 'defines highlight groups'
-    hi CrystallineNormalMode
-    hi CrystallineInsertMode
-    hi CrystallineVisualMode
-    hi CrystallineReplaceMode
-    hi Crystalline
-    hi CrystallineInactive
-    hi CrystallineFill
-    hi CrystallineTab
-    hi CrystallineTabType
-    hi CrystallineTabSel
-    hi CrystallineTabFill
-  end
-end
-
-describe 'g:crystalline_*_separator(s)'
-  before
-    let g:crystalline_enable_sep = 1
+  it 'adds the current mode to groups'
+    Expect crystalline#ModeGroup('A') ==# 'CommandModeA'
   end
 
-  after
-    call CleanCrystalline()
+  it 'draws tabs'
+    e /tmp/1
+    tabe /tmp/2
+    tabe /tmp/3
+
+    normal 2gt
+    Expect crystalline#DefaultTabline() ==# '%#CrystallineTabType# TABS '
+          \ . '%#CrystallineTab#%1T /t/1 '
+          \ . '%#CrystallineTabSel#%2T /t/2 '
+          \ . '%#CrystallineTab#%3T /t/3 '
+          \ . '%#CrystallineTabFill#%T'
   end
 
-  it 'sets the default separators'
-    source plugin/crystalline.vim
-    Expect g:crystalline_separators == ['', '']
-    Expect g:crystalline_tab_separator ==# ''
+  it 'draws buffers'
+    e /tmp/1
+    bd #
+    e /tmp/2
+    e /tmp/3
+
+    buffer /tmp/2
+    Expect crystalline#DefaultTabline() ==# '%#CrystallineTabType# BUFFERS '
+          \ . '%#CrystallineTab# /t/1 '
+          \ . '%#CrystallineTabSel# /t/2 '
+          \ . '%#CrystallineTab# /t/3 '
+          \ . '%#CrystallineTabFill#'
   end
 
-  it 'allows overriding separators'
-    let g:crystalline_separators = ['>', '<']
-    let g:crystalline_tab_separator = '-'
-    source plugin/crystalline.vim
-    Expect g:crystalline_separators == ['>', '<']
-    Expect g:crystalline_tab_separator ==# '-'
-  end
-end
+  it 'draws tabs with separators'
+    e /tmp/1
+    for l:i in range(2, 5)
+      exec 'tabe /tmp/' . l:i
+    endfor
 
-describe 'g:crystalline_mode_labels'
-  after
-    call CleanCrystalline()
-  end
-
-  it 'sets the default mode labels'
-    source plugin/crystalline.vim
-    Expect g:crystalline_mode_labels == {
-          \ 'n': ' NORMAL ',
-          \ 'i': ' INSERT ',
-          \ 'v': ' VISUAL ',
-          \ 'R': ' REPLACE ',
-          \ '': '',
-          \ }
-  end
-
-  it 'allows overriding mode labels'
-    let g:crystalline_mode_labels = {
-          \ 'n': ' N ',
-          \ 'v': ' V ',
-          \ 'i': ' I ',
-          \ 'R': ' R ',
-          \ }
-    source plugin/crystalline.vim
-    Expect g:crystalline_mode_labels == {
-          \ 'n': ' N ',
-          \ 'v': ' V ',
-          \ 'i': ' I ',
-          \ 'R': ' R ',
-          \ }
-  end
-end
-
-describe 'crystalline#get_statusline'
-  before
-    source plugin/crystalline.vim
+    normal 1gt
+    Expect crystalline#DefaultTabline({ 'enable_sep': 1 }) ==# '%#CrystallineTabType# TABS %#CrystallineTabTypeToTabSel#'
+          \ . '%#CrystallineTabSel#%1T /t/1 %#CrystallineTabSelToTab#'
+          \ . '%#CrystallineTab#%2T /t/2 '
+          \ . '%3T /t/3 '
+          \ . '%4T /t/4 '
+          \ . '%5T /t/5 %#CrystallineTabToTabFill#'
+          \ . '%#CrystallineTabFill#%T'
+    normal 2gt
+    Expect crystalline#DefaultTabline({ 'enable_sep': 1 }) ==# '%#CrystallineTabType# TABS %#CrystallineTabTypeToTab#'
+          \ . '%#CrystallineTab#%1T /t/1 %#CrystallineTabToTabSel#'
+          \ . '%#CrystallineTabSel#%2T /t/2 %#CrystallineTabSelToTab#'
+          \ . '%#CrystallineTab#%3T /t/3 '
+          \ . '%4T /t/4 '
+          \ . '%5T /t/5 %#CrystallineTabToTabFill#'
+          \ . '%#CrystallineTabFill#%T'
+    normal 4gt
+    Expect crystalline#DefaultTabline({ 'enable_sep': 1 }) ==# '%#CrystallineTabType# TABS %#CrystallineTabTypeToTab#'
+          \ . '%#CrystallineTab#%1T /t/1 '
+          \ . '%2T /t/2 '
+          \ . '%3T /t/3 %#CrystallineTabToTabSel#'
+          \ . '%#CrystallineTabSel#%4T /t/4 %#CrystallineTabSelToTab#'
+          \ . '%#CrystallineTab#%5T /t/5 %#CrystallineTabToTabFill#'
+          \ . '%#CrystallineTabFill#%T'
+    normal 5gt
+    Expect crystalline#DefaultTabline({ 'enable_sep': 1 }) ==# '%#CrystallineTabType# TABS %#CrystallineTabTypeToTab#'
+          \ . '%#CrystallineTab#%1T /t/1 '
+          \ . '%2T /t/2 '
+          \ . '%3T /t/3 '
+          \ . '%4T /t/4 %#CrystallineTabToTabSel#'
+          \ . '%#CrystallineTabSel#%5T /t/5 %#CrystallineTabSelToTabFill#'
+          \ . '%#CrystallineTabFill#%T'
   end
 
-  after
-    call CleanCrystalline()
-    augroup Test
-      au!
-    augroup END
+  it 'allows custom tabs'
+    unlet! g:CrystallineTabFn
+    function! g:CrystallineTabFn(bufnr, max_width, is_sel) abort
+      return [' tab ', 5, 0]
+    endfunction
+
+    e /tmp/1
+    tabe /tmp/2
+    tabe /tmp/3
+    Expect crystalline#Tabs({ 'enable_mouse': 0 }) ==# '%#CrystallineTab# tab  tab %#CrystallineTabSel# tab %#CrystallineTabFill#'
   end
 
-  it 'returns the statusline setting'
-    let g:CrystallineStatuslineFn = 'DefaultLine'
-    Expect crystalline#get_statusline(1, 0) ==# '__DEFAULT__ %f'
+  it 'does not allow tabs to exceed max width'
+    e /tmp/1
+    for l:i in range(2, 5)
+      exec 'tabe /tmp/' . l:i
+    endfor
+    normal 3gt
+
+    let l:five_tabs = '%#CrystallineTabType# TABS %#CrystallineTabTypeToTab#'
+          \ . '%#CrystallineTab#%1T /t/1 '
+          \ . '%2T /t/2 %#CrystallineTabToTabSel#'
+          \ . '%#CrystallineTabSel#%3T /t/3 %#CrystallineTabSelToTab#'
+          \ . '%#CrystallineTab#%4T /t/4 '
+          \ . '%5T /t/5 %#CrystallineTabToTabFill#'
+          \ . '%#CrystallineTabFill#%T'
+    let l:four_tabs = '%#CrystallineTabType# TABS %#CrystallineTabTypeToTab#'
+          \ . '%#CrystallineTab#%1T /t/1 '
+          \ . '%2T /t/2 %#CrystallineTabToTabSel#'
+          \ . '%#CrystallineTabSel#%3T /t/3 %#CrystallineTabSelToTab#'
+          \ . '%#CrystallineTab#%4T /t/4 %#CrystallineTabToTabFill#'
+          \ . '%#CrystallineTabFill#%T'
+    let l:three_tabs = '%#CrystallineTabType# TABS %#CrystallineTabTypeToTab#'
+          \ . '%#CrystallineTab#%2T /t/2 %#CrystallineTabToTabSel#'
+          \ . '%#CrystallineTabSel#%3T /t/3 %#CrystallineTabSelToTab#'
+          \ . '%#CrystallineTab#%4T /t/4 %#CrystallineTabToTabFill#'
+          \ . '%#CrystallineTabFill#%T'
+    let l:two_tabs = '%#CrystallineTabType# TABS %#CrystallineTabTypeToTab#'
+          \ . '%#CrystallineTab#%2T /t/2 %#CrystallineTabToTabSel#'
+          \ . '%#CrystallineTabSel#%3T /t/3 %#CrystallineTabSelToTabFill#'
+          \ . '%#CrystallineTabFill#%T'
+    let l:one_tab = '%#CrystallineTabType# TABS %#CrystallineTabTypeToTabSel#'
+          \ . '%#CrystallineTabSel#%3T /t/3 %#CrystallineTabSelToTabFill#'
+          \ . '%#CrystallineTabFill#%T'
+
+    " Tabline: ' TABS > /t/1 > /t/2 > /t/3 > /t/4 > /t/5 >'
+    "   Width:  1        10        20        30        40
+    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_width': 42 }) ==# l:five_tabs
+    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_width': 41 }) ==# l:four_tabs
+    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_width': 35 }) ==# l:four_tabs
+    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_width': 34 }) ==# l:three_tabs
+    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_width': 28 }) ==# l:three_tabs
+    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_width': 27 }) ==# l:two_tabs
+    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_width': 21 }) ==# l:two_tabs
+    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_width': 20 }) ==# l:one_tab
+    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_width': 0 }) ==# l:one_tab
   end
 
-  it 'passes the current window'
-    let g:CrystallineStatuslineFn = 'CurrentStatusLine'
-    Expect crystalline#get_statusline(1, 0) ==# '__CURRENT__ 1'
-    Expect crystalline#get_statusline(0, 0) ==# '__CURRENT__ 0'
+  it 'does not allow tabs to exceed max width'
+    e /tmp/1
+    for l:i in range(2, 5)
+      exec 'tabe /tmp/' . l:i
+    endfor
+    normal 3gt
+
+    let l:five_tabs = '%#CrystallineTabType# TABS %#CrystallineTabTypeToTab#'
+          \ . '%#CrystallineTab#%1T /t/1 '
+          \ . '%2T /t/2 %#CrystallineTabToTabSel#'
+          \ . '%#CrystallineTabSel#%3T /t/3 %#CrystallineTabSelToTab#'
+          \ . '%#CrystallineTab#%4T /t/4 '
+          \ . '%5T /t/5 %#CrystallineTabToTabFill#'
+          \ . '%#CrystallineTabFill#%T'
+    let l:four_tabs = '%#CrystallineTabType# TABS %#CrystallineTabTypeToTab#'
+          \ . '%#CrystallineTab#%1T /t/1 '
+          \ . '%2T /t/2 %#CrystallineTabToTabSel#'
+          \ . '%#CrystallineTabSel#%3T /t/3 %#CrystallineTabSelToTab#'
+          \ . '%#CrystallineTab#%4T /t/4 %#CrystallineTabToTabFill#'
+          \ . '%#CrystallineTabFill#%T'
+    let l:three_tabs = '%#CrystallineTabType# TABS %#CrystallineTabTypeToTab#'
+          \ . '%#CrystallineTab#%2T /t/2 %#CrystallineTabToTabSel#'
+          \ . '%#CrystallineTabSel#%3T /t/3 %#CrystallineTabSelToTab#'
+          \ . '%#CrystallineTab#%4T /t/4 %#CrystallineTabToTabFill#'
+          \ . '%#CrystallineTabFill#%T'
+    let l:two_tabs = '%#CrystallineTabType# TABS %#CrystallineTabTypeToTab#'
+          \ . '%#CrystallineTab#%2T /t/2 %#CrystallineTabToTabSel#'
+          \ . '%#CrystallineTabSel#%3T /t/3 %#CrystallineTabSelToTabFill#'
+          \ . '%#CrystallineTabFill#%T'
+    let l:one_tab = '%#CrystallineTabType# TABS %#CrystallineTabTypeToTabSel#'
+          \ . '%#CrystallineTabSel#%3T /t/3 %#CrystallineTabSelToTabFill#'
+          \ . '%#CrystallineTabFill#%T'
+
+    " 3 items per tab (2 for separator, 1 for mouse)
+    " 1 extra item on left (first group)
+    " 3 extra items on right (another separator and last mouse item)
+    " Total: 19
+    "
+    " Note that extra items could be knocked off per tab, but we don't have
+    " the real number of seprator items (alt separators don't need items).
+    "
+    " TODO: maximize tabs
+    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_items': 19 }) ==# l:five_tabs
+    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_items': 18 }) ==# l:four_tabs
+    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_items': 16 }) ==# l:four_tabs
+    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_items': 15 }) ==# l:three_tabs
+    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_items': 13 }) ==# l:three_tabs
+    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_items': 12 }) ==# l:two_tabs
+    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_items': 10 }) ==# l:two_tabs
+    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_items': 9 }) ==# l:one_tab
+    Expect crystalline#DefaultTabline({ 'enable_sep': 1, 'max_items': 0 }) ==# l:one_tab
   end
 
-  it 'passes the window width'
-    let g:CrystallineStatuslineFn = 'WidthStatusLine'
-    Expect crystalline#get_statusline(0, 0) ==# '__WIDTH__ ' . winwidth(0)
+  it 'does not modify groups by default'
+    Expect crystalline#Sep(0, 'A', 'B') ==# '%#CrystallineAToB#%#CrystallineB#'
+    Expect crystalline#HiItem('A') ==# '%#CrystallineA#'
+
+    e /tmp/1
+    tabe /tmp/2
+    tabe /tmp/3
+    normal 2gt
+    Expect crystalline#Tabs({ 'enable_mouse': 0, 'enable_sep': 1 }) ==# '%#CrystallineTab# /t/1 %#CrystallineTabToTabSel#'
+          \ . '%#CrystallineTabSel# /t/2 %#CrystallineTabSelToTab#'
+          \ . '%#CrystallineTab# /t/3 %#CrystallineTabToTabFill#'
+          \ . '%#CrystallineTabFill#'
   end
 
-  it 'triggers a mode update'
-    let g:CrystallineStatuslineFn = 'DefaultLine'
-    let g:test_mode = ''
-    augroup Test
-      au!
-      au User CrystallineModeUpdate let g:test_mode = g:crystalline_mode
-    augroup END
-    call crystalline#get_statusline(0, 0)
-    Expect g:test_mode ==# 'n'
-  end
-end
+  it 'auto-prefixes mode'
+    let g:crystalline_auto_prefix_groups = 1
+    Expect crystalline#Sep(0, 'A', 'B') ==# '%#CrystallineCommandModeAToCommandModeB#%#CrystallineCommandModeB#'
+    Expect crystalline#HiItem('A') ==# '%#CrystallineCommandModeA#'
 
-describe 'crystalline#get_tabline'
-  before
-    source plugin/crystalline.vim
+    e /tmp/1
+    tabe /tmp/2
+    tabe /tmp/3
+    normal 2gt
+    Expect crystalline#Tabs({ 'enable_mouse': 0, 'enable_sep': 1 }) ==# '%#CrystallineCommandModeTab# /t/1 %#CrystallineCommandModeTabToCommandModeTabSel#'
+          \ . '%#CrystallineCommandModeTabSel# /t/2 %#CrystallineCommandModeTabSelToCommandModeTab#'
+          \ . '%#CrystallineCommandModeTab# /t/3 %#CrystallineCommandModeTabToCommandModeTabFill#'
+          \ . '%#CrystallineCommandModeTabFill#'
   end
 
-  after
-    call CleanCrystalline()
+  it 'auto-prefixes inactive'
+    let g:crystalline_auto_prefix_groups = 1
+    let g:crystalline_inactive = 1
+    Expect crystalline#Sep(0, 'A', 'B') ==# '%#CrystallineInactiveAToInactiveB#%#CrystallineInactiveB#'
+    Expect crystalline#HiItem('A') ==# '%#CrystallineInactiveA#'
+
+    e /tmp/1
+    tabe /tmp/2
+    tabe /tmp/3
+    normal 2gt
+    Expect crystalline#Tabs({ 'enable_mouse': 0, 'enable_sep': 1 }) ==# '%#CrystallineCommandModeTab# /t/1 %#CrystallineCommandModeTabToCommandModeTabSel#'
+          \ . '%#CrystallineCommandModeTabSel# /t/2 %#CrystallineCommandModeTabSelToCommandModeTab#'
+          \ . '%#CrystallineCommandModeTab# /t/3 %#CrystallineCommandModeTabToCommandModeTabFill#'
+          \ . '%#CrystallineCommandModeTabFill#'
   end
 
-  it 'returns the tabline setting'
-    let g:CrystallineTablineFn = 'DefaultLine'
-    Expect crystalline#get_tabline() ==# '__DEFAULT__ %f'
-  end
-end
+  it 'adds group suffix'
+    let g:crystalline_group_suffix = '1'
+    Expect crystalline#Sep(0, 'A', 'B') ==# '%#CrystallineA1ToB1#%#CrystallineB1#'
+    Expect crystalline#HiItem('A') ==# '%#CrystallineA1#'
 
-describe 'crystalline#mode'
-  before
-    new
-    source plugin/crystalline.vim
-  end
-
-  after
-    close!
-    call CleanCrystalline()
-  end
-
-  it 'returns the current mode'
-    Expect crystalline#mode_sec() ==# '%#CrystallineNormalMode# NORMAL '
-    exe "normal! i\<c-r>=crystalline#mode_sec()\<cr>"
-    Expect getline(1) ==# '%#CrystallineInsertMode# INSERT '
-    exe "normal! V\"=crystalline#mode_sec()\<cr>p"
-    Expect getline(1) ==# '%#CrystallineVisualMode# VISUAL '
-    exe "normal! 0R\<c-r>=crystalline#mode_sec()\<cr>"
-    Expect getline(1) ==# '%#CrystallineReplaceMode# REPLACE '
-  end
-end
-
-describe 'crystalline#sep'
-  before
-    source plugin/crystalline.vim
-  end
-
-  after
-    call CleanCrystalline()
-  end
-
-  it 'returns next group when separators disabled'
-    Expect crystalline#sep('', 'Fill', '>', 0) ==# '%#CrystallineFill#'
-    Expect crystalline#sep('', 'Fill', '<', 1) ==# '%#Crystalline#'
-  end
-
-  it 'returns separators when enabled'
-    let g:crystalline_enable_sep = 1
-    Expect crystalline#sep('', 'Fill', '>', 0) ==# '%#CrystallineToFill#>%#CrystallineFill#'
-    Expect crystalline#sep('', 'Fill', '<', 1) ==# '%#CrystallineToFill#<%#Crystalline#'
-  end
-
-  it 'automatically creates nonexistent separator highlight groups'
-    let g:crystalline_enable_sep = 1
-    Expect crystalline#sep('', 'Fill', '>', 0) ==# '%#CrystallineToFill#>%#CrystallineFill#'
-    Expect crystalline#sep('Fill', '', '>', 0) ==# '%#CrystallineFillToLine#>%#Crystalline#'
-    hi CrystallineToFill
-    hi CrystallineFillToLine
-  end
-
-  it 'dynamically creates separator highlight groups'
-    let g:crystalline_enable_sep = 1
-    hi CrystallineTestGroupA ctermfg=1 ctermbg=2 guifg=#111111 guibg=#222222
-    hi CrystallineTestGroupB ctermfg=3 ctermbg=4 guifg=#333333 guibg=#444444
-    Expect crystalline#sep('TestGroupA', 'TestGroupB', '>', 0) ==# '%#CrystallineTestGroupAToTestGroupB#>%#CrystallineTestGroupB#'
-    hi CrystallineTestGroupAToTestGroupB
-    let attrs = crystalline#synIDattrs('CrystallineTestGroupAToTestGroupB')
-    Expect attrs.cterm.fg == '2'
-    Expect attrs.cterm.bg == '4'
-    Expect attrs.gui.fg == '#222222'
-    Expect attrs.gui.bg == '#444444'
-  end
-
-  it 'adds separator highlight groups to g:crystalline_sep_hi_groups'
-    let g:crystalline_enable_sep = 1
-    Expect g:crystalline_sep_hi_groups == {}
-    call crystalline#sep('', 'Fill', '>', 0)
-    Expect g:crystalline_sep_hi_groups == {'ToFill': ['', 'Fill']}
-  end
-
-end
-
-describe 'crystalline#apply_current_theme'
-  before
-    set background=dark
-    let g:crystalline_enable_sep = 1
-    source plugin/crystalline.vim
-  end
-
-  after
-    call CleanCrystalline()
-  end
-
-  it 'recomputes separator highlight groups'
-    call crystalline#sep('', 'Fill', '>', 0)
-    let attrs = crystalline#synIDattrs('CrystallineToFill')
-    Expect attrs == {'gui': {'bg': '#202020', 'fg': '#444444', 'attrs': [], 'sp': 'NONE'}, 'term': {'attrs': []}, 'cterm': {'bg': '234', 'fg': '238', 'attrs': []}}
-
-    let g:crystalline_theme = 'gruvbox'
-    call crystalline#apply_current_theme()
-
-    call crystalline#sep('', 'Fill', '>', 0)
-    let attrs = crystalline#synIDattrs('CrystallineToFill')
-    Expect attrs == {'gui': {'bg': '#3c3836', 'fg': '#504945', 'attrs': [], 'sp': 'NONE'}, 'term': {'attrs': []}, 'cterm': {'bg': '237', 'fg': '239', 'attrs': []}}
-  end
-
-  it 'empties out g:crystalline_sep_hi_groups'
-    call crystalline#sep('', 'Fill', '>', 0)
-    call crystalline#apply_current_theme()
-    Expect g:crystalline_sep_hi_groups == {}
-  end
-
-end
-
-describe 'crystalline#synIDattrs'
-  before
-    source plugin/crystalline.vim
-  end
-
-  after
-    call CleanCrystalline()
-  end
-
-  it 'returns correct values'
-    hi TestHighlightGroup
-          \ ctermfg=1 ctermbg=2
-          \ guifg=green guibg=#222222 guisp=#333333
-          \ term=bold
-          \ cterm=bold,italic,strikethrough
-          \ gui=reverse,standout,underline
-    let attrs = crystalline#synIDattrs('TestHighlightGroup')
-    Expect attrs.cterm.fg == '1'
-    Expect attrs.cterm.bg == '2'
-    Expect attrs.gui.fg == 'green'
-    Expect attrs.gui.bg == '#222222'
-    Expect attrs.gui.sp == '#333333'
-    Expect sort(attrs.term.attrs) == ['bold']
-    Expect sort(attrs.cterm.attrs) == ['bold', 'italic', 'strikethrough']
-    Expect sort(attrs.gui.attrs) == ['reverse', 'standout', 'underline']
-  end
-
-end
-
-describe 'crystalline#bufferline'
-  before
-    source plugin/crystalline.vim
-    %bd!
-  end
-
-  after
-    call CleanCrystalline()
-    %bd!
-  end
-
-  it 'returns buffers when there is one tab'
-    edit a
-    edit b
-    edit c
-    bprev
-    Expect crystalline#bufferline(0, 0, 0) == '%#CrystallineTabType# BUFFERS %#CrystallineTab# a %#CrystallineTabSel# b %#CrystallineTab# c %#CrystallineTabFill#'
-  end
-
-  it 'returns tabs when there is more than one'
-    edit a
-    tabedit b
-    tabedit c
-    tabprev
-    Expect crystalline#bufferline(0, 0, 0) == '%#CrystallineTabType# TABS %#CrystallineTab#%1T a %#CrystallineTabSel#%2T b %#CrystallineTab#%3T c %#CrystallineTabFill#%T'
-  end
-
-  it 'includes separators when enabled'
-    let g:crystalline_enable_sep = 1
-    edit a
-    tabedit b
-    tabedit c
-    Expect crystalline#bufferline(0, 0, 0) == '%#CrystallineTabType# TABS %#CrystallineTabTypeToTab#%#CrystallineTab#%1T a %2T b %#CrystallineTabToTabSel#%#CrystallineTabSel#%3T c %#CrystallineTabSelToTabFill#%#CrystallineTabFill#%T'
-  end
-
-  it 'shows the current mode when enabled'
-    edit a
-    edit b
-    Expect crystalline#bufferline(0, 0, 1) == '%#CrystallineTabType# BUFFERS %#CrystallineTab# a %#CrystallineNormalMode# b %#CrystallineTabFill#'
-    exec "normal i\<c-r>=crystalline#bufferline(0, 0, 1)\<cr>"
-    Expect getline(1) ==# '%#CrystallineTabType# BUFFERS %#CrystallineTab# a %#CrystallineInsertMode# b %#CrystallineTabFill#'
+    e /tmp/1
+    tabe /tmp/2
+    tabe /tmp/3
+    normal 2gt
+    Expect crystalline#Tabs({ 'enable_mouse': 0, 'enable_sep': 1, 'group_suffix': '1' }) ==# '%#CrystallineTab1# /t/1 %#CrystallineTab1ToTabSel1#'
+          \ . '%#CrystallineTabSel1# /t/2 %#CrystallineTabSel1ToTab1#'
+          \ . '%#CrystallineTab1# /t/3 %#CrystallineTab1ToTabFill1#'
+          \ . '%#CrystallineTabFill1#'
   end
 end
 
