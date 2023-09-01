@@ -153,11 +153,6 @@ function! crystalline#TabsOrBuffers(...) abort
     let l:items += 1
   endif
 
-  " Not enough room for any tabs
-  if l:width + l:min_tab_sel_width > l:max_width || l:items > l:max_items
-    return ''
-  endif
-
   " Get tab data
   let l:tabselidx = -1
   let l:ntabs = 0
@@ -192,11 +187,6 @@ function! crystalline#TabsOrBuffers(...) abort
     for l:tabidx in range(1, l:ntabs)
       call add(l:tabbufs, tabpagebuflist(l:tabidx)[tabpagewinnr(l:tabidx) - 1])
     endfor
-  endif
-
-  " No tabs
-  if ntabs == 0
-    return ''
   endif
 
   " Calculate remaining items for tabs

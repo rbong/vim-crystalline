@@ -163,11 +163,6 @@ export def TabsOrBuffers(_opts: dict<any>): string
     items += 1
   endif
 
-  # Not enough room for any tabs
-  if width + min_tab_sel_width > max_width || items > max_items
-    return ''
-  endif
-
   # Get tab data
   var tabselidx = -1
   var ntabs = 0
@@ -202,11 +197,6 @@ export def TabsOrBuffers(_opts: dict<any>): string
     for tabidx in range(1, ntabs)
       add(tabbufs, tabpagebuflist(tabidx)[tabpagewinnr(tabidx) - 1])
     endfor
-  endif
-
-  # No tabs
-  if ntabs == 0
-    return ''
   endif
 
   # Calculate remaining items for tabs

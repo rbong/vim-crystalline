@@ -249,11 +249,6 @@ function module.TabsOrBuffers(opts)
     items = items + 1
   end
 
-  -- Not enough room for any tabs
-  if width + min_tab_sel_width > max_width or items > max_items then
-    return ""
-  end
-
   -- Get tab data
   local bufsel
   local tabselidx = -1
@@ -279,11 +274,6 @@ function module.TabsOrBuffers(opts)
     for tabidx = 1, ntabs do
       tabbufs[tabidx] = tabpagebuflist(tabidx)[tabpagewinnr(tabidx)]
     end
-  end
-
-  -- No tabs
-  if ntabs == 0 then
-    return ""
   end
 
   -- Calculate remaining items for tabs
