@@ -567,7 +567,7 @@ function! crystalline#InitStatusline() abort
   augroup CrystallineAutoUpdateStatusline
     au!
     au BufWinEnter,WinEnter,WinLeave * call crystalline#UpdateStatusline(win_getid())
-    if exists('#CmdWinEnter') && exists('#CmdlineEnter') && exists('#CmdlineLeave')
+    if exists('##CmdWinEnter') && exists('##CmdlineEnter') && exists('##CmdlineLeave')
       au CmdWinEnter,CmdlineEnter,CmdlineLeave : call crystalline#UpdateStatusline(win_getid())
     endif
   augroup END
@@ -585,7 +585,7 @@ function! crystalline#InitTabline() abort
   if exists('+tabline')
     augroup CrystallineAutoUpdateTabline
       au!
-      if exists('#ModeChanged')
+      if exists('##ModeChanged')
         au ModeChanged * call crystalline#UpdateTabline()
       endif
       au InsertLeave * call crystalline#UpdateTabline()
