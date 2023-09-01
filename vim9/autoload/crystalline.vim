@@ -120,7 +120,7 @@ export def TabsOrBuffers(_opts: dict<any>): string
     tab_sel_group = get(opts, 'tab_sel_group', m .. 'TabSel' .. group_suffix)
     tab_fill_group = get(opts, 'tab_fill_group', m .. 'TabFill' .. group_suffix)
   else
-    tab_group = get(opts, 'tab_group', 'Tab')
+    tab_group = get(opts, 'tab_group', 'Tab' .. group_suffix)
     tab_sel_group = get(opts, 'tab_sel_group', 'TabSel' .. group_suffix)
     tab_fill_group = get(opts, 'tab_fill_group', 'TabFill' .. group_suffix)
   endif

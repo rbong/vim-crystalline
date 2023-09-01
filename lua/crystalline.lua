@@ -206,7 +206,7 @@ function module.TabsOrBuffers(opts)
     tab_sel_group = get_default(opts, "tab_sel_group", m .. "TabSel" .. group_suffix)
     tab_fill_group = get_default(opts, "tab_fill_group", m .. "TabFill" .. group_suffix)
   else
-    tab_group = get_default(opts, "tab_group", "Tab")
+    tab_group = get_default(opts, "tab_group", "Tab" .. group_suffix)
     tab_sel_group = get_default(opts, "tab_sel_group", "TabSel" .. group_suffix)
     tab_fill_group = get_default(opts, "tab_fill_group", "TabFill" .. group_suffix)
   end

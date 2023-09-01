@@ -110,7 +110,7 @@ function! crystalline#TabsOrBuffers(...) abort
     let l:tab_sel_group = get(l:opts, 'tab_sel_group', l:m . 'TabSel' . l:group_suffix)
     let l:tab_fill_group = get(l:opts, 'tab_fill_group', l:m . 'TabFill' . l:group_suffix)
   else
-    let l:tab_group = get(l:opts, 'tab_group', 'Tab')
+    let l:tab_group = get(l:opts, 'tab_group', 'Tab' . l:group_suffix)
     let l:tab_sel_group = get(l:opts, 'tab_sel_group', 'TabSel' . l:group_suffix)
     let l:tab_fill_group = get(l:opts, 'tab_fill_group', 'TabFill' . l:group_suffix)
   endif
