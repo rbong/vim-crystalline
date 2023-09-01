@@ -1,7 +1,7 @@
 # Neovim Lua Examples
 
 These examples use neovim-flavored Lua.
-Examples are also available in [vimscript](examples/vimscript_examples.md).
+Examples are also available in [vimscript](vimscript_examples.md).
 
 All examples belong in `init.lua` before `vim-crystalline` is loaded.
 
@@ -96,7 +96,7 @@ vim.g.crystalline_theme = "default"
 See [`:help crystalline-highlight-groups`](https://raw.githubusercontent.com/rbong/vim-crystalline/master/doc/crystalline.txt)
 for the full list of groups.
 
-See [screenshots](README.md#obligatory-colorful-theme-screenshots)
+See [screenshots](../README.md#obligatory-colorful-theme-screenshots)
 for the full list of themes.
 
 ## Using Separators
