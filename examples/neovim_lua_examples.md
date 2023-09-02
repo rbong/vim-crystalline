@@ -131,10 +131,10 @@ end
 
 vim.o.laststatus = 2
 vim.o.showtabline = 2
--- Default separators
+-- By default, these are powerline-style separators
 vim.g.crystalline_separators = {
-  { ch = "", alt_ch = "", dir = ">" },
-  { ch = "", alt_ch = "", dir = "<" }
+  { ch = ">", alt_ch = "|", dir = ">" },
+  { ch = "<", alt_ch = "|", dir = "<" }
 }
 ```
 

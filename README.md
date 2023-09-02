@@ -254,10 +254,10 @@ endfunction
 set laststatus=2
 set showtabline=2
 set guioptions-=e
-" Default separators
+" By default, these are powerline-style separators
 let g:crystalline_separators = [
-      \ { 'ch': '', 'alt_ch': '', 'dir': '>' },
-      \ { 'ch': '', 'alt_ch': '', 'dir': '<' },
+      \ { 'ch': '>', 'alt_ch': '|', 'dir': '>' },
+      \ { 'ch': '<', 'alt_ch': '|', 'dir': '<' },
       \ ]
 ```
 

@@ -102,6 +102,8 @@ This is a list of objects containing:
 
 Default:
 >vim
+    " These use powerline-style separators
+    " If you're unable to see them, please use a powerline-compatible font
     let g:crystalline_separators = [
           \ { 'ch': '', 'alt_ch': '', 'dir': '>' },
           \ { 'ch': '', 'alt_ch': '', 'dir': '<' },
