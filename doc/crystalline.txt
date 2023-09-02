@@ -483,8 +483,7 @@ See also |crystalline-highlight-groups|.
 
 EXAMPLE                                                  *crystalline-example*
 
-More examples in vimscript: <https://github.com/rbong/vim-crystalline/blob/master/examples/vimscript_examples.md>
-More examples in neovim-flavored Lua: <https://github.com/rbong/vim-crystalline/blob/master/examples/neovim_lua_examples.md>
+More examples: <https://github.com/rbong/vim-crystalline#examples>
 
 Fully featured example:
 
