@@ -490,7 +490,7 @@ Fully featured example:
 
 >vim
     function! g:GroupSuffix()
-      if &paste
+      if mode() ==# 'i' && &paste
         return '2'
       endif
       if &modified

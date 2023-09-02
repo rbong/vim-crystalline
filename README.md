@@ -346,7 +346,7 @@ Using color variants manually:
 
 ```vim
 function! g:GroupSuffix()
-  if &paste
+  if mode() ==# 'i' && &paste
     " Add the suffix '2' to all groups
     return '2'
   endif
@@ -384,7 +384,7 @@ Using color variants automatically:
 
 ```vim
 function! g:GroupSuffix()
-  if &paste
+  if mode() ==# 'i' && &paste
     return '2'
   endif
   if &modified
@@ -477,7 +477,7 @@ set guioptions-=e
 
 ```vim
 function! g:GroupSuffix()
-  if &paste
+  if mode() ==# 'i' && &paste
     return '2'
   endif
   if &modified

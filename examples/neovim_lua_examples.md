@@ -226,7 +226,7 @@ Using color variants manually:
 
 ```lua
 local function GroupSuffix()
-  if vim.o.paste then
+  if vim.fn.mode() == 'i' and vim.o.paste then
     -- Add the suffix "2" to all groups
     return "2"
   end
@@ -265,7 +265,7 @@ Using color variants automatically:
 
 ```lua
 local function GroupSuffix()
-  if vim.o.paste then
+  if vim.fn.mode() == 'i' and vim.o.paste then
     return "2"
   end
   if vim.o.modified then
@@ -360,7 +360,7 @@ vim.o.showtabline = 2
 
 ```lua
 local function GroupSuffix()
-  if vim.o.paste then
+  if vim.fn.mode() == 'i' and vim.o.paste then
     return "2"
   end
   if vim.o.modified then
