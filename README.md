@@ -547,7 +547,8 @@ let g:crystalline_auto_prefix_groups = 1
 
 See [`:help crystalline`](https://raw.githubusercontent.com/rbong/vim-crystalline/master/doc/crystalline.txt) for more information.
 
-Don't hesitate to [post an issue](https://github.com/rbong/vim-crystalline/issues/new) if you have any questions, suggestions, or bugs.
+Don't hesitate to [start a discussion](https://github.com/rbong/vim-crystalline/discussions/new/choose) if you have any questions or suggestions
+or [post an issue](https://github.com/rbong/vim-crystalline/issues/new) if you encounter any bugs.
 
 Feel free to [make a pull request](https://github.com/rbong/vim-crystalline/pulls) if you'd like to to contribute.
 It's much appreciated.
