@@ -81,7 +81,7 @@ and [uncustomizable](https://github.com/rbong/vim-crystalline/wiki/Configuration
 
 **papercolor**
 
-![img](https://github.com/rbong/vim-crystalline/wiki/screenshots/papercolor_light.png)
+![img](https://github.com/rbong/vim-crystalline/wiki/screenshots/papercolor.png)
 
 **shadesofpurple**
 
