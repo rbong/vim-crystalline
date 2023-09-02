@@ -1,7 +1,7 @@
 # Neovim Lua Examples
 
 These examples use neovim-flavored Lua.
-Examples are also available in [vimscript](vimscript_examples.md).
+Examples are also available in [vimscript](../README.md#examples).
 
 All examples belong in `init.lua` before `vim-crystalline` is loaded.
 
