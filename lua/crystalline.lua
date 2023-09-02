@@ -122,7 +122,7 @@ end
 
 -- Tabline Utils {{{
 
-function module.DefaultTab(buf, max_width, is_sel)
+function module.DefaultTab(tab, buf, max_width, is_sel)
   -- Return early
   if max_width <= 0 then
     return { '', 0 }
@@ -280,7 +280,7 @@ function module.TabsOrBuffers(opts)
   -- Add selected tab first to ensure it's always added
   local Tab = vim_g['CrystallineTabFn'] or vim_fn['g:CrystallineTabFn']
   if tabselidx > 0 then
-    local tabinfo = Tab(tabbufs[tabselidx], max_tab_sel_width, true)
+    local tabinfo = Tab(tabselidx, tabbufs[tabselidx], max_tab_sel_width, true)
     local tab, tabwidth = tabinfo[1], tabinfo[2]
     if enable_mouse then
       tab = "%" .. tabselidx .. "T" .. tab
@@ -295,7 +295,7 @@ function module.TabsOrBuffers(opts)
   -- Add at least one tab to left of selected if present and there's space
   local add_left_tabs = tabselidx > 1 and width < max_width and tab_count < max_tabs
   if add_left_tabs then
-    local tabinfo = Tab(tabbufs[tabselidx - 1], max_tab_width, false)
+    local tabinfo = Tab(tabselidx, tabbufs[tabselidx - 1], max_tab_width, false)
     local tab, tabwidth = tabinfo[1], tabinfo[2]
     if enable_sep then
       tab = tab .. module.PlainSep(sep_index, tab_group, first_group)
@@ -318,7 +318,7 @@ function module.TabsOrBuffers(opts)
   -- Add at least one tab to right of selected if present and there's space
   local add_right_tabs = tabselidx > 0 and tabselidx < ntabs and width < max_width and tab_count < max_tabs
   if add_right_tabs then
-    local tabinfo = Tab(tabbufs[tabselidx + 1], max_tab_width, false)
+    local tabinfo = Tab(tabselidx, tabbufs[tabselidx + 1], max_tab_width, false)
     local tab, tabwidth = tabinfo[1], tabinfo[2]
     if enable_mouse then
       tab = "%" .. (tabselidx + 1) .. "T" .. tab
@@ -347,7 +347,7 @@ function module.TabsOrBuffers(opts)
   -- Add tabs to left of selected
   local tabidx = add_left_tabs and (tabselidx - 2) or -1
   while tabidx > 0 and width < max_width and tab_count < max_tabs do
-    local tabinfo = Tab(tabbufs[tabidx], max_tab_width, false)
+    local tabinfo = Tab(tabselidx, tabbufs[tabidx], max_tab_width, false)
     local tab, tabwidth = tabinfo[1], tabinfo[2]
     if enable_sep then
       tab = tab .. tab_sep
@@ -368,7 +368,7 @@ function module.TabsOrBuffers(opts)
   -- Add other tabs to right of selected
   tabidx = add_right_tabs and tabselidx + 2 or ntabs + 1
   while tabidx <= ntabs and width < max_width and tab_count < max_tabs do
-    local tabinfo = Tab(tabbufs[tabidx], max_tab_width, false)
+    local tabinfo = Tab(tabselidx, tabbufs[tabidx], max_tab_width, false)
     local tab, tabwidth = tabinfo[1], tabinfo[2]
     if enable_mouse then
       tab = "%" .. tabidx .. "T" .. tab

@@ -27,6 +27,8 @@ g:CrystallineTabFn                                        *g:CrystallineTabFn*
 Custom tabs/buffers for |crystalline#TabsOrBuffers()|.
 
 Arguments:
+  `tabnr`
+    The tab number.
   `bufnr`
     The buffer number.
   `max_width`
@@ -210,7 +212,8 @@ Highlight groups must omit the "Crystalline" prefix.
 See also |crystalline-highlight-groups|.
 
                                                     *crystalline.DefaultTab()*
-crystalline#DefaultTab(buf, max_width, is_sel)      *crystalline#DefaultTab()*
+                                                    *crystalline#DefaultTab()*
+crystalline#DefaultTab(tabnr, bufnr, max_width, is_sel)
 
 The default tab/buffer.
 

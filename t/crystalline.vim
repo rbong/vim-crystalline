@@ -142,7 +142,7 @@ describe 'crystalline'
 
   it 'allows custom tabs'
     unlet! g:CrystallineTabFn
-    function! g:CrystallineTabFn(bufnr, max_width, is_sel) abort
+    function! g:CrystallineTabFn(tabnr, bufnr, max_width, is_sel) abort
       return [' tab ', 5]
     endfunction
 

@@ -37,7 +37,7 @@ endfunction
 
 " Tabline Utils {{{
 
-function! crystalline#DefaultTab(buf, max_width, is_sel) abort
+function! crystalline#DefaultTab(tab, buf, max_width, is_sel) abort
   " Return early
   if a:max_width <= 0
     return ['', 0]
@@ -45,12 +45,12 @@ function! crystalline#DefaultTab(buf, max_width, is_sel) abort
 
   " Get left/right components
   let l:left = g:crystalline_tab_left
-  let l:right = getbufvar(a:buf, '&mod') ? g:crystalline_tab_mod : g:crystalline_tab_nomod
+  let l:right = getbufvar(a:bufnr, '&mod') ? g:crystalline_tab_mod : g:crystalline_tab_nomod
   let l:lr_width = strchars(l:left) + strchars(l:right)
   let l:max_name_width = a:max_width - l:lr_width
 
   " Get name
-  let l:name = bufname(a:buf)
+  let l:name = bufname(a:bufnr)
   if l:name ==# ''
     let l:name = g:crystalline_tab_empty
     let l:name_width = strchars(l:name)
@@ -192,7 +192,7 @@ function! crystalline#TabsOrBuffers(...) abort
 
   " Add selected tab first to ensure it's always added
   if l:tabselidx >= 0
-    let [l:tab, l:tabwidth] = g:CrystallineTabFn(l:tabbufs[l:tabselidx], l:max_tab_sel_width, v:true)
+    let [l:tab, l:tabwidth] = g:CrystallineTabFn(l:tabselidx + 1, l:tabbufs[l:tabselidx], l:max_tab_sel_width, v:true)
     if l:enable_mouse
       let l:tab = '%' . (l:tabselidx + 1) . 'T' . l:tab
     endif
@@ -206,7 +206,7 @@ function! crystalline#TabsOrBuffers(...) abort
   " Add at least one tab to left of selected if present and there's space
   let l:add_left_tabs = l:tabselidx >= 1 && l:width < l:max_width && l:tab_count < l:max_tabs
   if l:add_left_tabs
-    let [l:tab, l:tabwidth] = g:CrystallineTabFn(l:tabbufs[l:tabselidx - 1], l:max_tab_width, v:false)
+    let [l:tab, l:tabwidth] = g:CrystallineTabFn(l:tabselidx + 1, l:tabbufs[l:tabselidx - 1], l:max_tab_width, v:false)
     if l:enable_sep
       let l:tab .= crystalline#PlainSep(l:sep_index, l:tab_group, l:first_group)
       let l:tabwidth += l:sep_width
@@ -228,7 +228,7 @@ function! crystalline#TabsOrBuffers(...) abort
   " Add at least one tab to right of selected if present and there's space
   let l:add_right_tabs = l:width < l:max_width && l:tabselidx + 1 < l:ntabs && l:tab_count < l:max_tabs
   if l:add_right_tabs
-    let [l:tab, l:tabwidth] = g:CrystallineTabFn(l:tabbufs[l:tabselidx + 1], l:max_tab_width, v:false)
+    let [l:tab, l:tabwidth] = g:CrystallineTabFn(l:tabselidx + 1, l:tabbufs[l:tabselidx + 1], l:max_tab_width, v:false)
     if l:enable_mouse
       let l:tab = '%' . (l:tabselidx + 2) . 'T' . l:tab
     endif
@@ -256,7 +256,7 @@ function! crystalline#TabsOrBuffers(...) abort
   " Add tabs to left of selected
   let l:tabidx = l:add_left_tabs ? l:tabselidx - 2 : -1
   while l:tabidx >= 0 && l:width < l:max_width && l:tab_count < l:max_tabs
-    let [l:tab, l:tabwidth] = g:CrystallineTabFn(l:tabbufs[l:tabidx], l:max_tab_width, v:false)
+    let [l:tab, l:tabwidth] = g:CrystallineTabFn(l:tabselidx + 1, l:tabbufs[l:tabidx], l:max_tab_width, v:false)
     if l:enable_sep
       let l:tab .= l:tab_sep
       let l:tabwidth += l:sep_width
@@ -276,7 +276,7 @@ function! crystalline#TabsOrBuffers(...) abort
   " Add other tabs to right of selected
   let l:tabidx = l:add_right_tabs ? l:tabselidx + 2 : l:ntabs
   while l:tabidx < l:ntabs && l:width < l:max_width && l:tab_count < l:max_tabs
-    let [l:tab, l:tabwidth] = g:CrystallineTabFn(l:tabbufs[l:tabidx], l:max_tab_width, v:false)
+    let [l:tab, l:tabwidth] = g:CrystallineTabFn(l:tabselidx + 1, l:tabbufs[l:tabidx], l:max_tab_width, v:false)
     if l:enable_mouse
       let l:tab = '%' . (l:tabidx + 1) . 'T' . l:tab
     endif

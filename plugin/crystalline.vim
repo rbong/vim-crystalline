@@ -119,8 +119,8 @@ if !exists('g:CrystallineTabFn') && !exists('*g:CrystallineTabFn')
   if has('nvim')
     lua vim.g.CrystallineTabFn = require('crystalline').DefaultTab
   else
-    function! g:CrystallineTabFn(buf, max_width, is_sel) abort
-      return crystalline#DefaultTab(a:buf, a:max_width, a:is_sel)
+    function! g:CrystallineTabFn(tab, buf, max_width, is_sel) abort
+      return crystalline#DefaultTab(a:tab, a:buf, a:max_width, a:is_sel)
     endfunction
   endif
 endif

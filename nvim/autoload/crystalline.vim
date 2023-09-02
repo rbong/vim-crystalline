@@ -20,8 +20,8 @@ endfunction
 
 " Tabline Utils {{{
 
-function! crystalline#DefaultTab(buf, max_width, is_sel) abort
-  return s:crystalline.DefaultTab(a:buf, a:max_width, a:is_sel)
+function! crystalline#DefaultTab(tab, buf, max_width, is_sel) abort
+  return s:crystalline.DefaultTab(a:tab, a:buf, a:max_width, a:is_sel)
 endfunction
 
 function! crystalline#DefaultHideBuffer(buf) abort
