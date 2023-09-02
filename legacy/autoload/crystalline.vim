@@ -45,12 +45,12 @@ function! crystalline#DefaultTab(tab, buf, max_width, is_sel) abort
 
   " Get left/right components
   let l:left = g:crystalline_tab_left
-  let l:right = getbufvar(a:bufnr, '&mod') ? g:crystalline_tab_mod : g:crystalline_tab_nomod
+  let l:right = getbufvar(a:buf, '&mod') ? g:crystalline_tab_mod : g:crystalline_tab_nomod
   let l:lr_width = strchars(l:left) + strchars(l:right)
   let l:max_name_width = a:max_width - l:lr_width
 
   " Get name
-  let l:name = bufname(a:bufnr)
+  let l:name = bufname(a:buf)
   if l:name ==# ''
     let l:name = g:crystalline_tab_empty
     let l:name_width = strchars(l:name)
