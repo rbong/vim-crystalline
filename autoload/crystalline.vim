@@ -383,7 +383,9 @@ function! crystalline#SetThemeFallbackAttrs(theme, style, section, variant) abor
 
   " get fallback attrs
   " assume this function is called in fallback order unless otherwise noted
-  if l:group ==# 'A' || l:group ==# 'B' || l:group ==# 'Fill'
+  if !empty(a:variant)
+    let l:fallback_attrs = a:theme[a:style . a:section]
+  elseif l:group ==# 'A' || l:group ==# 'B' || l:group ==# 'Fill'
     if a:style is# ''
       let l:fallback_attrs = crystalline#GetEmptyThemeAttrs()
     else
@@ -398,8 +400,6 @@ function! crystalline#SetThemeFallbackAttrs(theme, style, section, variant) abor
     let l:fallback_attrs = a:theme[a:style . 'Fill']
   elseif l:group ==# 'TabType'
     let l:fallback_attrs = a:theme[a:style . 'B']
-  elseif !empty(a:variant)
-    let l:fallback_attrs = a:theme[a:style . a:section]
   else
     let l:fallback_attrs = crystalline#GetEmptyThemeAttrs()
   endif
