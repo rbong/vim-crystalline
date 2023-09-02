@@ -266,7 +266,7 @@ export def TabsOrBuffers(_opts: dict<any>): string
   # Add tabs to left of selected
   var tabidx = add_left_tabs ? tabselidx - 2 : -1
   while tabidx >= 0 && width < max_width && tab_count < max_tabs
-    var [tab, tabwidth] = g:CrystallineTabFn(tabidx, tabbufs[tabidx], max_tab_width, v:false)
+    var [tab, tabwidth] = g:CrystallineTabFn(tabidx + 1, tabbufs[tabidx], max_tab_width, v:false)
     if enable_sep
       tab ..= tab_sep
       tabwidth += sep_width
@@ -286,7 +286,7 @@ export def TabsOrBuffers(_opts: dict<any>): string
   # Add other tabs to right of selected
   tabidx = add_right_tabs ? tabselidx + 2 : ntabs
   while tabidx < ntabs && width < max_width && tab_count < max_tabs
-    var [tab, tabwidth] = g:CrystallineTabFn(tabidx, tabbufs[tabidx], max_tab_width, v:false)
+    var [tab, tabwidth] = g:CrystallineTabFn(tabidx + 1, tabbufs[tabidx], max_tab_width, v:false)
     if enable_mouse
       tab = '%' .. (tabidx + 1) .. 'T' .. tab
     endif
