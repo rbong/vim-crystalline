@@ -39,9 +39,13 @@ and [uncustomizable](https://github.com/rbong/vim-crystalline/wiki/Configuration
 
 ![img](https://github.com/rbong/vim-crystalline/wiki/screenshots/gruvbox_light.png)
 
-**hybrid**
+**hybrid (dark)**
 
-![img](https://github.com/rbong/vim-crystalline/wiki/screenshots/hybrid.png)
+![img](https://github.com/rbong/vim-crystalline/wiki/screenshots/hybrid_dark.png)
+
+**hybrid (light)**
+
+![img](https://github.com/rbong/vim-crystalline/wiki/screenshots/hybrid_light.png)
 
 **iceberg (dark)**
 
