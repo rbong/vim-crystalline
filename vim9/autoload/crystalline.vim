@@ -6,7 +6,7 @@ vim9script
 
 # Statusline Utils {{{
 
-export def PlainSep(sep_index: number, left_group: string, right_group: string): string
+export def PlainSep(sep_index: any, left_group: string, right_group: string): string
   var key = sep_index .. left_group .. right_group
   if !has_key(g:crystalline_sep_cache, key)
     g:crystalline_sep_cache[key] = crystalline#GetSep(sep_index, left_group, right_group)
@@ -14,7 +14,7 @@ export def PlainSep(sep_index: number, left_group: string, right_group: string):
   return g:crystalline_sep_cache[key]
 enddef
 
-export def Sep(sep_index: number, _left_group: string, _right_group: string): string
+export def Sep(sep_index: any, _left_group: string, _right_group: string): string
   var left_group: string
   var right_group: string
   if g:crystalline_auto_prefix_groups
