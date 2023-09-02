@@ -147,12 +147,12 @@ function vim.g.CrystallineStatuslineFn(winnr)
   local cl = require("crystalline")
   local s = ""
 
-  -- Start highlighting section A with mode colors
+  -- In different modes, this will be 'NormalModeA', 'InsertModeA', etc.
   s = s .. cl.ModeHiItem("A")
 
   s = s .. " %f%h%w%m%r "
 
-  -- Generate a separator with mode colors
+  -- The mode prefix is added to all separator groups
   s = s .. cl.Sep(0, cl.ModeGroup("A"), cl.ModeGroup("Fill"))
 
   return s
@@ -175,12 +175,13 @@ function vim.g.CrystallineStatuslineFn(winnr)
   local cl = require("crystalline")
   local s = ""
 
-  -- The mode colors for section A will automatically be added
+  -- In different modes, this will be 'NormalModeA', 'InsertModeA', etc.
+  -- In inactive windows, this will be 'InactiveA'
   s = s .. cl.HiItem("A")
 
   s = s .. " %f%h%w%m%r "
 
-  -- A separator with mode colors for both groups will automatically be generated
+  -- The prefix will automatically be added to separator groups
   s = s .. cl.Sep(0, "A", "Fill")
 
   return s
@@ -189,6 +190,7 @@ end
 function vim.g.CrystallineTablineFn()
   local cl = require("crystalline")
   -- auto_prefix_groups will default to true
+  -- 'Inactive*' groups will not be used in the tabline
   return cl.DefaultTabline()
 end
 

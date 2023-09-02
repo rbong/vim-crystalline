@@ -269,12 +269,12 @@ Using mode colors manually:
 function! g:CrystallineStatuslineFn(winnr)
   let l:s = ''
 
-  " Start highlighting section A with mode colors
+  " In different modes, this will be 'NormalModeA', 'InsertModeA', etc.
   let l:s .= crystalline#ModeHiItem('A')
 
   let l:s .= ' %f%h%w%m%r '
 
-  " Generate a separator with mode colors
+  " The mode prefix is added to all separator groups
   let l:s .= crystalline#Sep(0, crystalline#ModeGroup('A'), crystalline#ModeGroup('Fill'))
 
   return l:s
@@ -296,12 +296,13 @@ Using mode colors automatically:
 function! g:CrystallineStatuslineFn(winnr)
   let l:s = ''
 
-  " The mode colors for section A will automatically be added
+  " In different modes, this will be 'NormalModeA', 'InsertModeA', etc.
+  " In inactive windows, this will be 'InactiveA'
   let l:s .= crystalline#HiItem('A')
 
   let l:s .= ' %f%h%w%m%r '
 
-  " A separator with mode colors for both groups will automatically be generated
+  " The prefix will automatically be added to separator groups
   let l:s .= crystalline#Sep(0, 'A', 'Fill')
 
   return l:s
@@ -309,6 +310,7 @@ endfunction
 
 function! g:CrystallineTablineFn()
   " auto_prefix_groups will default to true
+  " 'Inactive*' groups will not be used in the tabline
   return crystalline#DefaultTabline()
 endfunction
 
