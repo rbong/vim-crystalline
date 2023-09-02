@@ -152,7 +152,7 @@ See [`:help 'statusline'`](https://vimhelp.org/options.txt.html#%27statusline%27
 ### Creating a Basic Tabline
 
 ```vim
-function! g:CrystallineTablineFn(winnr)
+function! g:CrystallineTablineFn()
   return crystalline#DefaultTabline()
 endfunction
 
@@ -242,7 +242,7 @@ function! g:CrystallineStatuslineFn(winnr)
   return l:s
 endfunction
 
-function! g:CrystallineTablineFn(winnr)
+function! g:CrystallineTablineFn()
   " Add separators to the tabline
   return crystalline#DefaultTabline({ 'enable_sep': 1 })
 endfunction
@@ -276,7 +276,7 @@ function! g:CrystallineStatuslineFn(winnr)
   return l:s
 endfunction
 
-function! g:CrystallineTablineFn(winnr)
+function! g:CrystallineTablineFn()
   " auto_prefix_groups automatically uses mode colors
   return crystalline#DefaultTabline({ 'auto_prefix_groups': 1 })
 endfunction
@@ -303,7 +303,7 @@ function! g:CrystallineStatuslineFn(winnr)
   return l:s
 endfunction
 
-function! g:CrystallineTablineFn(winnr)
+function! g:CrystallineTablineFn()
   " auto_prefix_groups will default to true
   return crystalline#DefaultTabline()
 endfunction
@@ -357,17 +357,15 @@ endfunction
 function! g:CrystallineStatuslineFn(winnr)
   let l:s = ''
 
-  let l:v = g:GroupSuffix()
-
   " Add the variant onto the end of the highlight item
-  let l:s .= crystalline#HiItem('A') . l:v
+  let l:s .= crystalline#HiItem('Fill' . g:GroupSuffix())
 
   let l:s .= ' %f%h%w%m%r '
 
   return l:s
 endfunction
 
-function! g:CrystallineTablineFn(winnr)
+function! g:CrystallineTablineFn()
   " Add the variant onto the end of all tabline groups
   return crystalline#DefaultTabline({ 'group_suffix': g:GroupSuffix() })
 endfunction
@@ -375,6 +373,7 @@ endfunction
 set laststatus=2
 set showtabline=2
 set guioptions-=e
+let g:crystalline_auto_prefix_groups = 1
 ```
 
 Using color variants automatically:
@@ -397,15 +396,14 @@ function! g:CrystallineStatuslineFn(winnr)
   " Works with all functions
   let g:crystalline_group_suffix = g:GroupSuffix()
 
-  let l:s .= crystalline#HiItem('A')
+  let l:s .= crystalline#HiItem('Fill')
 
   let l:s .= ' %f%h%w%m%r '
 
   return l:s
 endfunction
 
-function! g:CrystallineTablineFn(winnr)
-  " group_suffix will default to g:crystalline_group_suffix
+function! g:CrystallineTablineFn()
   let g:crystalline_group_suffix = g:GroupSuffix()
   return crystalline#DefaultTabline()
 endfunction
@@ -413,6 +411,7 @@ endfunction
 set laststatus=2
 set showtabline=2
 set guioptions-=e
+let g:crystalline_auto_prefix_groups = 1
 ```
 
 There are 2 variants to use in built-in themes.
@@ -429,10 +428,10 @@ function! g:CrystallineStatuslineFn(winnr)
   " Plugins often provide functions for the statusline
   let l:s .= '%{fugitive#Head()} '
 
-  let l:s .= '%'
+  let l:s .= '%='
 
   " Show settings in the statusline
-  let l:s .= '${&paste ? "PASTE" : ""} '
+  let l:s .= '%{&paste ? "PASTE " : " "}'
 
   return l:s
 endfunction
@@ -444,29 +443,26 @@ set laststatus=2
 
 ```vim
 function! g:CrystallineTablineFn()
-  " The maximum supported statusline/tabline items in Vim
-  let l:max_items = 80
-  " The width of the screen
   let l:max_width = &columns
-
   " Start the right side of the tabline
   let l:right = '%='
-  let l:max_items -= 1
 
   " Add a separator
   " Reuse the TabType group for the right section
   let l:right .= crystalline#Sep(1, 'TabFill', 'TabType')
-  " One item for the separator group, one item to start the TabType group
-  let l:max_items -= 2
   " Subtract the width of the separator
   let l:max_width -= 1
 
   " Add a label indicating if vim or neovim is being used
   let l:vimlabel = has('nvim') ?  ' NVIM ' : ' VIM '
+  let l:right .= l:vimlabel
   " Use strchars() to get the real visible width
   let l:max_width -= strchars(l:vimlabel)
 
-  return crystalline#DefaultTabline({ 'max_items': l:max_items, 'max_width': l:max_width }) . l:right
+  " Reduce the number of max tabs to fit new tabline items
+  let l:max_tabs = 23
+
+  return crystalline#DefaultTabline({ 'max_tabs': l:max_tabs, 'max_width': l:max_width }) . l:right
 endfunction
 
 set showtabline=2
@@ -503,7 +499,7 @@ function! g:CrystallineStatuslineFn(winnr)
 
   let l:s .= '%='
   if l:curr
-    let l:s .= crystalline#Sep(1, 'Fill', 'B') . &paste ? 'PASTE ' : ' '
+    let l:s .= crystalline#Sep(1, 'Fill', 'B') . '%{&paste ? " PASTE " : " "}'
     let l:s .= crystalline#Sep(1, 'B', 'A')
   endif
   if winwidth(a:winnr) > 80
@@ -516,22 +512,22 @@ function! g:CrystallineStatuslineFn(winnr)
 endfunction
 
 function! g:CrystallineTablineFn()
-  let g:crystalline_group_suffix = g:GroupSuffix()
-  let l:max_items = 80
   let l:max_width = &columns
-
   let l:right = '%='
-  let l:max_items -= 1
 
   let l:right .= crystalline#Sep(1, 'TabFill', 'TabType')
-  let l:max_items -= 2
   let l:max_width -= 1
 
   let l:vimlabel = has('nvim') ?  ' NVIM ' : ' VIM '
+  let l:right .= l:vimlabel
   let l:max_width -= strchars(l:vimlabel)
 
+  let l:max_tabs = 23
+
   return crystalline#DefaultTabline({
-        \ 'enable_sep': 1, 'max_items': l:max_items, 'max_width': l:max_width
+        \ 'enable_sep': 1,
+        \ 'max_tabs': l:max_tabs,
+        \ 'max_width': l:max_width
         \ }) . l:right
 endfunction
 

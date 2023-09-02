@@ -516,7 +516,7 @@ Fully featured example:
 
       let l:s .= '%='
       if l:curr
-        let l:s .= crystalline#Sep(1, 'Fill', 'B') . &paste ? 'PASTE ' : ' '
+        let l:s .= crystalline#Sep(1, 'Fill', 'B') . '%{&paste ? " PASTE " : " "}'
         let l:s .= crystalline#Sep(1, 'B', 'A')
       endif
       if winwidth(a:winnr) > 80
@@ -530,21 +530,23 @@ Fully featured example:
 
     function! g:CrystallineTablineFn()
       let g:crystalline_group_suffix = g:GroupSuffix()
-      let l:max_items = 80
       let l:max_width = &columns
 
       let l:right = '%='
-      let l:max_items -= 1
 
       let l:right .= crystalline#Sep(1, 'TabFill', 'TabType')
-      let l:max_items -= 2
       let l:max_width -= 1
 
       let l:vimlabel = has('nvim') ?  ' NVIM ' : ' VIM '
+      let l:right .= l:vimlabel
       let l:max_width -= strchars(l:vimlabel)
 
+      let l:max_tabs = 23
+
       return crystalline#DefaultTabline({
-            \ 'enable_sep': 1, 'max_items': l:max_items, 'max_width': l:max_width
+            \ 'enable_sep': 1,
+            \ 'max_tabs': l:max_tabs,
+            \ 'max_width': l:max_width
             \ }) . l:right
     endfunction
 

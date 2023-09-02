@@ -32,7 +32,7 @@ See [`:help 'statusline'`](https://vimhelp.org/options.txt.html#%27statusline%27
 ## Creating a Basic Tabline
 
 ```lua
-function vim.g.CrystallineTablineFn(winnr)
+function vim.g.CrystallineTablineFn()
   local cl = require("crystalline")
   return cl.DefaultTabline()
 end
@@ -123,7 +123,7 @@ function vim.g.CrystallineStatuslineFn(winnr)
   return s
 end
 
-function vim.g.CrystallineTablineFn(winnr)
+function vim.g.CrystallineTablineFn()
   local cl = require("crystalline")
   -- Add separators to the tabline
   return cl.DefaultTabline({ enable_sep = true })
@@ -139,8 +139,6 @@ vim.g.crystalline_separators = {
 ```
 
 ## Using Mode Colors
-
-TODO: inactive colors example
 
 Using mode colors manually:
 
@@ -160,7 +158,7 @@ function vim.g.CrystallineStatuslineFn(winnr)
   return s
 end
 
-function vim.g.CrystallineTablineFn(winnr)
+function vim.g.CrystallineTablineFn()
   local cl = require("crystalline")
   -- auto_prefix_groups automatically uses mode colors
   return cl.DefaultTabline({ auto_prefix_groups = true })
@@ -188,7 +186,7 @@ function vim.g.CrystallineStatuslineFn(winnr)
   return s
 end
 
-function vim.g.CrystallineTablineFn(winnr)
+function vim.g.CrystallineTablineFn()
   local cl = require("crystalline")
   -- auto_prefix_groups will default to true
   return cl.DefaultTabline()
@@ -228,11 +226,11 @@ Using color variants manually:
 
 ```lua
 local function GroupSuffix()
-  if &paste then
+  if vim.o.paste then
     -- Add the suffix "2" to all groups
     return "2"
   end
-  if &modified then
+  if vim.o.modified then
     -- Add the suffix "1" to all groups
     return "1"
   end
@@ -244,17 +242,15 @@ function vim.g.CrystallineStatuslineFn(winnr)
   local cl = require("crystalline")
   local s = ""
 
-  local v = GroupSuffix()
-
   -- Add the variant onto the end of the highlight item
-  s = s .. cl.HiItem("A") .. v
+  s = s .. cl.HiItem("Fill" .. GroupSuffix())
 
   s = s .. " %f%h%w%m%r "
 
   return s
 end
 
-function vim.g.CrystallineTablineFn(winnr)
+function vim.g.CrystallineTablineFn()
   local cl = require("crystalline")
   -- Add the variant onto the end of all tabline groups
   return cl.DefaultTabline({ group_suffix = GroupSuffix() })
@@ -262,16 +258,17 @@ end
 
 vim.o.laststatus = 2
 vim.o.showtabline = 2
+vim.g.crystalline_auto_prefix_groups = true
 ```
 
 Using color variants automatically:
 
 ```lua
 local function GroupSuffix()
-  if &paste then
+  if vim.o.paste then
     return "2"
   end
-  if &modified then
+  if vim.o.modified then
     return "1"
   end
   return ""
@@ -285,22 +282,22 @@ function vim.g.CrystallineStatuslineFn(winnr)
   -- Works with all functions
   vim.g.crystalline_group_suffix = GroupSuffix()
 
-  s = s .. cl.HiItem("A")
+  s = s .. cl.HiItem("Fill")
 
   s = s .. " %f%h%w%m%r "
 
   return s
 end
 
-function vim.g.CrystallineTablineFn(winnr)
+function vim.g.CrystallineTablineFn()
   local cl = require("crystalline")
-  -- group_suffix will default to vim.g.crystalline_group_suffix
   vim.g.crystalline_group_suffix = GroupSuffix()
   return cl.DefaultTabline()
 end
 
 vim.o.laststatus = 2
 vim.o.showtabline = 2
+vim.g.crystalline_auto_prefix_groups = true
 ```
 
 There are 2 variants to use in built-in themes.
@@ -317,10 +314,10 @@ function vim.g.CrystallineStatuslineFn(winnr)
   -- Plugins often provide functions for the statusline
   s = s .. "%{fugitive#Head()} "
 
-  s = s .. "%"
+  s = s .. "%="
 
   -- Show settings in the statusline
-  s = s .. "${&paste ? "PASTE" : ""} "
+  s = s .. "%{&paste ? 'PASTE ' : ' '}"
 
   return s
 end
@@ -333,29 +330,27 @@ vim.o.laststatus = 2
 ```lua
 function vim.g.CrystallineTablineFn()
   local cl = require("crystalline")
-  -- The maximum supported statusline/tabline items in Vim
-  local max_items = 80
-  -- The width of the screen
-  local max_width = &columns
+  local max_width = vim.o.columns
 
   -- Start the right side of the tabline
   local right = "%="
-  local max_items -= 1
 
   -- Add a separator
   -- Reuse the TabType group for the right section
   right = right .. cl.Sep(1, "TabFill", "TabType")
-  -- One item for the separator group, one item to start the TabType group
-  local max_items -= 2
   -- Subtract the width of the separator
-  local max_width -= 1
+  max_width = max_width - 1
 
-  -- Add a label indicating that neovim is being used
-  local vimlabel = " NVIM" 
+  -- Add a label indicating if vim or neovim is being used
+  local vimlabel = " NVIM "
+  right = right .. vimlabel
   -- Use strchars() to get the real visible width
-  local max_width -= vim.fn.strchars(vimlabel)
+  max_width = max_width - vim.fn.strchars(vimlabel)
 
-  return cl.DefaultTabline({ max_items = max_items, max_width = max_width }) .. right
+  -- Reduce the number of max tabs to fit new tabline items
+  local max_tabs = 23
+
+  return cl.DefaultTabline({ max_tabs = max_tabs, max_width = max_width }) .. right
 end
 
 vim.o.showtabline = 2
@@ -365,10 +360,10 @@ vim.o.showtabline = 2
 
 ```lua
 local function GroupSuffix()
-  if &paste then
+  if vim.o.paste then
     return "2"
   end
-  if &modified then
+  if vim.o.modified then
     return "1"
   end
   return ""
@@ -392,7 +387,7 @@ function vim.g.CrystallineStatuslineFn(winnr)
 
   s = s .. "%="
   if curr then
-    s = s .. cl.Sep(1, "Fill", "B") .. &paste ? "PASTE " : " "
+    s = s .. cl.Sep(1, "Fill", "B") .. "%{&paste ? ' PASTE ' : ' '}"
     s = s .. cl.Sep(1, "B", "A")
   end
   if vim.fn.winwidth(winnr) > 80 then
@@ -406,22 +401,22 @@ end
 
 function vim.g.CrystallineTablineFn()
   local cl = require("crystalline")
-  vim.g.crystalline_group_suffix = GroupSuffix()
-  local max_items = 80
-  local max_width = &columns
-
+  local max_width = vim.o.columns
   local right = "%="
-  local max_items -= 1
 
   right = right .. cl.Sep(1, "TabFill", "TabType")
-  local max_items -= 2
-  local max_width -= 1
+  max_width = max_width - 1
 
   local vimlabel = " NVIM "
-  local max_width -= vim.fn.strchars(vimlabel)
+  right = right .. vimlabel
+  max_width = max_width - vim.fn.strchars(vimlabel)
+
+  max_tabs = 23
 
   return cl.DefaultTabline({
-    enable_sep = true, max_items = max_items, max_width = max_width
+    enable_sep = true,
+    max_tabs = max_tabs,
+    max_width = max_width
   }) .. right
 end
 
