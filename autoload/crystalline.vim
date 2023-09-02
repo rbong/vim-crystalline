@@ -511,9 +511,15 @@ function! crystalline#PortAirlineTheme(theme_name) abort
       if l:style ==# 'Inactive' && l:section =~# '^Tab'
         continue
       endif
+
+      let [l:airline_section_style, l:airline_section] = l:airline_section
+      if empty(l:airline_section_style)
+        let l:airline_section_style = l:airline_style
+      endif
+
       for [l:variant, l:airline_variant] in g:crystalline_theme_airline_variants
         let l:group = l:style . l:section . l:variant
-        let l:groups[l:group] = crystalline#GetAirlineAttrs(a:theme_name, l:airline_style . l:airline_variant, l:airline_section)
+        let l:groups[l:group] = crystalline#GetAirlineAttrs(a:theme_name, l:airline_section_style . l:airline_variant, l:airline_section)
       endfor
     endfor
   endfor
@@ -521,12 +527,12 @@ function! crystalline#PortAirlineTheme(theme_name) abort
   " get fallbacks and filter duplicate styles
   let l:unique_groups = {}
   for l:style in g:crystalline_theme_styles
-    for l:group in g:crystalline_theme_groups
+    for l:section in g:crystalline_theme_sections
       for l:variant in g:crystalline_theme_variants
         let [l:attrs, l:fallback_attrs] = crystalline#SetThemeFallbackAttrs(l:groups, l:style, l:section, l:variant)
         let l:str_attrs = string(l:attrs)
         if l:str_attrs !=# string(l:fallback_attrs)
-          let l:unique_groups[l:style.name . l:group.name . l:variant] = l:str_attrs
+          let l:unique_groups[l:style . l:section . l:variant] = l:str_attrs
         endif
       endfor
     endfor
