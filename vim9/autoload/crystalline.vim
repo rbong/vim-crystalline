@@ -41,7 +41,7 @@ enddef
 
 # Tabline Utils {{{
 
-export def DefaultTab(tab: number, buf: number, max_width: number, is_sel: bool): list<any>
+export def DefaultTab(_, buf: number, max_width: number, _): list<any>
   # Return early
   if max_width <= 0
     return ['', 0]
