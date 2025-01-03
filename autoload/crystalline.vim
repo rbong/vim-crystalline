@@ -354,6 +354,8 @@ function! crystalline#GenerateHi(group, attrs) abort
     let l:hi .= ' NONE'
   endif
 
+  let l:hi .= ' cterm=nocombine gui=nocombine'
+
   return l:hi
 endfunction
 
