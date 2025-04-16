@@ -167,8 +167,10 @@ function module.DefaultTab(tab, buf, max_width, is_sel)
   return { module.EscapeStatuslineString(tab), tabwidth }
 end
 
+module.debug = {}
+
 function module.DefaultHideBuffer(buf)
-  return ((not buflisted(buf)) and bufnr('%') ~= buf) or getbufvar(buf, '&ft') == 'qf'
+  return ((not bool(buflisted(buf))) and bufnr('%') ~= buf) or getbufvar(buf, '&ft') == 'qf'
 end
 
 local default_tabs_or_buffers_opts = vim.empty_dict()
